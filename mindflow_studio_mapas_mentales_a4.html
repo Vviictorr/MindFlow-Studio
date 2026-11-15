@@ -223,8 +223,17 @@
       #a4-sheet-badge,
       #toast-container,
       #modal-backdrop,
-      #node-measurer {
+      #node-measurer,
+      #home-screen {
         display: none !important;
+      }
+
+      #editor-screen {
+        display: block !important;
+        position: static !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: visible !important;
       }
 
       #viewport {
@@ -281,13 +290,140 @@
   <div id="node-measurer"></div>
 
   <!-- =====================================================================
+       PANTALLA 1: PÁGINA DE INICIO (HOME & GESTOR DE PROYECTOS FIREBASE)
+       ===================================================================== -->
+  <div id="home-screen" class="no-print h-full w-full overflow-y-auto custom-scroll bg-gradient-to-br from-slate-50 via-white to-indigo-50/40 flex flex-col">
+    <!-- Barra Superior de Inicio -->
+    <nav class="safe-top sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 flex items-center justify-center text-white shadow-sm">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 9V4M12 20v-5M9 12H4M20 12h-5M17.6 6.4l-3.5 3.5M9.9 14.1l-3.5 3.5M6.4 6.4l3.5 3.5M14.1 14.1l3.5 3.5" />
+            </svg>
+          </div>
+          <div>
+            <span class="font-extrabold text-slate-900 tracking-tight text-base block leading-none">MindFlow Studio</span>
+            <span class="text-[11px] font-medium text-slate-500">Mapas Mentales A4 · XMind Style</span>
+          </div>
+        </div>
+
+        <!-- Estado de Cuenta en Inicio -->
+        <div class="flex items-center gap-2">
+          <!-- Vista cuando NO ha iniciado sesión -->
+          <div id="home-guest-actions" class="flex items-center gap-2">
+            <button id="btn-home-login" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 border border-slate-200 transition">
+              Iniciar sesión
+            </button>
+            <button id="btn-home-register" class="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-2xs transition">
+              Crear cuenta
+            </button>
+          </div>
+
+          <!-- Vista cuando SÍ tiene cuenta conectada -->
+          <div id="home-user-actions" class="hidden items-center gap-2.5">
+            <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 border border-emerald-200/90 text-emerald-800 text-xs font-semibold">
+              <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+              <span id="home-user-email" class="max-w-[150px] sm:max-w-[220px] truncate">usuario@correo.com</span>
+            </div>
+            <button id="btn-home-signout" class="px-3 py-1.5 rounded-xl text-xs font-semibold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 transition">
+              Cerrar sesión
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Contenido Principal de Inicio -->
+    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 py-8 sm:py-10 space-y-10 flex-1">
+      <!-- Hero y Botón Principal Crear Nuevo Proyecto -->
+      <section class="bg-white rounded-3xl border border-slate-200/90 shadow-float p-6 sm:p-8 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+        <div class="space-y-3 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/70 text-indigo-700 text-xs font-bold">
+            <span>☁️ Sincronizado con Firebase</span>
+            <span>·</span>
+            <span>📄 Listo para imprimir en A4</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Crea mapas mentales profesionales y guárdalos en tu cuenta
+          </h1>
+          <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+            Diseña con 26 estilos de bocadillo, 23 tipografías, auto-ajuste inteligente a hoja A4 (mínimo 9px) y exportación a PDF o PNG en Apple, Android y Windows.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row lg:flex-col gap-2.5 w-full lg:w-auto shrink-0">
+          <button id="btn-home-create-project" class="flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-extrabold text-white bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-600 hover:from-indigo-500 hover:to-blue-500 shadow-lg shadow-indigo-500/25 active:scale-[0.99] transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="12" y1="5" x2="12" y2="19" />
+              <line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            <span>Crear Nuevo Proyecto</span>
+          </button>
+
+          <button id="btn-home-download-app" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition">
+            <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            <span>Descargar Web App (.html)</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Sección: Mis Proyectos Guardados -->
+      <section class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-slate-800">Mis Proyectos Guardados</h2>
+            <p id="home-projects-subtitle" class="text-xs text-slate-500">Tus mapas mentales sincronizados en la nube Firebase</p>
+          </div>
+          <span id="home-projects-count" class="px-2.5 py-1 rounded-full text-xs font-bold bg-slate-200/70 text-slate-700">0 proyectos</span>
+        </div>
+
+        <div id="home-projects-container">
+          <!-- Renderizado dinámicamente según el estado de autenticación -->
+        </div>
+      </section>
+
+      <!-- Sección: Empezar desde una Plantilla Profesional -->
+      <section class="space-y-4 pb-6">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-base sm:text-lg font-extrabold text-slate-800">Empezar desde una Plantilla (9)</h2>
+            <p class="text-xs text-slate-500">Selecciona una estructura lista para personalizar y guardar en tu cuenta</p>
+          </div>
+        </div>
+
+        <div id="home-templates-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Renderizado dinámicamente desde TEMPLATES -->
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       PANTALLA 2: EDITOR DE MAPAS MENTALES A4
+       ===================================================================== -->
+  <div id="editor-screen" class="hidden flex-col h-full w-full overflow-hidden">
+
+  <!-- =====================================================================
        BARRA SUPERIOR PRINCIPAL (Estilo XMind)
        ===================================================================== -->
   <header class="no-print safe-top bg-white/95 backdrop-blur-md border-b border-slate-200 z-30 shrink-0">
     <div class="flex items-center justify-between px-2.5 sm:px-4 h-14 gap-2">
 
-      <!-- Izquierda: Logo, Título Editable y Estado Firebase -->
+      <!-- Izquierda: Botón Inicio, Logo, Título Editable y Estado Firebase -->
       <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <button id="btn-back-home" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 transition shrink-0" title="Volver a la Página de Inicio y Mis Proyectos">
+          <svg class="w-3.5 h-3.5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m15 18-6-6 6-6" />
+          </svg>
+          <span>Inicio</span>
+        </button>
+
         <div class="flex items-center gap-2 shrink-0">
           <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 flex items-center justify-center text-white shadow-sm">
             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -765,10 +901,83 @@
     </div>
   </footer>
 
+  </div> <!-- Fin #editor-screen -->
+
   <!-- =====================================================================
-       SISTEMA DE MODALES (9 Plantillas, Mis Mapas Firebase, Exportar, Confirmar)
+       SISTEMA DE MODALES (Auth Gate, 9 Plantillas, Mis Mapas, Exportar, Confirmar)
        ===================================================================== -->
   <div id="modal-backdrop" class="no-print hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-6">
+
+    <!-- MODAL 0: REGISTRO / INICIO DE SESIÓN OBLIGATORIO PARA CREAR PROYECTO -->
+    <div id="modal-auth-gate" class="hidden bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-md overflow-hidden">
+      <div class="px-6 pt-6 pb-4 bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/60 border-b border-slate-100 flex items-start justify-between gap-3">
+        <div class="space-y-1.5">
+          <div class="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-sm mb-2">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+          </div>
+          <h2 id="auth-gate-title" class="text-lg font-extrabold text-slate-900">Crea tu cuenta para guardar tus proyectos</h2>
+          <p id="auth-gate-subtitle" class="text-xs text-slate-600 leading-relaxed">
+            Para crear un proyecto necesitas una cuenta. Así todos tus mapas mentales se guardarán automáticamente en la nube.
+          </p>
+        </div>
+        <button class="modal-close-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 shrink-0">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <!-- Selector Crear Cuenta / Iniciar Sesión -->
+        <div class="grid grid-cols-2 gap-1 bg-slate-100 p-1 rounded-xl">
+          <button type="button" id="tab-gate-register" class="py-2 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-2xs transition">
+            Crear Cuenta
+          </button>
+          <button type="button" id="tab-gate-login" class="py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition">
+            Ya tengo cuenta
+          </button>
+        </div>
+
+        <!-- Mensaje de error amigable -->
+        <div id="auth-gate-error" class="hidden p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs font-medium text-rose-700"></div>
+
+        <!-- Formulario Correo y Contraseña -->
+        <form id="auth-gate-form" class="space-y-3">
+          <div id="auth-gate-name-field">
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Nombre (opcional)</label>
+            <input id="gate-name-input" type="text" placeholder="Ej. Carlos García" class="w-full px-3 py-2.5 rounded-xl text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 outline-none transition" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Correo electrónico</label>
+            <input id="gate-email-input" type="email" required placeholder="tu@correo.com" class="w-full px-3 py-2.5 rounded-xl text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 outline-none transition" />
+          </div>
+
+          <div>
+            <label class="block text-[11px] font-bold text-slate-700 mb-1">Contraseña</label>
+            <input id="gate-pass-input" type="password" required minlength="6" placeholder="Mínimo 6 caracteres" class="w-full px-3 py-2.5 rounded-xl text-xs bg-slate-50 border border-slate-200 focus:bg-white focus:border-indigo-500 outline-none transition" />
+          </div>
+
+          <button type="submit" id="btn-gate-submit" class="w-full py-3 rounded-xl text-xs font-extrabold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 transition">
+            Crear cuenta y empezar proyecto
+          </button>
+        </form>
+
+        <div class="relative flex items-center justify-center">
+          <div class="border-t border-slate-200 w-full"></div>
+          <span class="bg-white px-3 text-[11px] font-medium text-slate-400">o continúa con</span>
+          <div class="border-t border-slate-200 w-full"></div>
+        </div>
+
+        <button type="button" id="btn-gate-google" class="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 rounded-xl text-xs font-bold bg-white hover:bg-slate-50 text-slate-700 border border-slate-300 shadow-2xs transition">
+          <svg class="w-4 h-4" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/></svg>
+          <span>Continuar con Google</span>
+        </button>
+      </div>
+    </div>
 
     <!-- MODAL 1: GALERÍA DE 9 PLANTILLAS INTEGRADAS -->
     <div id="modal-templates" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[88vh] flex flex-col overflow-hidden">
@@ -938,6 +1147,7 @@
       GoogleAuthProvider,
       signInWithEmailAndPassword,
       createUserWithEmailAndPassword,
+      updateProfile,
       signOut,
       onAuthStateChanged
     } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
@@ -1509,13 +1719,24 @@
       future: [],
       user: null,
       cloudMaps: [],
-      autoSaveTimer: null
+      autoSaveTimer: null,
+      pendingAction: null,
+      authGateMode: 'register'
     };
 
     /* -----------------------------------------------------------------------
        5. REFERENCIAS DOM
        ----------------------------------------------------------------------- */
     const dom = {
+      homeScreen: document.getElementById('home-screen'),
+      editorScreen: document.getElementById('editor-screen'),
+      homeGuestActions: document.getElementById('home-guest-actions'),
+      homeUserActions: document.getElementById('home-user-actions'),
+      homeUserEmail: document.getElementById('home-user-email'),
+      homeProjectsSubtitle: document.getElementById('home-projects-subtitle'),
+      homeProjectsCount: document.getElementById('home-projects-count'),
+      homeProjectsContainer: document.getElementById('home-projects-container'),
+      homeTemplatesGrid: document.getElementById('home-templates-grid'),
       viewport: document.getElementById('viewport'),
       a4Sheet: document.getElementById('a4-sheet'),
       a4DimLabel: document.getElementById('a4-dimensions-label'),
@@ -1559,6 +1780,7 @@
       ctxEmojiPopover: document.getElementById('ctx-emoji-popover'),
       ctxEmojiPreview: document.getElementById('ctx-emoji-preview'),
       modalBackdrop: document.getElementById('modal-backdrop'),
+      modalAuthGate: document.getElementById('modal-auth-gate'),
       modalTemplates: document.getElementById('modal-templates'),
       modalMaps: document.getElementById('modal-maps'),
       modalExport: document.getElementById('modal-export'),
@@ -1642,10 +1864,12 @@
 
     function openModal(modalKey) {
       dom.modalBackdrop.classList.remove('hidden');
+      dom.modalAuthGate.classList.add('hidden');
       dom.modalTemplates.classList.add('hidden');
       dom.modalMaps.classList.add('hidden');
       dom.modalExport.classList.add('hidden');
       dom.modalConfirm.classList.add('hidden');
+      if (modalKey === 'auth-gate') dom.modalAuthGate.classList.remove('hidden');
       if (modalKey === 'templates') dom.modalTemplates.classList.remove('hidden');
       if (modalKey === 'maps') dom.modalMaps.classList.remove('hidden');
       if (modalKey === 'export') dom.modalExport.classList.remove('hidden');
@@ -1654,6 +1878,7 @@
 
     function closeAllModals() {
       dom.modalBackdrop.classList.add('hidden');
+      dom.modalAuthGate.classList.add('hidden');
       dom.modalTemplates.classList.add('hidden');
       dom.modalMaps.classList.add('hidden');
       dom.modalExport.classList.add('hidden');
@@ -1662,6 +1887,267 @@
         confirmResolve(false);
         confirmResolve = null;
       }
+    }
+
+    /* -----------------------------------------------------------------------
+       6B. NAVEGACIÓN ENTRE PÁGINA DE INICIO, EDITOR Y CONTROL DE CUENTA
+       ----------------------------------------------------------------------- */
+    function isAuthenticatedAccount() {
+      return Boolean(state.user && !state.user.isAnonymous);
+    }
+
+    function showHomeScreen() {
+      dom.editorScreen.classList.add('hidden');
+      dom.editorScreen.classList.remove('flex');
+      dom.homeScreen.classList.remove('hidden');
+      renderHomeUI();
+    }
+
+    function showEditorScreen() {
+      dom.homeScreen.classList.add('hidden');
+      dom.editorScreen.classList.remove('hidden');
+      dom.editorScreen.classList.add('flex');
+      requestAnimationFrame(() => {
+        renderAll();
+        centerSheetInViewport();
+      });
+    }
+
+    function openAuthGateModal(mode = 'register', pendingAction = null) {
+      state.pendingAction = pendingAction;
+      setAuthGateMode(mode);
+      const errBox = document.getElementById('auth-gate-error');
+      errBox.classList.add('hidden');
+      errBox.textContent = '';
+      openModal('auth-gate');
+    }
+
+    function setAuthGateMode(mode) {
+      state.authGateMode = mode;
+      const isReg = mode === 'register';
+      const tabReg = document.getElementById('tab-gate-register');
+      const tabLog = document.getElementById('tab-gate-login');
+      const nameField = document.getElementById('auth-gate-name-field');
+      const titleEl = document.getElementById('auth-gate-title');
+      const subEl = document.getElementById('auth-gate-subtitle');
+      const submitBtn = document.getElementById('btn-gate-submit');
+
+      if (isReg) {
+        tabReg.className = 'py-2 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-2xs transition';
+        tabLog.className = 'py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        nameField.classList.remove('hidden');
+        titleEl.textContent = state.pendingAction
+          ? 'Crea tu cuenta para crear tu proyecto'
+          : 'Crea tu cuenta en MindFlow Studio';
+        subEl.textContent = 'Regístrate gratis para guardar tus mapas mentales en la nube y acceder desde cualquier dispositivo.';
+        submitBtn.textContent = state.pendingAction ? 'Crear cuenta y empezar proyecto' : 'Crear cuenta';
+      } else {
+        tabLog.className = 'py-2 rounded-lg text-xs font-bold bg-white text-indigo-600 shadow-2xs transition';
+        tabReg.className = 'py-2 rounded-lg text-xs font-semibold text-slate-600 hover:text-slate-900 transition';
+        nameField.classList.add('hidden');
+        titleEl.textContent = 'Inicia sesión en tu cuenta';
+        subEl.textContent = 'Accede a tus proyectos guardados en Firebase o crea uno nuevo.';
+        submitBtn.textContent = state.pendingAction ? 'Entrar y crear proyecto' : 'Iniciar sesión';
+      }
+    }
+
+    function formatFirebaseAuthError(err) {
+      const code = err && err.code ? err.code : '';
+      if (code === 'auth/email-already-in-use') return 'Este correo ya está registrado. Cambia a la pestaña "Ya tengo cuenta" para iniciar sesión.';
+      if (code === 'auth/weak-password') return 'La contraseña debe tener al menos 6 caracteres.';
+      if (code === 'auth/invalid-email') return 'El formato del correo electrónico no es válido.';
+      if (code === 'auth/invalid-credential' || code === 'auth/wrong-password' || code === 'auth/user-not-found') {
+        return 'Correo o contraseña incorrectos. Revisa tus datos e inténtalo de nuevo.';
+      }
+      if (code === 'auth/popup-closed-by-user') return 'Se cerró la ventana de inicio de sesión con Google.';
+      if (code === 'auth/operation-not-allowed') return 'Habilita Correo/Contraseña o Google en la consola de Firebase Authentication.';
+      return err && err.message ? err.message : 'Error de autenticación con Firebase.';
+    }
+
+    async function executeProjectAction(action) {
+      if (!action) return;
+
+      if (action.type === 'new-blank') {
+        state.history = [];
+        state.future = [];
+        state.mapId = 'map_' + Date.now();
+        state.title = 'Nuevo Proyecto';
+        state.layout = 'radial';
+        state.orientation = 'landscape';
+        state.themeId = 'xmind-classic';
+        state.tree = {
+          id: 'root',
+          text: 'Idea Principal',
+          emoji: '💡',
+          shape: 'pill',
+          children: [
+            { id: uid(), text: 'Rama Principal 1', emoji: '', children: [] },
+            { id: uid(), text: 'Rama Principal 2', emoji: '', children: [] }
+          ]
+        };
+        state.selectedNodeId = 'root';
+        dom.mapTitleInput.value = state.title;
+        updateUndoRedoButtons();
+        showEditorScreen();
+        await saveCurrentMapToCloud(true);
+        showToast('Nuevo proyecto creado y guardado en tu cuenta', 'success');
+      } else if (action.type === 'template') {
+        const tpl = TEMPLATES.find(t => t.id === action.templateId);
+        if (!tpl) return;
+        state.history = [];
+        state.future = [];
+        state.mapId = 'map_' + Date.now();
+        state.title = tpl.name;
+        state.layout = tpl.layout;
+        state.themeId = tpl.themeId;
+        state.orientation = tpl.orientation;
+        state.tree = deepClone(tpl.tree);
+        state.selectedNodeId = 'root';
+        dom.mapTitleInput.value = state.title;
+        updateUndoRedoButtons();
+        showEditorScreen();
+        await saveCurrentMapToCloud(true);
+        showToast(`Proyecto "${tpl.name}" creado y guardado`, 'success');
+      }
+    }
+
+    function requestNewProjectWithAuth(action) {
+      if (isAuthenticatedAccount()) {
+        executeProjectAction(action);
+      } else {
+        openAuthGateModal('register', action);
+      }
+    }
+
+    function renderHomeUI() {
+      const loggedIn = isAuthenticatedAccount();
+
+      if (loggedIn) {
+        dom.homeGuestActions.classList.add('hidden');
+        dom.homeUserActions.classList.remove('hidden');
+        dom.homeUserActions.classList.add('flex');
+        const displayLabel = state.user.displayName
+          ? `${state.user.displayName} (${state.user.email})`
+          : (state.user.email || 'Cuenta Conectada');
+        dom.homeUserEmail.textContent = displayLabel;
+        dom.homeProjectsSubtitle.textContent = `Proyectos guardados en la cuenta ${state.user.email || ''}`;
+      } else {
+        dom.homeGuestActions.classList.remove('hidden');
+        dom.homeUserActions.classList.add('hidden');
+        dom.homeUserActions.classList.remove('flex');
+        dom.homeProjectsSubtitle.textContent = 'Inicia sesión o crea tu cuenta para guardar y sincronizar tus proyectos';
+      }
+
+      // Renderizar proyectos guardados en la pantalla de inicio
+      if (!loggedIn) {
+        dom.homeProjectsCount.textContent = 'Cuenta requerida';
+        dom.homeProjectsContainer.innerHTML = `
+          <div class="bg-white rounded-2xl border border-dashed border-slate-300 p-7 text-center space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center mx-auto">
+              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+              </svg>
+            </div>
+            <div class="max-w-md mx-auto space-y-1">
+              <h3 class="text-sm font-bold text-slate-800">Tus proyectos se guardarán aquí automáticamente</h3>
+              <p class="text-xs text-slate-500">Crea tu cuenta gratuita o inicia sesión antes de empezar un nuevo proyecto para conservar todos tus diseños en Firebase.</p>
+            </div>
+            <div class="flex items-center justify-center gap-2 pt-1">
+              <button type="button" id="btn-home-empty-register" class="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-2xs transition">
+                Crear cuenta gratis
+              </button>
+              <button type="button" id="btn-home-empty-login" class="px-4 py-2 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 transition">
+                Ya tengo cuenta
+              </button>
+            </div>
+          </div>
+        `;
+        const regBtn = document.getElementById('btn-home-empty-register');
+        const logBtn = document.getElementById('btn-home-empty-login');
+        if (regBtn) regBtn.addEventListener('click', () => openAuthGateModal('register', null));
+        if (logBtn) logBtn.addEventListener('click', () => openAuthGateModal('login', null));
+      } else {
+        const items = [...state.cloudMaps].sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+        dom.homeProjectsCount.textContent = `${items.length} ${items.length === 1 ? 'proyecto' : 'proyectos'}`;
+
+        if (items.length === 0) {
+          dom.homeProjectsContainer.innerHTML = `
+            <div class="bg-white rounded-2xl border border-slate-200 p-7 text-center space-y-2.5">
+              <p class="text-sm font-bold text-slate-800">¡Bienvenido! Aún no tienes proyectos guardados</p>
+              <p class="text-xs text-slate-500">Pulsa <strong>"Crear Nuevo Proyecto"</strong> o elige una de las 9 plantillas de abajo para crear tu primer mapa mental.</p>
+            </div>
+          `;
+        } else {
+          dom.homeProjectsContainer.innerHTML = `
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              ${items.map((item, idx) => {
+                const dateStr = item.updatedAt
+                  ? new Date(item.updatedAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
+                  : 'Reciente';
+                const orientText = item.orientation === 'portrait' ? 'A4 Vertical' : 'A4 Horizontal';
+                return `
+                  <div class="bg-white rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-md p-4 flex flex-col justify-between gap-4 transition">
+                    <div class="space-y-1.5">
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/70">☁️ Guardado</span>
+                        <span class="text-[10px] font-medium text-slate-400">${orientText}</span>
+                      </div>
+                      <h3 class="text-sm font-extrabold text-slate-800 truncate">${escapeHtml(item.title || 'Proyecto Sin Título')}</h3>
+                      <p class="text-[11px] text-slate-500">Editado: ${dateStr}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <button type="button" data-home-open-idx="${idx}" class="flex-1 py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white transition">
+                        Abrir Proyecto
+                      </button>
+                      <button type="button" data-home-del-idx="${idx}" class="p-2 rounded-xl text-rose-600 bg-rose-50 hover:bg-rose-100 border border-rose-200/70 transition" title="Eliminar proyecto">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
+            </div>
+          `;
+
+          dom.homeProjectsContainer.querySelectorAll('[data-home-open-idx]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const item = items[Number(btn.dataset.homeOpenIdx)];
+              if (item) loadMapIntoEditor(item);
+            });
+          });
+
+          dom.homeProjectsContainer.querySelectorAll('[data-home-del-idx]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const item = items[Number(btn.dataset.homeDelIdx)];
+              if (item) deleteSavedMap(item);
+            });
+          });
+        }
+      }
+
+      // Renderizar tarjetas de plantillas en la pantalla de inicio
+      dom.homeTemplatesGrid.innerHTML = TEMPLATES.map(tpl => `
+        <div class="bg-white flex flex-col justify-between p-4 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-md transition">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${tpl.badgeColor}">${tpl.category}</span>
+              <span class="text-[10px] font-medium text-slate-400">${tpl.orientation === 'landscape' ? 'A4 Horiz.' : 'A4 Vert.'}</span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">${tpl.tree.emoji} ${tpl.name}</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">${tpl.description}</p>
+          </div>
+          <button type="button" data-home-tpl="${tpl.id}" class="mt-4 w-full py-2 rounded-xl text-xs font-bold bg-slate-100 hover:bg-indigo-600 text-slate-800 hover:text-white transition">
+            Crear con esta plantilla
+          </button>
+        </div>
+      `).join('');
+
+      dom.homeTemplatesGrid.querySelectorAll('[data-home-tpl]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          requestNewProjectWithAuth({ type: 'template', templateId: btn.dataset.homeTpl });
+        });
+      });
     }
 
     /* -----------------------------------------------------------------------
@@ -2977,6 +3463,10 @@
           const tpl = TEMPLATES.find(t => t.id === btn.dataset.useTemplate);
           if (!tpl) return;
           closeAllModals();
+          if (!isAuthenticatedAccount()) {
+            openAuthGateModal('register', { type: 'template', templateId: tpl.id });
+            return;
+          }
           pushHistory();
           state.mapId = 'map_' + Date.now();
           state.title = tpl.name;
@@ -2986,8 +3476,7 @@
           state.tree = deepClone(tpl.tree);
           state.selectedNodeId = 'root';
           dom.mapTitleInput.value = state.title;
-          renderAll();
-          centerSheetInViewport();
+          showEditorScreen();
           scheduleAutoSave();
           showToast(`Plantilla "${tpl.name}" cargada`, 'success');
         });
@@ -3214,10 +3703,17 @@
 
     function downloadStandaloneWebApp() {
       const cleanDoc = document.documentElement.cloneNode(true);
+      const cleanHome = cleanDoc.querySelector('#home-screen');
+      const cleanEditor = cleanDoc.querySelector('#editor-screen');
       const cleanNodes = cleanDoc.querySelector('#nodes-container');
       const cleanSvg = cleanDoc.querySelector('#connections-svg');
       const cleanToasts = cleanDoc.querySelector('#toast-container');
       const cleanBackdrop = cleanDoc.querySelector('#modal-backdrop');
+      if (cleanHome) cleanHome.classList.remove('hidden');
+      if (cleanEditor) {
+        cleanEditor.classList.add('hidden');
+        cleanEditor.classList.remove('flex');
+      }
       if (cleanNodes) cleanNodes.innerHTML = '';
       if (cleanSvg) cleanSvg.innerHTML = '';
       if (cleanToasts) cleanToasts.innerHTML = '';
@@ -3355,6 +3851,7 @@
         }
       }
       renderSavedMapsList();
+      renderHomeUI();
       showToast('Mapa eliminado', 'info');
     }
 
@@ -3369,8 +3866,7 @@
       state.selectedNodeId = state.tree.id;
       dom.mapTitleInput.value = state.title;
       closeAllModals();
-      renderAll();
-      centerSheetInViewport();
+      showEditorScreen();
       showToast(`Mapa "${state.title}" abierto`, 'success');
     }
 
@@ -3433,47 +3929,54 @@
 
     function initFirebaseSync() {
       const signOutBtn = document.getElementById('btn-auth-signout');
-      onAuthStateChanged(auth, user => {
+      onAuthStateChanged(auth, async user => {
         state.user = user;
         if (unsubscribeMaps) {
           unsubscribeMaps();
           unsubscribeMaps = null;
         }
 
-        if (user) {
-          const isNamedUser = Boolean(user.email);
-          const label = isNamedUser ? user.email : `Invitado (${user.uid.slice(0, 6)})`;
+        if (user && !user.isAnonymous) {
+          const label = user.email || user.displayName || `Usuario (${user.uid.slice(0, 6)})`;
           dom.syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
           dom.syncText.textContent = label;
           dom.firebaseUserLabel.textContent = `Conectado como ${label} · mindflow-studio-1f083`;
-          if (signOutBtn) signOutBtn.classList.toggle('hidden', !isNamedUser);
+          if (signOutBtn) signOutBtn.classList.remove('hidden');
 
           const colRef = collection(db, 'mindmaps');
           unsubscribeMaps = onSnapshot(colRef, snapshot => {
             const list = [];
             snapshot.forEach(docSnap => {
               const data = docSnap.data();
-              if (!data.ownerUid || data.ownerUid === user.uid) {
+              if (data.ownerUid === user.uid) {
                 list.push({ ...data, _docId: docSnap.id });
               }
             });
             state.cloudMaps = list;
             renderSavedMapsList();
+            renderHomeUI();
           }, err => {
             console.warn('Firestore snapshot aviso:', err.message);
             dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-500';
             dom.syncText.textContent = 'Modo Local + Firebase';
           });
+
+          renderHomeUI();
+
+          // Si el usuario acaba de crear cuenta/iniciar sesión tras pulsar "Crear Nuevo Proyecto", ejecutar acción pendiente
+          if (state.pendingAction) {
+            const actionToRun = state.pendingAction;
+            state.pendingAction = null;
+            closeAllModals();
+            await executeProjectAction(actionToRun);
+          }
         } else {
+          state.cloudMaps = [];
           if (signOutBtn) signOutBtn.classList.add('hidden');
           dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-400';
-          dom.syncText.textContent = 'Iniciando sesión...';
-          signInAnonymously(auth).catch(err => {
-            console.warn('Auth anónima no disponible, usando almacenamiento local:', err.message);
-            dom.syncDot.className = 'w-2 h-2 rounded-full bg-slate-400';
-            dom.syncText.textContent = 'Almacenamiento Local';
-            dom.firebaseUserLabel.textContent = 'Firebase listo (inicia sesión con Google o correo)';
-          });
+          dom.syncText.textContent = 'Sin sesión iniciada';
+          dom.firebaseUserLabel.textContent = 'Crea una cuenta o inicia sesión para guardar tus proyectos';
+          renderHomeUI();
         }
       });
     }
@@ -3482,6 +3985,95 @@
        17. EVENTOS DE INTERFAZ Y ATAJOS DE TECLADO
        ----------------------------------------------------------------------- */
     function bindAllEvents() {
+      // Eventos de Página de Inicio y Modal Auth Gate
+      document.getElementById('btn-home-create-project').addEventListener('click', () => {
+        requestNewProjectWithAuth({ type: 'new-blank' });
+      });
+
+      document.getElementById('btn-home-download-app').addEventListener('click', downloadStandaloneWebApp);
+
+      document.getElementById('btn-home-login').addEventListener('click', () => {
+        openAuthGateModal('login', null);
+      });
+
+      document.getElementById('btn-home-register').addEventListener('click', () => {
+        openAuthGateModal('register', null);
+      });
+
+      document.getElementById('btn-home-signout').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          showToast('Sesión cerrada correctamente', 'info');
+        } catch (err) {
+          showToast('Error al cerrar sesión: ' + err.message, 'error');
+        }
+      });
+
+      document.getElementById('btn-back-home').addEventListener('click', async () => {
+        if (isAuthenticatedAccount()) {
+          await saveCurrentMapToCloud(true);
+        }
+        showHomeScreen();
+      });
+
+      document.getElementById('tab-gate-register').addEventListener('click', () => setAuthGateMode('register'));
+      document.getElementById('tab-gate-login').addEventListener('click', () => setAuthGateMode('login'));
+
+      document.getElementById('auth-gate-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = document.getElementById('gate-email-input').value.trim();
+        const pass = document.getElementById('gate-pass-input').value;
+        const name = document.getElementById('gate-name-input').value.trim();
+        const errBox = document.getElementById('auth-gate-error');
+        const submitBtn = document.getElementById('btn-gate-submit');
+
+        errBox.classList.add('hidden');
+        submitBtn.disabled = true;
+        const prevBtnText = submitBtn.textContent;
+        submitBtn.textContent = 'Conectando con Firebase...';
+
+        try {
+          if (state.authGateMode === 'register') {
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            if (name && cred.user) {
+              await updateProfile(cred.user, { displayName: name });
+            }
+            if (!state.pendingAction) {
+              closeAllModals();
+              showToast('¡Cuenta creada! Ya puedes crear tus proyectos', 'success');
+            }
+          } else {
+            await signInWithEmailAndPassword(auth, email, pass);
+            if (!state.pendingAction) {
+              closeAllModals();
+              showToast('Sesión iniciada correctamente', 'success');
+            }
+          }
+        } catch (err) {
+          errBox.textContent = formatFirebaseAuthError(err);
+          errBox.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = prevBtnText;
+        }
+      });
+
+      document.getElementById('btn-gate-google').addEventListener('click', async () => {
+        const errBox = document.getElementById('auth-gate-error');
+        errBox.classList.add('hidden');
+        try {
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
+          if (!state.pendingAction) {
+            closeAllModals();
+            showToast('Sesión iniciada con Google', 'success');
+          }
+        } catch (err) {
+          errBox.textContent = formatFirebaseAuthError(err);
+          errBox.classList.remove('hidden');
+        }
+      });
+
       // Título del mapa
       dom.mapTitleInput.addEventListener('input', e => {
         state.title = e.target.value;
@@ -3912,28 +4504,8 @@
       document.getElementById('btn-save-now').addEventListener('click', () => saveCurrentMapToCloud(false));
 
       document.getElementById('btn-new-blank-map').addEventListener('click', () => {
-        pushHistory();
-        state.mapId = 'map_' + Date.now();
-        state.title = 'Nuevo Mapa Mental';
-        state.layout = 'radial';
-        state.orientation = 'landscape';
-        state.tree = {
-          id: 'root',
-          text: 'Idea Principal',
-          emoji: '💡',
-          shape: 'pill',
-          children: [
-            { id: uid(), text: 'Rama 1', emoji: '', children: [] },
-            { id: uid(), text: 'Rama 2', emoji: '', children: [] }
-          ]
-        };
-        state.selectedNodeId = 'root';
-        dom.mapTitleInput.value = state.title;
         closeAllModals();
-        renderAll();
-        centerSheetInViewport();
-        scheduleAutoSave();
-        showToast('Nuevo mapa creado', 'info');
+        requestNewProjectWithAuth({ type: 'new-blank' });
       });
 
       document.getElementById('btn-auth-google').addEventListener('click', async () => {
@@ -3962,6 +4534,8 @@
       document.getElementById('btn-auth-signout').addEventListener('click', async () => {
         try {
           await signOut(auth);
+          closeAllModals();
+          showHomeScreen();
           showToast('Sesión cerrada', 'info');
         } catch (err) {
           showToast('Error al cerrar sesión: ' + err.message, 'error');
@@ -4077,8 +4651,7 @@
       renderTemplatesGallery();
       setupViewportInteractions();
       bindAllEvents();
-      renderAll();
-      centerSheetInViewport();
+      renderHomeUI();
       updateUndoRedoButtons();
       initFirebaseSync();
     }
