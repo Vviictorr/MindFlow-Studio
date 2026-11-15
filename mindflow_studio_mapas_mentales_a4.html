@@ -45,6 +45,11 @@
   </style>
 
   <style>
+    :root {
+      --app-safe-top: env(safe-area-inset-top, 0px);
+      --app-safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+
     * {
       box-sizing: border-box;
       -webkit-tap-highlight-color: transparent;
@@ -55,6 +60,7 @@
       padding: 0;
       width: 100%;
       height: 100%;
+      height: 100dvh;
       overflow: hidden;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
       background-color: #e6ebf2;
@@ -201,8 +207,8 @@
       background: #94a3b8;
     }
 
-    .safe-top { padding-top: env(safe-area-inset-top, 0px); }
-    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .safe-top { padding-top: var(--app-safe-top); }
+    .safe-bottom { padding-bottom: var(--app-safe-bottom); }
 
     /* =====================================================================
        REGLAS DE IMPRESIÓN PERFECTA EN HOJA A4 (@media print)
@@ -289,7 +295,7 @@
     }
   </style>
 </head>
-<body class="flex flex-col h-screen w-screen overflow-hidden select-none">
+<body class="flex flex-col w-screen overflow-hidden select-none" style="height: 100dvh;">
 
   <!-- Medidor DOM oculto para cálculo real de cajas de texto -->
   <div id="node-measurer"></div>
@@ -299,7 +305,7 @@
        ===================================================================== -->
   <div id="home-screen" class="no-print h-full w-full overflow-y-auto custom-scroll bg-gradient-to-br from-slate-50 via-white to-indigo-50/40 flex flex-col">
     <!-- Barra Superior de Inicio -->
-    <nav class="safe-top sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-slate-200/80">
+    <nav class="safe-top sticky top-0 z-20 bg-white border-b border-slate-200/90">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
           <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 flex items-center justify-center text-white shadow-sm">
@@ -417,7 +423,7 @@
   <!-- =====================================================================
        BARRA SUPERIOR PRINCIPAL (Estilo XMind)
        ===================================================================== -->
-  <header class="no-print safe-top bg-white/95 backdrop-blur-md border-b border-slate-200 z-30 shrink-0">
+  <header id="editor-header" class="no-print safe-top bg-white border-b border-slate-200 z-30 shrink-0">
     <div class="flex items-center justify-between px-2.5 sm:px-4 h-14 gap-2">
 
       <!-- Izquierda: Botón Inicio, Logo, Título Editable y Estado Firebase -->
@@ -3301,17 +3307,19 @@
       tb.classList.remove('hidden');
       const rect = nodeEl.getBoundingClientRect();
       const tbRect = tb.getBoundingClientRect();
+      const headerEl = document.getElementById('editor-header');
+      const minSafeTop = headerEl ? headerEl.getBoundingClientRect().bottom + 8 : 64;
 
       let left = rect.left + rect.width / 2 - tbRect.width / 2;
       let top = rect.top - tbRect.height - 10;
-      if (top < 64) top = rect.bottom + 10;
+      if (top < minSafeTop) top = rect.bottom + 10;
       left = Math.max(10, Math.min(window.innerWidth - tbRect.width - 10, left));
 
       tb.style.left = `${left}px`;
       tb.style.top = `${top}px`;
 
       // Posicionar popovers hacia abajo si la barra está cerca del borde superior
-      const openDownward = top < 240;
+      const openDownward = top < minSafeTop + 170;
       [dom.ctxColorPopover, dom.ctxEmojiPopover].forEach(pop => {
         if (openDownward) {
           pop.classList.remove('bottom-full', 'mb-2');
@@ -4987,14 +4995,38 @@
       });
 
       window.addEventListener('resize', () => {
+        applyDeviceSafeAreaOffsets();
         updateFloatingToolbar();
       });
     }
 
     /* -----------------------------------------------------------------------
-       18. ARRANQUE INICIAL DE LA APLICACIÓN
+       18. DETECCIÓN DE ÁREA SEGURA IPADOS / IOS Y ARRANQUE DE LA APLICACIÓN
        ----------------------------------------------------------------------- */
+    function applyDeviceSafeAreaOffsets() {
+      const ua = navigator.userAgent || '';
+      const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isIPhone = /iPhone|iPod/.test(ua);
+      const isStandalone = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+
+      // Medir el valor real de env(safe-area-inset-top) del navegador
+      const probe = document.createElement('div');
+      probe.style.cssText = 'position:fixed;top:0;left:0;height:env(safe-area-inset-top, 0px);visibility:hidden;pointer-events:none;';
+      document.body.appendChild(probe);
+      const measuredTop = probe.getBoundingClientRect().height || 0;
+      probe.remove();
+
+      let safeTopPx = measuredTop;
+      // En iPadOS / iOS en modo app instalada (PWA), la barra de estado y los 3 puntos multitasking ocupan ~28px
+      if ((isIPad || isIPhone) && isStandalone && safeTopPx < 30) {
+        safeTopPx = 30;
+      }
+
+      document.documentElement.style.setProperty('--app-safe-top', `${safeTopPx}px`);
+    }
+
     function initApp() {
+      applyDeviceSafeAreaOffsets();
       if (window.innerWidth < 768) {
         dom.inspectorPanel.classList.add('hidden');
       }
