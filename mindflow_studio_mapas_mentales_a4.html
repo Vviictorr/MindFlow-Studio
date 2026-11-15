@@ -1,0 +1,4089 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="theme-color" content="#ffffff" />
+  <title>MindFlow Studio — Mapas Mentales A4 estilo XMind</title>
+
+  <!-- Tipografías Google Fonts (23 estilos seleccionables) con respaldo nativo Apple y Windows -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=DM+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Dancing+Script:wght@500;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Oswald:wght@500;600;700&family=Pacifico&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@500;600;700&family=Raleway:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Slab:wght@400;600;700&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&family=Shadows+Into+Light&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'a4': '0 24px 60px -12px rgba(15, 23, 42, 0.24), 0 4px 18px -2px rgba(15, 23, 42, 0.08)',
+            'float': '0 10px 30px -5px rgba(15, 23, 42, 0.16), 0 2px 8px -2px rgba(15, 23, 42, 0.08)',
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Regla dinámica de orientación de impresión (@page) -->
+  <style id="dynamic-print-style">
+    @page {
+      size: A4 landscape;
+      margin: 0;
+    }
+  </style>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+      background-color: #e6ebf2;
+      color: #0f172a;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Fondo tipo mesa de diseño arquitectónico */
+    .workspace-grid {
+      background-color: #e6ebf2;
+      background-image: radial-gradient(#cbd5e1 1.15px, transparent 1.15px);
+      background-size: 20px 20px;
+      touch-action: none;
+    }
+
+    /* Hoja A4 física exacta (297mm x 210mm -> 1123px x 794px a 96dpi) */
+    .a4-paper {
+      background-color: #ffffff;
+      position: relative;
+      transform-origin: 0 0;
+      will-change: transform;
+      overflow: hidden;
+    }
+
+    /* Guía de margen seguro de impresión (32px en los 4 lados) */
+    .print-margin-guide {
+      position: absolute;
+      inset: 32px;
+      border: 1.5px dashed rgba(99, 102, 241, 0.28);
+      border-radius: 6px;
+      pointer-events: none;
+      z-index: 2;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .print-margin-guide.overflow-alert {
+      border-color: rgba(239, 68, 68, 0.65);
+      background-color: rgba(254, 242, 242, 0.25);
+    }
+
+    /* Marcas de corte sutiles en esquinas A4 */
+    .crop-mark {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-color: rgba(148, 163, 184, 0.45);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* Nodos del mapa mental */
+    .mind-node {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      cursor: grab;
+      transition: filter 0.14s ease, transform 0.1s ease;
+      z-index: 10;
+      touch-action: none;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      line-height: 1.25;
+      text-align: center;
+    }
+
+    .mind-node:active {
+      cursor: grabbing;
+    }
+
+    .mind-node.selected {
+      filter: drop-shadow(0 0 6px rgba(59, 130, 246, 0.68)) drop-shadow(0 6px 14px rgba(15, 23, 42, 0.16));
+      z-index: 25;
+    }
+
+    .mind-node.dragging {
+      opacity: 0.92;
+      z-index: 40;
+      transition: none !important;
+    }
+
+    /* Fondo vectorial SVG para los 26 estilos de bocadillo */
+    .node-shape-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .node-content-wrap {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+
+    /* Editor de texto en línea dentro del nodo */
+    .node-editor-input {
+      background: rgba(255, 255, 255, 0.16);
+      border: none;
+      border-radius: 4px;
+      outline: none;
+      color: inherit;
+      font: inherit;
+      text-align: center;
+      width: 100%;
+      min-width: 54px;
+      padding: 0 2px;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    /* Medidor DOM oculto para calcular tamaño exacto de cada nodo con salto de línea */
+    #node-measurer {
+      position: fixed;
+      left: -9999px;
+      top: -9999px;
+      visibility: hidden;
+      pointer-events: none;
+      line-height: 1.25;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+      text-align: center;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    }
+
+    /* Barra de desplazamiento limpia */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .safe-top { padding-top: env(safe-area-inset-top, 0px); }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+    /* =====================================================================
+       REGLAS DE IMPRESIÓN PERFECTA EN HOJA A4 (@media print)
+       ===================================================================== */
+    @media print {
+      html, body {
+        width: 100% !important;
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        background: #ffffff !important;
+        overflow: visible !important;
+      }
+
+      .no-print,
+      header,
+      aside,
+      footer,
+      #overflow-warning-banner,
+      #floating-node-toolbar,
+      #zoom-controls,
+      #print-margin-guide,
+      #a4-sheet-badge,
+      #toast-container,
+      #modal-backdrop,
+      #node-measurer {
+        display: none !important;
+      }
+
+      #viewport {
+        position: static !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: #ffffff !important;
+        background-image: none !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      /* Evitar recortes en Safari (macOS / iPadOS / iPhone) */
+      .overflow-hidden {
+        overflow: visible !important;
+      }
+
+      #a4-sheet {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        transform: none !important;
+        box-shadow: none !important;
+        margin: 0 !important;
+        border: none !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+
+      #a4-sheet.landscape-mode {
+        width: 297mm !important;
+        height: 210mm !important;
+      }
+
+      #a4-sheet.portrait-mode {
+        width: 210mm !important;
+        height: 297mm !important;
+      }
+
+      .mind-node.selected {
+        filter: none !important;
+      }
+
+      .collapse-btn {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="flex flex-col h-screen w-screen overflow-hidden select-none">
+
+  <!-- Medidor DOM oculto para cálculo real de cajas de texto -->
+  <div id="node-measurer"></div>
+
+  <!-- =====================================================================
+       BARRA SUPERIOR PRINCIPAL (Estilo XMind)
+       ===================================================================== -->
+  <header class="no-print safe-top bg-white/95 backdrop-blur-md border-b border-slate-200 z-30 shrink-0">
+    <div class="flex items-center justify-between px-2.5 sm:px-4 h-14 gap-2">
+
+      <!-- Izquierda: Logo, Título Editable y Estado Firebase -->
+      <div class="flex items-center gap-2 sm:gap-2.5 min-w-0">
+        <div class="flex items-center gap-2 shrink-0">
+          <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-rose-500 via-orange-500 to-amber-500 flex items-center justify-center text-white shadow-sm">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 9V4M12 20v-5M9 12H4M20 12h-5M17.6 6.4l-3.5 3.5M9.9 14.1l-3.5 3.5M6.4 6.4l3.5 3.5M14.1 14.1l3.5 3.5" />
+            </svg>
+          </div>
+          <span class="font-bold text-slate-800 tracking-tight text-sm hidden xl:inline">MindFlow Studio</span>
+        </div>
+
+        <div class="h-5 w-px bg-slate-200 hidden sm:block"></div>
+
+        <!-- Título Editable del Mapa -->
+        <input
+          id="map-title-input"
+          type="text"
+          value="Lluvia de Ideas Creativa"
+          aria-label="Título del mapa mental"
+          class="font-semibold text-xs sm:text-sm text-slate-800 bg-slate-100/80 hover:bg-slate-100 focus:bg-white focus:ring-2 focus:ring-indigo-500/30 border border-transparent focus:border-indigo-400 rounded-lg px-2.5 py-1.5 w-32 sm:w-44 md:w-52 truncate outline-none transition"
+        />
+
+        <!-- Indicador de Conexión Firebase -->
+        <button id="sync-status-badge" title="Gestionar cuenta y mapas en Firebase" class="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-100 hover:bg-slate-200/70 text-slate-700 border border-slate-200/80 shrink-0 transition">
+          <span id="sync-dot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+          <span id="sync-text" class="truncate max-w-[175px]">Conectando Firebase...</span>
+        </button>
+      </div>
+
+      <!-- Centro: Mis Mapas, 9 Plantillas, Deshacer/Rehacer y Selector A4 -->
+      <div class="flex items-center gap-1 sm:gap-1.5 overflow-x-auto py-1">
+        <button id="btn-open-maps" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 active:bg-slate-200 border border-slate-200 transition shrink-0" title="Mis Mapas en Firebase">
+          <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" />
+          </svg>
+          <span class="hidden sm:inline">Mis Mapas</span>
+        </button>
+
+        <button id="btn-open-templates" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-100 active:bg-slate-200 border border-slate-200 transition shrink-0" title="Galería de 9 Plantillas">
+          <svg class="w-4 h-4 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="3" width="7" height="7" rx="1.5" />
+            <rect x="14" y="14" width="7" height="7" rx="1.5" />
+            <rect x="3" y="14" width="7" height="7" rx="1.5" />
+          </svg>
+          <span class="hidden sm:inline">Plantillas (9)</span>
+        </button>
+
+        <div class="h-5 w-px bg-slate-200 mx-0.5 hidden md:block"></div>
+
+        <!-- Deshacer / Rehacer -->
+        <button id="btn-undo" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-35 transition shrink-0" title="Deshacer (Ctrl/Cmd + Z)">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 7v6h6" /><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13" />
+          </svg>
+        </button>
+        <button id="btn-redo" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 disabled:opacity-35 transition shrink-0" title="Rehacer (Ctrl/Cmd + Y)">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 7v6h-6" /><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3l3 2.7" />
+          </svg>
+        </button>
+
+        <div class="h-5 w-px bg-slate-200 mx-0.5 hidden sm:block"></div>
+
+        <!-- Selector A4 Horizontal / Vertical -->
+        <div class="flex items-center bg-slate-100 p-0.5 rounded-lg border border-slate-200/80 shrink-0" title="Orientación de hoja física A4">
+          <button id="btn-a4-landscape" class="px-2 py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-white text-indigo-600 shadow-2xs transition" title="A4 Horizontal (297 × 210 mm)">
+            A4 Horiz.
+          </button>
+          <button id="btn-a4-portrait" class="px-2 py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition" title="A4 Vertical (210 × 297 mm)">
+            A4 Vert.
+          </button>
+        </div>
+
+        <!-- Reorganizar / Auto-Ajustar a A4 -->
+        <button id="btn-autofit-now" class="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/80 transition shrink-0" title="Reorganizar y encajar automáticamente dentro de la hoja A4">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7" />
+          </svg>
+          <span>Encajar A4</span>
+        </button>
+      </div>
+
+      <!-- Derecha: Imprimir PDF, Descargar App y Panel Estilo -->
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button id="btn-print" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-white hover:bg-slate-50 border border-slate-200 shadow-2xs transition" title="Imprimir o Guardar como PDF en A4">
+          <svg class="w-4 h-4 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 6 2 18 2 18 9" />
+            <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+            <rect x="6" y="14" width="12" height="8" />
+          </svg>
+          <span class="hidden md:inline">Imprimir / PDF</span>
+        </button>
+
+        <button id="btn-open-export" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 shadow-2xs transition" title="Descargar Web App (.html), PNG o JSON">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <span class="hidden sm:inline">Descargar / Exportar</span>
+        </button>
+
+        <button id="btn-toggle-inspector" class="p-2 rounded-lg text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200/80 transition" title="Panel de Diseño y Estructura">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" />
+            <line x1="15" y1="3" x2="15" y2="21" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- =====================================================================
+       BANNER DE AVISO POR INFORMACIÓN EXCESIVA EN HOJA A4 (MÍNIMO 9px)
+       ===================================================================== -->
+  <div id="overflow-warning-banner" class="no-print hidden bg-amber-50 border-b-2 border-amber-400 px-3 sm:px-5 py-2.5 z-30 shrink-0 shadow-xs">
+    <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-start sm:items-center gap-2.5 text-amber-950 text-xs font-medium leading-snug">
+        <span class="text-base shrink-0">⚠️</span>
+        <span>
+          <strong>Aviso:</strong> La información es excesiva para caber completa en una sola hoja A4 con el tamaño mínimo de letra (<strong>9px</strong>). Reduce texto, elimina algún nodo o prueba cambiar la orientación de la hoja.
+        </span>
+      </div>
+      <div class="flex items-center gap-1.5 shrink-0">
+        <button id="btn-banner-reset-manual-font" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-bold bg-white hover:bg-amber-100 text-amber-900 border border-amber-300 transition">
+          Restaurar Auto A4
+        </button>
+        <button id="btn-banner-switch-orientation" class="px-3 py-1.5 rounded-lg text-xs font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-2xs transition">
+          Probar otra orientación A4
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       ÁREA CENTRAL: LIENZO CON HOJA A4 + PANEL INSPECTOR DERECHO
+       ===================================================================== -->
+  <div class="flex-1 flex relative overflow-hidden">
+
+    <!-- Lienzo Interactivo con Hoja A4 -->
+    <main id="viewport" class="flex-1 relative overflow-hidden workspace-grid cursor-grab">
+
+      <!-- Etiqueta discreta superior indicando dimensiones A4 -->
+      <div id="a4-sheet-badge" class="no-print absolute top-3 left-3 sm:left-4 z-20 pointer-events-none flex items-center gap-2 bg-white/90 backdrop-blur-xs border border-slate-200/90 px-2.5 py-1 rounded-full text-[11px] font-medium text-slate-600 shadow-2xs">
+        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+        <span id="a4-dimensions-label">Hoja A4 Horizontal · 297 × 210 mm (1123 × 794 px)</span>
+      </div>
+
+      <!-- HOJA FÍSICA A4 REAL -->
+      <div id="a4-sheet" class="a4-paper shadow-a4 landscape-mode" style="width: 1123px; height: 794px;">
+        <!-- Marcas de corte en esquinas -->
+        <div class="no-print crop-mark top-3 left-3 border-t border-l"></div>
+        <div class="no-print crop-mark top-3 right-3 border-t border-r"></div>
+        <div class="no-print crop-mark bottom-3 left-3 border-b border-l"></div>
+        <div class="no-print crop-mark bottom-3 right-3 border-b border-r"></div>
+
+        <!-- Guía de margen seguro de impresión (32px) -->
+        <div id="print-margin-guide" class="print-margin-guide"></div>
+
+        <!-- Capa SVG para curvas de Bézier suaves -->
+        <svg id="connections-svg" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 5;"></svg>
+
+        <!-- Capa de Nodos del Mapa Mental -->
+        <div id="nodes-container" class="absolute inset-0 w-full h-full" style="z-index: 10;"></div>
+
+        <!-- Pie de página discreto A4 -->
+        <div id="sheet-footer-mark" class="absolute bottom-2.5 right-8 text-[10px] font-medium text-slate-400 pointer-events-none tracking-wide">
+          MindFlow Studio · Hoja A4
+        </div>
+      </div>
+
+      <!-- Controles de Zoom en esquina inferior izquierda -->
+      <div id="zoom-controls" class="no-print absolute bottom-3 left-3 sm:left-4 z-20 flex items-center gap-1 bg-white/95 backdrop-blur-md border border-slate-200 rounded-xl shadow-float p-1">
+        <button id="btn-zoom-out" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 active:scale-95 transition" title="Alejar">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <button id="btn-zoom-reset" class="px-2 py-1 rounded-lg text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition min-w-[46px]" title="Zoom 100%">
+          <span id="zoom-level-label">100%</span>
+        </button>
+        <button id="btn-zoom-in" class="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 active:scale-95 transition" title="Acercar">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+        <div class="h-4 w-px bg-slate-200 mx-0.5"></div>
+        <button id="btn-center-sheet" class="px-2 py-1 rounded-lg text-[11px] font-semibold text-indigo-600 hover:bg-indigo-50 transition" title="Centrar hoja A4 en pantalla">
+          Centrar
+        </button>
+      </div>
+
+      <!-- =================================================================
+           BARRA FLOTANTE CONTEXTUAL AL SELECCIONAR UN NODO
+           ================================================================= -->
+      <div
+        id="floating-node-toolbar"
+        class="no-print hidden fixed z-30 bg-white/95 backdrop-blur-md border border-slate-200 rounded-2xl shadow-float p-1.5 flex items-center gap-1 transition-opacity duration-150"
+      >
+        <button id="ctx-add-child" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 active:scale-95 transition" title="Añadir Subtema Hijo (Tab)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Subtema</span>
+        </button>
+
+        <button id="ctx-add-sibling" class="flex items-center gap-1 px-2.5 py-1.5 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 active:scale-95 transition disabled:opacity-35" title="Añadir Tema Hermano (Enter)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+          <span>Hermano</span>
+        </button>
+
+        <div class="h-5 w-px bg-slate-200 mx-0.5"></div>
+
+        <button id="ctx-edit-text" class="p-2 rounded-xl text-slate-700 hover:bg-slate-100 active:scale-95 transition" title="Editar texto (Doble clic / F2)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+        </button>
+
+        <!-- Selector rápido de color -->
+        <div class="relative">
+          <button id="ctx-color-btn" class="p-2 rounded-xl text-slate-700 hover:bg-slate-100 active:scale-95 transition" title="Color de rama / nodo">
+            <span id="ctx-color-dot" class="block w-3.5 h-3.5 rounded-full border border-slate-300 bg-indigo-500"></span>
+          </button>
+          <div id="ctx-color-popover" class="hidden absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-xl shadow-float p-2.5 w-48 z-50 space-y-2">
+            <div id="ctx-color-swatches" class="grid grid-cols-5 gap-1.5"></div>
+            <div class="flex items-center gap-1.5 pt-1 border-t border-slate-100">
+              <input id="ctx-native-color" type="color" value="#3B82F6" class="w-6 h-6 rounded cursor-pointer border-0 p-0 bg-transparent" title="Elegir color personalizado" />
+              <input id="ctx-hex-input" type="text" maxlength="7" placeholder="#3B82F6" class="flex-1 min-w-0 px-1.5 py-1 text-[11px] font-mono uppercase bg-slate-50 border border-slate-200 rounded outline-none focus:border-indigo-500" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Selector rápido de Iconos / Emojis -->
+        <div class="relative">
+          <button id="ctx-emoji-btn" class="p-1.5 rounded-xl text-sm hover:bg-slate-100 active:scale-95 transition" title="Añadir o quitar Emoji">
+            <span id="ctx-emoji-preview">💡</span>
+          </button>
+          <div id="ctx-emoji-popover" class="hidden absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-white border border-slate-200 rounded-xl shadow-float p-2 w-48 z-50 space-y-1.5">
+            <button type="button" data-emoji="" class="w-full py-1.5 px-2 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200/80 text-[11px] font-bold flex items-center justify-center gap-1 transition">
+              <span>🚫</span><span>Sin emoji / Quitar</span>
+            </button>
+            <div class="grid grid-cols-5 gap-1 text-base">
+              <button type="button" data-emoji="💡" class="p-1 hover:bg-slate-100 rounded">💡</button>
+              <button type="button" data-emoji="🎯" class="p-1 hover:bg-slate-100 rounded">🎯</button>
+              <button type="button" data-emoji="⭐" class="p-1 hover:bg-slate-100 rounded">⭐</button>
+              <button type="button" data-emoji="✅" class="p-1 hover:bg-slate-100 rounded">✅</button>
+              <button type="button" data-emoji="⚠️" class="p-1 hover:bg-slate-100 rounded">⚠️</button>
+              <button type="button" data-emoji="📅" class="p-1 hover:bg-slate-100 rounded">📅</button>
+              <button type="button" data-emoji="🚀" class="p-1 hover:bg-slate-100 rounded">🚀</button>
+              <button type="button" data-emoji="📌" class="p-1 hover:bg-slate-100 rounded">📌</button>
+              <button type="button" data-emoji="💰" class="p-1 hover:bg-slate-100 rounded">💰</button>
+              <button type="button" data-emoji="🔥" class="p-1 hover:bg-slate-100 rounded">🔥</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botón directo para quitar emoji si el nodo tiene uno -->
+        <button id="ctx-quick-remove-emoji" class="hidden px-2 py-1 rounded-xl text-[11px] font-bold text-rose-700 bg-rose-50 hover:bg-rose-100 border border-rose-200/80 active:scale-95 transition" title="Quitar emoji del nodo">
+          ✕ Quitar emoji
+        </button>
+
+        <button id="ctx-delete" class="p-2 rounded-xl text-rose-600 hover:bg-rose-50 active:scale-95 transition disabled:opacity-30" title="Eliminar nodo (Supr / Backspace)">
+          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        </button>
+      </div>
+    </main>
+
+    <!-- ===================================================================
+         PANEL INSPECTOR DERECHO (Estructura, Temas, 26 Bocadillos, HEX, Letras)
+         =================================================================== -->
+    <aside id="inspector-panel" class="no-print w-72 sm:w-80 bg-white border-l border-slate-200 flex flex-col shrink-0 z-40 md:z-20 shadow-xl md:shadow-none absolute md:static right-0 top-0 bottom-0">
+      <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between">
+        <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Diseño y Formato</span>
+        <button id="btn-close-inspector" class="md:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="flex-1 overflow-y-auto custom-scroll p-4 space-y-4">
+
+        <!-- 1. Estructura del Mapa Mental -->
+        <div class="space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Estructura del Mapa</label>
+          <div class="grid grid-cols-2 gap-1.5">
+            <button type="button" data-layout="radial" class="layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-50/60 text-indigo-700 text-xs font-semibold transition">
+              <span>🕸️</span>
+              <span>Mapa Radial</span>
+            </button>
+            <button type="button" data-layout="right" class="layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition">
+              <span>🌿</span>
+              <span>Árbol Lógico</span>
+            </button>
+            <button type="button" data-layout="org" class="layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition">
+              <span>🏛️</span>
+              <span>Organigrama</span>
+            </button>
+            <button type="button" data-layout="free" class="layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition">
+              <span>✋</span>
+              <span>Modo Libre</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Paletas de Color del Mapa -->
+        <div class="pt-3 border-t border-slate-100 space-y-2">
+          <label class="block text-xs font-bold text-slate-700">Tema Cromático XMind</label>
+          <div id="themes-list" class="space-y-1.5"></div>
+        </div>
+
+        <!-- 3. Personalización Avanzada del Nodo Seleccionado -->
+        <div id="node-inspector-section" class="pt-3 border-t border-slate-100 space-y-3">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-bold text-slate-700">Estilo del Nodo</label>
+            <span id="selected-node-badge" class="text-[11px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600">Central</span>
+          </div>
+
+          <!-- Pestañas de Estilo de Nodo -->
+          <div class="grid grid-cols-4 gap-1 bg-slate-100 p-1 rounded-xl">
+            <button type="button" data-inspector-tab="bubble" class="inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-bold bg-white text-indigo-600 shadow-2xs transition">Bocadillo</button>
+            <button type="button" data-inspector-tab="color" class="inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition">Color</button>
+            <button type="button" data-inspector-tab="font" class="inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition">Letra</button>
+            <button type="button" data-inspector-tab="emoji" class="inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition">Emoji</button>
+          </div>
+
+          <!-- PESTAÑA A: 26 ESTILOS DE BOCADILLO -->
+          <div id="tab-panel-bubble" class="space-y-2.5">
+            <div class="flex items-center justify-between">
+              <span class="text-[11px] font-medium text-slate-500">26 Formas de Bocadillo</span>
+              <span id="current-shape-name" class="text-[10px] font-bold text-indigo-600">Rect. Redondeado</span>
+            </div>
+            <div id="bubble-shapes-gallery" class="grid grid-cols-2 gap-1.5 max-h-56 overflow-y-auto custom-scroll pr-0.5">
+            </div>
+            <div class="grid grid-cols-2 gap-1.5 pt-1">
+              <button type="button" id="btn-apply-shape-level" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+                Aplicar a este nivel
+              </button>
+              <button type="button" id="btn-apply-shape-all" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/70 transition">
+                A todo el mapa
+              </button>
+            </div>
+          </div>
+
+          <!-- PESTAÑA B: SELECTOR DE COLOR CON PALETA Y CÓDIGO HEX -->
+          <div id="tab-panel-color" class="hidden space-y-2.5">
+            <div class="grid grid-cols-3 gap-1 bg-slate-100 p-1 rounded-lg">
+              <button type="button" data-color-target="fill" class="color-target-btn py-1 rounded-md text-[11px] font-bold bg-white text-indigo-600 shadow-2xs">Fondo</button>
+              <button type="button" data-color-target="border" class="color-target-btn py-1 rounded-md text-[11px] font-medium text-slate-600">Borde/Rama</button>
+              <button type="button" data-color-target="text" class="color-target-btn py-1 rounded-md text-[11px] font-medium text-slate-600">Texto</button>
+            </div>
+
+            <div class="flex items-center gap-2 bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <input id="inspector-native-color" type="color" value="#3B82F6" class="w-9 h-9 rounded-lg cursor-pointer border border-slate-300 bg-transparent p-0.5 shrink-0" title="Abrir selector libre de color" />
+              <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-semibold text-slate-500 uppercase">Código HEX</label>
+                <input id="inspector-hex-input" type="text" maxlength="7" value="#3B82F6" placeholder="#3B82F6" class="w-full text-xs font-mono font-bold uppercase text-slate-800 bg-white border border-slate-200 rounded-lg px-2 py-1 mt-0.5 outline-none focus:border-indigo-500" />
+              </div>
+            </div>
+
+            <div id="inspector-node-colors" class="grid grid-cols-6 gap-1.5"></div>
+
+            <div class="grid grid-cols-2 gap-1.5 pt-1">
+              <button type="button" id="btn-apply-color-subbranches" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+                A subramas
+              </button>
+              <button type="button" id="btn-reset-node-color" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 transition">
+                Restaurar tema
+              </button>
+            </div>
+          </div>
+
+          <!-- PESTAÑA C: SELECTOR DE ESTILO Y TAMAÑO DE LETRA -->
+          <div id="tab-panel-font" class="hidden space-y-2.5">
+            <!-- Control de Tamaño de Letra (Automático por defecto + Edición Manual) -->
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200/90 space-y-2">
+              <div class="flex items-center justify-between gap-1">
+                <span class="text-[11px] font-bold text-slate-700">Tamaño de letra</span>
+                <span id="font-size-mode-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">Auto · 13px</span>
+              </div>
+
+              <div class="flex items-center gap-1">
+                <button type="button" id="btn-font-size-dec" class="w-7 h-7 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-xs font-bold text-slate-700 shrink-0 transition" title="Reducir tamaño (mínimo 9px)">−</button>
+                <input id="input-font-size-range" type="range" min="9" max="48" step="0.5" value="13" class="flex-1 min-w-0 accent-indigo-600 cursor-pointer" title="Ajustar tamaño de letra" />
+                <div class="flex items-center bg-white border border-slate-300 rounded-lg px-1.5 py-0.5 shrink-0">
+                  <input id="input-font-size-num" type="number" min="9" max="72" step="1" value="13" class="w-9 text-xs font-bold text-center text-slate-800 outline-none bg-transparent" title="Tamaño exacto en píxeles (mínimo 9)" />
+                  <span class="text-[10px] text-slate-400 font-semibold">px</span>
+                </div>
+                <button type="button" id="btn-font-size-inc" class="w-7 h-7 rounded-lg bg-white border border-slate-300 hover:bg-slate-100 text-xs font-bold text-slate-700 shrink-0 transition" title="Aumentar tamaño">+</button>
+              </div>
+
+              <div class="grid grid-cols-3 gap-1 pt-0.5">
+                <button type="button" id="btn-font-size-auto" class="py-1 px-1.5 rounded-lg text-[10px] font-bold bg-emerald-600 text-white hover:bg-emerald-500 transition" title="Volver al cálculo automático A4">
+                  Auto A4
+                </button>
+                <button type="button" id="btn-apply-size-level" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
+                  A este nivel
+                </button>
+                <button type="button" id="btn-apply-size-all" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
+                  A todo el mapa
+                </button>
+              </div>
+            </div>
+
+            <!-- Negrita, Cursiva y Buscador de Tipografías -->
+            <div class="flex items-center justify-between gap-1.5">
+              <input id="font-search-input" type="text" placeholder="Buscar entre 23 letras..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 border border-slate-200 outline-none focus:border-indigo-500" />
+              <div class="flex items-center gap-1 shrink-0">
+                <button type="button" id="btn-toggle-bold" class="w-7 h-7 rounded-lg border border-slate-200 text-xs font-extrabold hover:bg-slate-100 transition" title="Negrita">B</button>
+                <button type="button" id="btn-toggle-italic" class="w-7 h-7 rounded-lg border border-slate-200 text-xs italic font-serif hover:bg-slate-100 transition" title="Cursiva">I</button>
+              </div>
+            </div>
+
+            <div id="font-families-list" class="space-y-1.5 max-h-48 overflow-y-auto custom-scroll pr-0.5">
+            </div>
+
+            <div class="grid grid-cols-2 gap-1.5">
+              <button type="button" id="btn-apply-font-all" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/70 transition">
+                Fuente a todo
+              </button>
+              <button type="button" id="btn-reset-all-auto-size" class="py-1.5 px-2 rounded-lg text-[11px] font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 transition">
+                Restaurar Auto A4
+              </button>
+            </div>
+          </div>
+
+          <!-- PESTAÑA D: EMOJIS CON BOTÓN VISIBLE DE QUITAR -->
+          <div id="tab-panel-emoji" class="hidden space-y-2.5">
+            <button type="button" id="btn-inspector-remove-emoji" class="w-full py-2 px-3 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold flex items-center justify-center gap-1.5 transition">
+              <span>🚫</span>
+              <span>Sin emoji / Quitar emoji</span>
+            </button>
+
+            <div id="inspector-emoji-grid" class="grid grid-cols-6 gap-1 text-base bg-slate-50 p-2 rounded-xl border border-slate-200/80">
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Opciones de Hoja A4 -->
+        <div class="pt-3 border-t border-slate-100 space-y-2.5">
+          <label class="block text-xs font-bold text-slate-700">Márgenes y Sello A4</label>
+
+          <label class="flex items-center justify-between cursor-pointer py-1">
+            <span class="text-xs text-slate-600">Guías de margen seguro (32px)</span>
+            <input id="toggle-margins-checkbox" type="checkbox" checked class="w-4 h-4 accent-indigo-600 rounded cursor-pointer" />
+          </label>
+
+          <label class="flex items-center justify-between cursor-pointer py-1">
+            <span class="text-xs text-slate-600">Sello MindFlow A4 en esquina</span>
+            <input id="toggle-footer-checkbox" type="checkbox" checked class="w-4 h-4 accent-indigo-600 rounded cursor-pointer" />
+          </label>
+        </div>
+
+        <!-- Atajos Rápidos -->
+        <div class="pt-3 border-t border-slate-100">
+          <div class="bg-slate-50 rounded-xl p-3 text-[11px] text-slate-500 space-y-1">
+            <p class="font-semibold text-slate-700 mb-1">Atajos y Gestos:</p>
+            <p>• <kbd class="px-1 bg-white border rounded">Tab</kbd> Subtema · <kbd class="px-1 bg-white border rounded">Enter</kbd> Hermano</p>
+            <p>• <strong>Doble clic / toque</strong> o <kbd class="px-1 bg-white border rounded">F2</kbd> para editar</p>
+            <p>• <strong>Auto-ajuste A4:</strong> escala letra hasta mínimo 9px</p>
+          </div>
+        </div>
+
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- =====================================================================
+       BARRA DE ESTADO INFERIOR (Auto-ajuste A4, Tamaño de Letra y Firebase)
+       ===================================================================== -->
+  <footer class="no-print safe-bottom bg-white border-t border-slate-200 px-3 sm:px-4 py-1.5 flex items-center justify-between gap-2 text-[11px] text-slate-600 z-30 shrink-0">
+    <div class="flex items-center gap-2 min-w-0">
+      <span id="font-status-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
+      <span id="font-status-bar" class="font-medium truncate">
+        Letra base: 13px · Mínima: 9px (Auto-ajuste A4 activo)
+      </span>
+    </div>
+    <div class="flex items-center gap-3 shrink-0 text-slate-500">
+      <span id="node-count-label" class="hidden sm:inline">0 nodos</span>
+      <span class="hidden md:inline text-slate-300">|</span>
+      <span id="footer-cloud-label" class="font-medium text-indigo-600">mindflow-studio-1f083</span>
+    </div>
+  </footer>
+
+  <!-- =====================================================================
+       SISTEMA DE MODALES (9 Plantillas, Mis Mapas Firebase, Exportar, Confirmar)
+       ===================================================================== -->
+  <div id="modal-backdrop" class="no-print hidden fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-3 sm:p-6">
+
+    <!-- MODAL 1: GALERÍA DE 9 PLANTILLAS INTEGRADAS -->
+    <div id="modal-templates" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-4xl max-h-[88vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-800">Plantillas Profesionales XMind (9 Disponibles)</h2>
+          <p class="text-xs text-slate-500">Todas ajustadas automáticamente dentro de los márgenes seguros A4</p>
+        </div>
+        <button class="modal-close-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="templates-grid" class="p-5 overflow-y-auto custom-scroll grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      </div>
+    </div>
+
+    <!-- MODAL 2: MIS MAPAS (NUBE FIREBASE + AUTENTICACIÓN GOOGLE / EMAIL / ANÓNIMA) -->
+    <div id="modal-maps" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-2xl max-h-[90vh] flex flex-col overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h2 class="text-base font-bold text-slate-800">Mis Mapas (Nube Firebase)</h2>
+          <p id="firebase-user-label" class="text-xs text-emerald-600 font-medium truncate">Conectado a mindflow-studio-1f083</p>
+        </div>
+        <div class="flex items-center gap-2 shrink-0">
+          <button id="btn-new-blank-map" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">
+            + Nuevo
+          </button>
+          <button id="btn-save-now" class="px-3 py-1.5 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 shadow-2xs transition">
+            Guardar en Nube
+          </button>
+          <button class="modal-close-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Barra de Autenticación Firebase -->
+      <div class="px-5 py-3 bg-slate-50 border-b border-slate-200/80 space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <span class="text-xs font-semibold text-slate-700">Cuenta Firebase:</span>
+          <div class="flex flex-wrap items-center gap-1.5">
+            <button id="btn-auth-google" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 shadow-2xs transition">
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24"><path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17Z"/><path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.11-6.72-4.96H1.29v3.14C3.26 21.3 7.31 24 12 24Z"/><path fill="#FBBC05" d="M5.28 14.24c-.24-.72-.38-1.49-.38-2.24s.14-1.52.38-2.24V6.62H1.29C.47 8.24 0 10.06 0 12s.47 3.76 1.29 5.38l3.99-3.14Z"/><path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.62l3.99 3.14c.95-2.85 3.6-4.96 6.72-4.96Z"/></svg>
+              <span>Google</span>
+            </button>
+            <button id="btn-toggle-email-auth" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-300 hover:bg-slate-100 text-slate-700 transition">
+              Correo / Contraseña
+            </button>
+            <button id="btn-auth-anon" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-emerald-700 transition">
+              Sesión Automática
+            </button>
+            <button id="btn-auth-signout" class="hidden px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-50 border border-rose-200 hover:bg-rose-100 text-rose-700 transition">
+              Salir
+            </button>
+          </div>
+        </div>
+
+        <!-- Formulario desplegable Correo / Contraseña -->
+        <div id="email-auth-form" class="hidden pt-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <input id="auth-email-input" type="email" placeholder="tu@correo.com" class="px-2.5 py-1.5 rounded-lg text-xs bg-white border border-slate-300 outline-none focus:border-indigo-500" />
+          <input id="auth-pass-input" type="password" placeholder="Contraseña (mín. 6)" class="px-2.5 py-1.5 rounded-lg text-xs bg-white border border-slate-300 outline-none focus:border-indigo-500" />
+          <div class="flex gap-1.5">
+            <button id="btn-email-login" class="flex-1 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500">Entrar</button>
+            <button id="btn-email-register" class="flex-1 py-1.5 rounded-lg text-xs font-semibold bg-slate-700 text-white hover:bg-slate-600">Registrar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lista de mapas guardados en Firestore -->
+      <div id="saved-maps-list" class="p-5 overflow-y-auto custom-scroll space-y-2.5 flex-1 min-h-[220px]">
+      </div>
+
+      <div class="px-5 py-2.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+        <span>Colección Firestore: <code class="font-mono text-slate-700">mindmaps</code></span>
+        <span>Respaldo local automático activo</span>
+      </div>
+    </div>
+
+    <!-- MODAL 3: DESCARGAR WEB APP Y EXPORTAR ARCHIVOS -->
+    <div id="modal-export" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold text-slate-800">Descargar Web App y Exportar</h2>
+          <p class="text-xs text-slate-500">Compatible con Apple (Mac/iPad/iPhone), Windows y Android</p>
+        </div>
+        <button class="modal-close-btn p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="p-5 space-y-3">
+        <!-- Descargar Web App Completa (.html) -->
+        <button id="btn-download-html-app" class="w-full flex items-center gap-3.5 p-3.5 rounded-2xl border-2 border-indigo-500/85 bg-indigo-50/60 hover:bg-indigo-50 text-left transition group">
+          <div class="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold text-slate-800">Descargar Web App (.html)</div>
+            <div class="text-xs text-slate-600">Guarda toda la app conectada a Firebase en un archivo autónomo</div>
+          </div>
+        </button>
+
+        <!-- Imprimir / Guardar PDF en A4 -->
+        <button id="btn-export-print-pdf" class="w-full flex items-center gap-3.5 p-3.5 rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition">
+          <div class="w-11 h-11 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold text-slate-800">Imprimir / Guardar PDF (Hoja A4)</div>
+            <div class="text-xs text-slate-500">Salida nítida a escala física A4 sin barras ni botones</div>
+          </div>
+        </button>
+
+        <!-- Exportar Imagen PNG 2x -->
+        <button id="btn-export-png" class="w-full flex items-center gap-3.5 p-3.5 rounded-2xl border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-left transition">
+          <div class="w-11 h-11 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-bold text-slate-800">Exportar Imagen PNG (Alta Resolución 2x)</div>
+            <div class="text-xs text-slate-500">Descarga la hoja A4 renderizada en alta calidad</div>
+          </div>
+        </button>
+
+        <!-- Exportar / Importar JSON -->
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button id="btn-export-json" class="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 transition">
+            <svg class="w-4 h-4 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Exportar .JSON</span>
+          </button>
+
+          <label class="flex items-center justify-center gap-2 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-xs font-semibold text-slate-700 cursor-pointer transition">
+            <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>Importar .JSON</span>
+            <input id="input-import-json" type="file" accept=".json,application/json" class="hidden" />
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: DIÁLOGO DE CONFIRMACIÓN PERSONALIZADO -->
+    <div id="modal-confirm" class="hidden bg-white rounded-2xl shadow-2xl border border-slate-200 w-full max-w-sm p-5 space-y-4">
+      <div class="space-y-1.5">
+        <h3 id="confirm-title" class="text-base font-bold text-slate-800">¿Confirmar acción?</h3>
+        <p id="confirm-message" class="text-xs text-slate-600 leading-relaxed">Esta acción reemplazará el lienzo actual.</p>
+      </div>
+      <div class="flex justify-end gap-2">
+        <button id="confirm-cancel-btn" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
+        <button id="confirm-accept-btn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition">Continuar</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Contenedor de Notificaciones Toast -->
+  <div id="toast-container" class="no-print fixed bottom-10 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- =====================================================================
+       LÓGICA DE LA APLICACIÓN + INTEGRACIÓN DIRECTA CON FIREBASE 10.14.1
+       ===================================================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+    import {
+      getAuth,
+      signInAnonymously,
+      signInWithPopup,
+      GoogleAuthProvider,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+    import {
+      getFirestore,
+      collection,
+      doc,
+      setDoc,
+      deleteDoc,
+      onSnapshot
+    } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+    /* -----------------------------------------------------------------------
+       1. CONFIGURACIÓN EXACTA DE FIREBASE DEL USUARIO
+       ----------------------------------------------------------------------- */
+    const firebaseConfig = {
+      apiKey: "AIzaSyBnFOZJAP-B0REubSeah-pJabAp-nD2CKY",
+      authDomain: "mindflow-studio-1f083.firebaseapp.com",
+      projectId: "mindflow-studio-1f083",
+      storageBucket: "mindflow-studio-1f083.firebasestorage.app",
+      messagingSenderId: "354934215415",
+      appId: "1:354934215415:web:551f588981b68883ad39f2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    /* -----------------------------------------------------------------------
+       2. CONSTANTES DE HOJA A4, TIPOGRAFÍA MÍNIMA (9PX) Y TEMAS XMIND
+       ----------------------------------------------------------------------- */
+    const SAFE_MARGIN = 32;
+    const MIN_FONT_SIZE = 9;
+    const LOCAL_BACKUP_KEY = 'mindflow_studio_maps_v2';
+
+    const BASE_FONTS = {
+      root: 17,
+      l1: 13,
+      l2: 11.5
+    };
+
+    const A4_DIMS = {
+      landscape: {
+        width: 1123,
+        height: 794,
+        label: 'Hoja A4 Horizontal · 297 × 210 mm (1123 × 794 px)'
+      },
+      portrait: {
+        width: 794,
+        height: 1123,
+        label: 'Hoja A4 Vertical · 210 × 297 mm (794 × 1123 px)'
+      }
+    };
+
+    const THEMES = [
+      {
+        id: 'xmind-classic',
+        name: 'XMind Clásico',
+        rootBg: '#1E293B',
+        rootText: '#FFFFFF',
+        branches: ['#EF4444', '#F97316', '#EAB308', '#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899']
+      },
+      {
+        id: 'ocean-deep',
+        name: 'Océano Profundo',
+        rootBg: '#0F172A',
+        rootText: '#FFFFFF',
+        branches: ['#0284C7', '#0D9488', '#2563EB', '#4F46E5', '#0891B2', '#0369A1']
+      },
+      {
+        id: 'emerald-nature',
+        name: 'Esmeralda Natural',
+        rootBg: '#14532D',
+        rootText: '#FFFFFF',
+        branches: ['#16A34A', '#65A30D', '#0D9488', '#D97706', '#4D7C0F', '#059669']
+      },
+      {
+        id: 'warm-sunset',
+        name: 'Atardecer Cálido',
+        rootBg: '#7C2D12',
+        rootText: '#FFFFFF',
+        branches: ['#EA580C', '#E11D48', '#D97706', '#9333EA', '#DB2777', '#CA8A04']
+      },
+      {
+        id: 'minimal-exec',
+        name: 'Minimalista Ejecutivo',
+        rootBg: '#09090B',
+        rootText: '#FFFFFF',
+        branches: ['#27272A', '#3F3F46', '#52525B', '#18181B', '#475569', '#334155']
+      }
+    ];
+
+    const QUICK_COLORS = [
+      null,
+      '#1E293B', '#EF4444', '#F97316', '#EAB308',
+      '#10B981', '#06B6D4', '#3B82F6', '#8B5CF6', '#EC4899'
+    ];
+
+    const EXTENDED_PALETTE = [
+      '#0F172A', '#334155', '#64748B', '#94A3B8', '#E2E8F0', '#FFFFFF',
+      '#DC2626', '#EF4444', '#F97316', '#F59E0B', '#EAB308', '#84CC16',
+      '#16A34A', '#10B981', '#0D9488', '#06B6D4', '#0284C7', '#2563EB',
+      '#4F46E5', '#7C3AED', '#9333EA', '#C026D3', '#DB2777', '#E11D48'
+    ];
+
+    const FONT_FAMILIES = [
+      { id: 'Inter', label: 'Inter', tag: 'Moderna Sans', stack: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" },
+      { id: 'Poppins', label: 'Poppins', tag: 'Geométrica', stack: "'Poppins', sans-serif" },
+      { id: 'Montserrat', label: 'Montserrat', tag: 'Elegante Sans', stack: "'Montserrat', sans-serif" },
+      { id: 'Raleway', label: 'Raleway', tag: 'Fina Estilizada', stack: "'Raleway', sans-serif" },
+      { id: 'Nunito', label: 'Nunito', tag: 'Redondeada', stack: "'Nunito', sans-serif" },
+      { id: 'Quicksand', label: 'Quicksand', tag: 'Suave Redonda', stack: "'Quicksand', sans-serif" },
+      { id: 'Rubik', label: 'Rubik', tag: 'Moderna Suave', stack: "'Rubik', sans-serif" },
+      { id: 'DM Sans', label: 'DM Sans', tag: 'Editorial Limpia', stack: "'DM Sans', sans-serif" },
+      { id: 'Oswald', label: 'Oswald', tag: 'Condensada', stack: "'Oswald', sans-serif" },
+      { id: 'Bebas Neue', label: 'Bebas Neue', tag: 'Titular Alto', stack: "'Bebas Neue', sans-serif" },
+      { id: 'Anton', label: 'Anton', tag: 'Ultra Impacto', stack: "'Anton', sans-serif" },
+      { id: 'Merriweather', label: 'Merriweather', tag: 'Editorial Serif', stack: "'Merriweather', Georgia, serif" },
+      { id: 'Playfair Display', label: 'Playfair Display', tag: 'Clásica Lujo', stack: "'Playfair Display', Georgia, serif" },
+      { id: 'Lora', label: 'Lora', tag: 'Literaria Serif', stack: "'Lora', Georgia, serif" },
+      { id: 'Cinzel', label: 'Cinzel', tag: 'Romana Clásica', stack: "'Cinzel', Georgia, serif" },
+      { id: 'Roboto Slab', label: 'Roboto Slab', tag: 'Mecánica Slab', stack: "'Roboto Slab', serif" },
+      { id: 'Caveat', label: 'Caveat', tag: 'Manuscrita', stack: "'Caveat', cursive" },
+      { id: 'Pacifico', label: 'Pacifico', tag: 'Caligráfica', stack: "'Pacifico', cursive" },
+      { id: 'Dancing Script', label: 'Dancing Script', tag: 'Cursiva Fluida', stack: "'Dancing Script', cursive" },
+      { id: 'Shadows Into Light', label: 'Shadows Into Light', tag: 'Apuntes Mano', stack: "'Shadows Into Light', cursive" },
+      { id: 'Patrick Hand', label: 'Patrick Hand', tag: 'Cuaderno', stack: "'Patrick Hand', cursive" },
+      { id: 'JetBrains Mono', label: 'JetBrains Mono', tag: 'Técnica Mono', stack: "'JetBrains Mono', monospace" },
+      { id: 'Space Mono', label: 'Space Mono', tag: 'Retro Tech', stack: "'Space Mono', monospace" }
+    ];
+
+    const BUBBLE_SHAPES = [
+      { id: 'rounded', name: 'Rect. Redondeado' },
+      { id: 'pill', name: 'Píldora / Cápsula' },
+      { id: 'rect', name: 'Rectángulo Recto' },
+      { id: 'underline', name: 'Línea Orgánica' },
+      { id: 'speech', name: 'Bocadillo Izq.' },
+      { id: 'speech-center', name: 'Bocadillo Centro' },
+      { id: 'speech-right', name: 'Bocadillo Der.' },
+      { id: 'speech-top', name: 'Bocadillo Sup.' },
+      { id: 'thought', name: 'Pensamiento' },
+      { id: 'cloud', name: 'Nube de Ideas' },
+      { id: 'comic-burst', name: 'Explosión / Estrella' },
+      { id: 'hexagon', name: 'Hexágono' },
+      { id: 'octagon', name: 'Octágono' },
+      { id: 'diamond', name: 'Rombo / Diamante' },
+      { id: 'shield', name: 'Escudo' },
+      { id: 'tag', name: 'Etiqueta / Bandera' },
+      { id: 'chevron', name: 'Flecha / Chevron' },
+      { id: 'parallelogram', name: 'Paralelogramo' },
+      { id: 'ribbon', name: 'Cinta / Banner' },
+      { id: 'ellipse', name: 'Óvalo / Elipse' },
+      { id: 'circle-badge', name: 'Cúpula / Arco' },
+      { id: 'sticky', name: 'Nota Adhesiva' },
+      { id: 'folder', name: 'Carpeta / Pestaña' },
+      { id: 'double-border', name: 'Doble Marco' },
+      { id: 'bracket', name: 'Corchetes [ ]' },
+      { id: 'brace', name: 'Llaves { }' }
+    ];
+
+    const INSPECTOR_EMOJIS = [
+      '💡', '🎯', '⭐', '✅', '⚠️', '📅',
+      '🚀', '📌', '💰', '🔥', '🧠', '📊',
+      '🛠️', '🎨', '📚', '🏆', '🤝', '🔍',
+      '⚡', '🌱', '💎', '🧭', '📣', '🧩'
+    ];
+
+    /* -----------------------------------------------------------------------
+       3. 9 PLANTILLAS PROFESIONALES INTEGRADAS
+       ----------------------------------------------------------------------- */
+    const TEMPLATES = [
+      {
+        id: 'brainstorm',
+        name: 'Lluvia de Ideas Creativa',
+        category: 'Creatividad',
+        badgeColor: 'bg-rose-100 text-rose-700',
+        description: 'Mapa radial equilibrado para explorar conceptos, objetivos y acciones.',
+        layout: 'radial',
+        themeId: 'xmind-classic',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Nuevo Proyecto Innovador', emoji: '💡', shape: 'pill',
+          children: [
+            {
+              id: 'b1', text: 'Objetivos Clave', emoji: '🎯', shape: 'rounded',
+              children: [
+                { id: 'b1a', text: 'Aumentar retención 30%', emoji: '', children: [] },
+                { id: 'b1b', text: 'Lanzamiento en Q3', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'b2', text: 'Público Objetivo', emoji: '👥', shape: 'rounded',
+              children: [
+                { id: 'b2a', text: 'Profesionales híbridos', emoji: '', children: [] },
+                { id: 'b2b', text: 'Equipos creativos', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'b3', text: 'Canales de Difusión', emoji: '📣', shape: 'rounded',
+              children: [
+                { id: 'b3a', text: 'Campaña digital', emoji: '', children: [] },
+                { id: 'b3b', text: 'Alianzas estratégicas', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'b4', text: 'Recursos y Equipo', emoji: '🛠️', shape: 'rounded',
+              children: [
+                { id: 'b4a', text: 'Diseño UX/UI', emoji: '', children: [] },
+                { id: 'b4b', text: 'Desarrollo Web & Móvil', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'project-plan',
+        name: 'Planificación de Proyecto',
+        category: 'Gestión',
+        badgeColor: 'bg-blue-100 text-blue-700',
+        description: 'Árbol lógico estructurado por fases, entregables y control de calidad.',
+        layout: 'right',
+        themeId: 'ocean-deep',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Plan Maestro de Entrega', emoji: '🚀', shape: 'rounded',
+          children: [
+            {
+              id: 'p1', text: '1. Descubrimiento', emoji: '🔍',
+              children: [
+                { id: 'p1a', text: 'Análisis de requisitos', emoji: '', children: [] },
+                { id: 'p1b', text: 'Definición de alcance', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'p2', text: '2. Diseño y Prototipo', emoji: '🎨',
+              children: [
+                { id: 'p2a', text: 'Wireframes interactivos', emoji: '', children: [] },
+                { id: 'p2b', text: 'Validación con usuarios', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'p3', text: '3. Implementación', emoji: '⚙️',
+              children: [
+                { id: 'p3a', text: 'Sprints semanales', emoji: '', children: [] },
+                { id: 'p3b', text: 'Pruebas automatizadas', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'p4', text: '4. Despliegue', emoji: '✅',
+              children: [
+                { id: 'p4a', text: 'Publicación en producción', emoji: '', children: [] },
+                { id: 'p4b', text: 'Monitorización de KPIs', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'study-notes',
+        name: 'Apuntes de Estudio y Resumen',
+        category: 'Educación',
+        badgeColor: 'bg-emerald-100 text-emerald-700',
+        description: 'Ideal para memorizar temas de examen, definiciones y fórmulas.',
+        layout: 'radial',
+        themeId: 'emerald-nature',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Tema 4: Arquitectura de Sistemas', emoji: '📚', shape: 'pill',
+          children: [
+            {
+              id: 's1', text: 'Conceptos Base', emoji: '🧠',
+              children: [
+                { id: 's1a', text: 'Escalabilidad horizontal', emoji: '', children: [] },
+                { id: 's1b', text: 'Tolerancia a fallos', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 's2', text: 'Bases de Datos', emoji: '🗄️',
+              children: [
+                { id: 's2a', text: 'Relacionales (SQL)', emoji: '', children: [] },
+                { id: 's2b', text: 'Documentales (NoSQL)', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 's3', text: 'Seguridad', emoji: '🔒',
+              children: [
+                { id: 's3a', text: 'Autenticación OAuth / JWT', emoji: '', children: [] },
+                { id: 's3b', text: 'Cifrado en tránsito TLS', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 's4', text: 'Preguntas Clave', emoji: '⭐',
+              children: [
+                { id: 's4a', text: 'Teorema CAP explicado', emoji: '', children: [] },
+                { id: 's4b', text: 'Caché distribuida', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'swot',
+        name: 'Análisis Estratégico DAFO',
+        category: 'Estrategia',
+        badgeColor: 'bg-amber-100 text-amber-800',
+        description: 'Evalúa Debilidades, Amenazas, Fortalezas y Oportunidades en una hoja.',
+        layout: 'radial',
+        themeId: 'warm-sunset',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Análisis DAFO Empresarial', emoji: '🧭', shape: 'hexagon',
+          children: [
+            {
+              id: 'd1', text: 'Fortalezas (Interno)', emoji: '💪',
+              children: [
+                { id: 'd1a', text: 'Equipo técnico especializado', emoji: '', children: [] },
+                { id: 'd1b', text: 'Alta satisfacción de clientes', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'd2', text: 'Oportunidades (Externo)', emoji: '🌟',
+              children: [
+                { id: 'd2a', text: 'Expansión internacional', emoji: '', children: [] },
+                { id: 'd2b', text: 'Digitalización del sector', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'd3', text: 'Debilidades (Interno)', emoji: '⚠️',
+              children: [
+                { id: 'd3a', text: 'Procesos manuales lentos', emoji: '', children: [] },
+                { id: 'd3b', text: 'Presupuesto de marketing acotado', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'd4', text: 'Amenazas (Externo)', emoji: '🛡️',
+              children: [
+                { id: 'd4a', text: 'Nuevos competidores low-cost', emoji: '', children: [] },
+                { id: 'd4b', text: 'Cambios normativos', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'weekly-okr',
+        name: 'Planificador Semanal OKR',
+        category: 'Productividad',
+        badgeColor: 'bg-purple-100 text-purple-700',
+        description: 'Organiza prioridades semanales, hábitos y seguimiento de resultados.',
+        layout: 'right',
+        themeId: 'xmind-classic',
+        orientation: 'portrait',
+        tree: {
+          id: 'root', text: 'Objetivos de la Semana', emoji: '📅', shape: 'pill',
+          children: [
+            {
+              id: 'w1', text: 'Prioridad 1: Producto', emoji: '🔥',
+              children: [
+                { id: 'w1a', text: 'Cerrar versión beta', emoji: '', children: [] },
+                { id: 'w1b', text: 'Revisar feedback clave', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'w2', text: 'Prioridad 2: Clientes', emoji: '🤝',
+              children: [
+                { id: 'w2a', text: '3 demos comerciales', emoji: '', children: [] },
+                { id: 'w2b', text: 'Enviar propuestas Q4', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'w3', text: 'Prioridad 3: Aprendizaje', emoji: '📖',
+              children: [
+                { id: 'w3a', text: 'Completar módulo IA', emoji: '', children: [] },
+                { id: 'w3b', text: 'Lectura técnica 30 min/día', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'lean-canvas',
+        name: 'Modelo de Negocio Lean Canvas',
+        category: 'Emprendimiento',
+        badgeColor: 'bg-cyan-100 text-cyan-800',
+        description: 'Estructura propuesta de valor, segmentos, ingresos y métricas clave.',
+        layout: 'radial',
+        themeId: 'ocean-deep',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Lean Canvas · Startup SaaS', emoji: '💎', shape: 'rounded',
+          children: [
+            {
+              id: 'lc1', text: 'Problema y Solución', emoji: '🧩',
+              children: [
+                { id: 'lc1a', text: 'Falta de sincronización A4', emoji: '', children: [] },
+                { id: 'lc1b', text: 'Editor visual en tiempo real', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'lc2', text: 'Propuesta de Valor', emoji: '⚡',
+              children: [
+                { id: 'lc2a', text: 'Diseño listo para imprimir', emoji: '', children: [] },
+                { id: 'lc2b', text: 'Multiplataforma Apple/Win', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'lc3', text: 'Modelo de Ingresos', emoji: '💰',
+              children: [
+                { id: 'lc3a', text: 'Suscripción Pro mensual', emoji: '', children: [] },
+                { id: 'lc3b', text: 'Licencias corporativas', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'lc4', text: 'Métricas Clave', emoji: '📊',
+              children: [
+                { id: 'lc4a', text: 'Activación en 2 minutos', emoji: '', children: [] },
+                { id: 'lc4b', text: 'Retención mensual > 85%', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'ishikawa',
+        name: 'Diagrama Causa-Efecto (Ishikawa)',
+        category: 'Calidad',
+        badgeColor: 'bg-orange-100 text-orange-800',
+        description: 'Analiza las causas raíz de un problema por categorías operativas.',
+        layout: 'right',
+        themeId: 'warm-sunset',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Problema: Retraso en Entregas', emoji: '⚠️', shape: 'tag',
+          children: [
+            {
+              id: 'is1', text: 'Métodos y Procesos', emoji: '📋',
+              children: [
+                { id: 'is1a', text: 'Aprobaciones duplicadas', emoji: '', children: [] },
+                { id: 'is1b', text: 'Falta de checklist estándar', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'is2', text: 'Tecnología y Herramientas', emoji: '💻',
+              children: [
+                { id: 'is2a', text: 'Sistemas sin integración', emoji: '', children: [] },
+                { id: 'is2b', text: 'Cuellos de botella en red', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'is3', text: 'Personas y Formación', emoji: '🧑‍💼',
+              children: [
+                { id: 'is3a', text: 'Sobrecarga en picos', emoji: '', children: [] },
+                { id: 'is3b', text: 'Capacitación inicial breve', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'is4', text: 'Proveedores Externos', emoji: '🚚',
+              children: [
+                { id: 'is4a', text: 'Plazos variables', emoji: '', children: [] },
+                { id: 'is4b', text: 'Dependencia de un único socio', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'decision-matrix',
+        name: 'Matriz de Toma de Decisiones',
+        category: 'Estrategia',
+        badgeColor: 'bg-indigo-100 text-indigo-800',
+        description: 'Compara alternativas evaluando pros, riesgos, costes e impacto.',
+        layout: 'org',
+        themeId: 'minimal-exec',
+        orientation: 'landscape',
+        tree: {
+          id: 'root', text: 'Decisión: Nueva Sede Operativa', emoji: '⚖️', shape: 'rounded',
+          children: [
+            {
+              id: 'dm1', text: 'Opción A: Centro Ciudad', emoji: '🏙️',
+              children: [
+                { id: 'dm1a', text: 'Pro: Alta visibilidad', emoji: '', children: [] },
+                { id: 'dm1b', text: 'Contra: Alquiler elevado', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'dm2', text: 'Opción B: Parque Tecnológico', emoji: '🏢',
+              children: [
+                { id: 'dm2a', text: 'Pro: Ecosistema innovador', emoji: '', children: [] },
+                { id: 'dm2b', text: 'Pro: Mejor aparcamiento', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'dm3', text: 'Opción C: Modelo 100% Remoto', emoji: '🌐',
+              children: [
+                { id: 'dm3a', text: 'Pro: Ahorro fijo del 70%', emoji: '', children: [] },
+                { id: 'dm3b', text: 'Contra: Requiere cultura async', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        id: 'event-trip',
+        name: 'Organización de Evento / Viaje',
+        category: 'Personal',
+        badgeColor: 'bg-teal-100 text-teal-800',
+        description: 'Planifica logística, presupuesto, agenda y reservas sin olvidar nada.',
+        layout: 'radial',
+        themeId: 'emerald-nature',
+        orientation: 'portrait',
+        tree: {
+          id: 'root', text: 'Planificación Anual · Evento', emoji: '✈️', shape: 'pill',
+          children: [
+            {
+              id: 'ev1', text: 'Transporte y Alojamiento', emoji: '🏨',
+              children: [
+                { id: 'ev1a', text: 'Vuelos y traslados', emoji: '', children: [] },
+                { id: 'ev1b', text: 'Reserva hotel céntrico', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'ev2', text: 'Agenda y Actividades', emoji: '🗓️',
+              children: [
+                { id: 'ev2a', text: 'Día 1: Recepción y apertura', emoji: '', children: [] },
+                { id: 'ev2b', text: 'Día 2: Talleres prácticos', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'ev3', text: 'Presupuesto Estimado', emoji: '💳',
+              children: [
+                { id: 'ev3a', text: 'Logística: 45%', emoji: '', children: [] },
+                { id: 'ev3b', text: 'Fondo imprevistos: 15%', emoji: '', children: [] }
+              ]
+            },
+            {
+              id: 'ev4', text: 'Documentación', emoji: '🛂',
+              children: [
+                { id: 'ev4a', text: 'Entradas y pases QR', emoji: '', children: [] },
+                { id: 'ev4b', text: 'Seguro y contactos', emoji: '', children: [] }
+              ]
+            }
+          ]
+        }
+      }
+    ];
+
+    /* -----------------------------------------------------------------------
+       4. ESTADO GLOBAL DE LA APLICACIÓN
+       ----------------------------------------------------------------------- */
+    const state = {
+      mapId: 'map_' + Date.now(),
+      title: 'Lluvia de Ideas Creativa',
+      orientation: 'landscape',
+      layout: 'radial',
+      themeId: 'xmind-classic',
+      tree: JSON.parse(JSON.stringify(TEMPLATES[0].tree)),
+      selectedNodeId: 'root',
+      editingNodeId: null,
+      activeInspectorTab: 'bubble',
+      activeColorTarget: 'fill',
+      showMargins: true,
+      showFooter: true,
+      fontScale: 1,
+      isOverflowing: false,
+      zoom: 1,
+      panX: 0,
+      panY: 0,
+      history: [],
+      future: [],
+      user: null,
+      cloudMaps: [],
+      autoSaveTimer: null
+    };
+
+    /* -----------------------------------------------------------------------
+       5. REFERENCIAS DOM
+       ----------------------------------------------------------------------- */
+    const dom = {
+      viewport: document.getElementById('viewport'),
+      a4Sheet: document.getElementById('a4-sheet'),
+      a4DimLabel: document.getElementById('a4-dimensions-label'),
+      printMarginGuide: document.getElementById('print-margin-guide'),
+      sheetFooterMark: document.getElementById('sheet-footer-mark'),
+      connectionsSvg: document.getElementById('connections-svg'),
+      nodesContainer: document.getElementById('nodes-container'),
+      measurer: document.getElementById('node-measurer'),
+      mapTitleInput: document.getElementById('map-title-input'),
+      syncDot: document.getElementById('sync-dot'),
+      syncText: document.getElementById('sync-text'),
+      firebaseUserLabel: document.getElementById('firebase-user-label'),
+      overflowBanner: document.getElementById('overflow-warning-banner'),
+      fontStatusDot: document.getElementById('font-status-dot'),
+      fontStatusBar: document.getElementById('font-status-bar'),
+      nodeCountLabel: document.getElementById('node-count-label'),
+      zoomLevelLabel: document.getElementById('zoom-level-label'),
+      floatingToolbar: document.getElementById('floating-node-toolbar'),
+      inspectorPanel: document.getElementById('inspector-panel'),
+      themesList: document.getElementById('themes-list'),
+      selectedNodeBadge: document.getElementById('selected-node-badge'),
+      currentShapeName: document.getElementById('current-shape-name'),
+      bubbleShapesGallery: document.getElementById('bubble-shapes-gallery'),
+      inspectorNativeColor: document.getElementById('inspector-native-color'),
+      inspectorHexInput: document.getElementById('inspector-hex-input'),
+      inspectorNodeColors: document.getElementById('inspector-node-colors'),
+      fontSizeModeBadge: document.getElementById('font-size-mode-badge'),
+      inputFontSizeRange: document.getElementById('input-font-size-range'),
+      inputFontSizeNum: document.getElementById('input-font-size-num'),
+      fontSearchInput: document.getElementById('font-search-input'),
+      fontFamiliesList: document.getElementById('font-families-list'),
+      btnToggleBold: document.getElementById('btn-toggle-bold'),
+      btnToggleItalic: document.getElementById('btn-toggle-italic'),
+      inspectorEmojiGrid: document.getElementById('inspector-emoji-grid'),
+      ctxQuickRemoveEmoji: document.getElementById('ctx-quick-remove-emoji'),
+      ctxColorDot: document.getElementById('ctx-color-dot'),
+      ctxColorPopover: document.getElementById('ctx-color-popover'),
+      ctxColorSwatches: document.getElementById('ctx-color-swatches'),
+      ctxNativeColor: document.getElementById('ctx-native-color'),
+      ctxHexInput: document.getElementById('ctx-hex-input'),
+      ctxEmojiPopover: document.getElementById('ctx-emoji-popover'),
+      ctxEmojiPreview: document.getElementById('ctx-emoji-preview'),
+      modalBackdrop: document.getElementById('modal-backdrop'),
+      modalTemplates: document.getElementById('modal-templates'),
+      modalMaps: document.getElementById('modal-maps'),
+      modalExport: document.getElementById('modal-export'),
+      modalConfirm: document.getElementById('modal-confirm'),
+      templatesGrid: document.getElementById('templates-grid'),
+      savedMapsList: document.getElementById('saved-maps-list'),
+      toastContainer: document.getElementById('toast-container')
+    };
+
+    /* -----------------------------------------------------------------------
+       6. UTILIDADES GENERALES
+       ----------------------------------------------------------------------- */
+    function uid() {
+      return 'n_' + Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+    }
+
+    function deepClone(obj) {
+      return JSON.parse(JSON.stringify(obj));
+    }
+
+    function normalizeHexColor(val) {
+      if (!val || typeof val !== 'string') return null;
+      let cleaned = val.trim();
+      if (!cleaned.startsWith('#')) cleaned = '#' + cleaned;
+      if (/^#[0-9A-Fa-f]{3}$/.test(cleaned)) {
+        cleaned = '#' + cleaned[1] + cleaned[1] + cleaned[2] + cleaned[2] + cleaned[3] + cleaned[3];
+      }
+      if (/^#[0-9A-Fa-f]{6}$/.test(cleaned)) {
+        return cleaned.toUpperCase();
+      }
+      return null;
+    }
+
+    function getContrastTextColor(hex) {
+      const valid = normalizeHexColor(hex);
+      if (!valid) return '#0F172A';
+      const r = parseInt(valid.slice(1, 3), 16);
+      const g = parseInt(valid.slice(3, 5), 16);
+      const b = parseInt(valid.slice(5, 7), 16);
+      const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+      return yiq >= 155 ? '#0F172A' : '#FFFFFF';
+    }
+
+    function getFontStack(fontId) {
+      const found = FONT_FAMILIES.find(f => f.id === fontId);
+      return found ? found.stack : FONT_FAMILIES[0].stack;
+    }
+
+    function getActiveTheme() {
+      return THEMES.find(t => t.id === state.themeId) || THEMES[0];
+    }
+
+    function showToast(message, type = 'info') {
+      const el = document.createElement('div');
+      const colors = {
+        info: 'bg-slate-800 text-white border-slate-700',
+        success: 'bg-emerald-700 text-white border-emerald-600',
+        warning: 'bg-amber-600 text-white border-amber-500',
+        error: 'bg-rose-700 text-white border-rose-600'
+      };
+      el.className = `pointer-events-auto px-3.5 py-2.5 rounded-xl text-xs font-semibold shadow-lg border ${colors[type] || colors.info} transition-all duration-200`;
+      el.textContent = message;
+      dom.toastContainer.appendChild(el);
+      setTimeout(() => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(6px)';
+        setTimeout(() => el.remove(), 220);
+      }, 2600);
+    }
+
+    let confirmResolve = null;
+    function openConfirmModal(title, message, acceptText = 'Continuar') {
+      document.getElementById('confirm-title').textContent = title;
+      document.getElementById('confirm-message').textContent = message;
+      document.getElementById('confirm-accept-btn').textContent = acceptText;
+      openModal('confirm');
+      return new Promise(resolve => {
+        confirmResolve = resolve;
+      });
+    }
+
+    function openModal(modalKey) {
+      dom.modalBackdrop.classList.remove('hidden');
+      dom.modalTemplates.classList.add('hidden');
+      dom.modalMaps.classList.add('hidden');
+      dom.modalExport.classList.add('hidden');
+      dom.modalConfirm.classList.add('hidden');
+      if (modalKey === 'templates') dom.modalTemplates.classList.remove('hidden');
+      if (modalKey === 'maps') dom.modalMaps.classList.remove('hidden');
+      if (modalKey === 'export') dom.modalExport.classList.remove('hidden');
+      if (modalKey === 'confirm') dom.modalConfirm.classList.remove('hidden');
+    }
+
+    function closeAllModals() {
+      dom.modalBackdrop.classList.add('hidden');
+      dom.modalTemplates.classList.add('hidden');
+      dom.modalMaps.classList.add('hidden');
+      dom.modalExport.classList.add('hidden');
+      dom.modalConfirm.classList.add('hidden');
+      if (confirmResolve) {
+        confirmResolve(false);
+        confirmResolve = null;
+      }
+    }
+
+    /* -----------------------------------------------------------------------
+       7. OPERACIONES SOBRE EL ÁRBOL DE NODOS
+       ----------------------------------------------------------------------- */
+    function findNodeAndParent(targetId, node = state.tree, parent = null, branchIndex = 0) {
+      if (node.id === targetId) {
+        return { node, parent, branchIndex };
+      }
+      if (!node.children) return null;
+      for (let i = 0; i < node.children.length; i++) {
+        const idx = parent === null ? i : branchIndex;
+        const found = findNodeAndParent(targetId, node.children[i], node, idx);
+        if (found) return found;
+      }
+      return null;
+    }
+
+    function getNodeDepth(targetId, node = state.tree, depth = 0) {
+      if (node.id === targetId) return depth;
+      if (!node.children) return -1;
+      for (const child of node.children) {
+        const d = getNodeDepth(targetId, child, depth + 1);
+        if (d !== -1) return d;
+      }
+      return -1;
+    }
+
+    function getBranchColor(branchIndex) {
+      const theme = getActiveTheme();
+      return theme.branches[branchIndex % theme.branches.length];
+    }
+
+    function getNodeVisualColors(node, depth, branchIndex) {
+      const theme = getActiveTheme();
+      const defaultBranch = getBranchColor(branchIndex);
+      if (depth === 0) {
+        const fill = node.fillColor || theme.rootBg;
+        const border = node.borderColor || fill;
+        const text = node.textColor || (node.shape === 'underline' ? '#0F172A' : theme.rootText);
+        return { fill, border, text };
+      } else if (depth === 1) {
+        const fill = node.fillColor || defaultBranch;
+        const border = node.borderColor || fill;
+        const text = node.textColor || (node.shape === 'underline' ? '#0F172A' : getContrastTextColor(fill));
+        return { fill, border, text };
+      } else {
+        const border = node.borderColor || defaultBranch;
+        const fill = node.fillColor || '#FFFFFF';
+        const text = node.textColor || (node.shape === 'underline' ? '#0F172A' : getContrastTextColor(fill));
+        return { fill, border, text };
+      }
+    }
+
+    function countVisibleNodes(node = state.tree) {
+      let count = 1;
+      if (node.children && !node.collapsed) {
+        for (const c of node.children) count += countVisibleNodes(c);
+      }
+      return count;
+    }
+
+    function traverseNodes(fn, node = state.tree, depth = 0, branchIndex = 0) {
+      fn(node, depth, branchIndex);
+      if (node.children && !node.collapsed) {
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIndex;
+          traverseNodes(fn, child, depth + 1, bIdx);
+        });
+      }
+    }
+
+    function traverseAllNodesIncludingCollapsed(fn, node = state.tree, depth = 0, branchIndex = 0) {
+      fn(node, depth, branchIndex);
+      if (node.children) {
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIndex;
+          traverseAllNodesIncludingCollapsed(fn, child, depth + 1, bIdx);
+        });
+      }
+    }
+
+    function pushHistory() {
+      state.history.push(deepClone({
+        title: state.title,
+        orientation: state.orientation,
+        layout: state.layout,
+        themeId: state.themeId,
+        tree: state.tree
+      }));
+      if (state.history.length > 40) state.history.shift();
+      state.future = [];
+      updateUndoRedoButtons();
+    }
+
+    function undo() {
+      if (state.history.length === 0) return;
+      state.future.push(deepClone({
+        title: state.title,
+        orientation: state.orientation,
+        layout: state.layout,
+        themeId: state.themeId,
+        tree: state.tree
+      }));
+      const prev = state.history.pop();
+      state.title = prev.title;
+      state.orientation = prev.orientation;
+      state.layout = prev.layout;
+      state.themeId = prev.themeId;
+      state.tree = prev.tree;
+      dom.mapTitleInput.value = state.title;
+      updateUndoRedoButtons();
+      renderAll();
+      scheduleAutoSave();
+    }
+
+    function redo() {
+      if (state.future.length === 0) return;
+      state.history.push(deepClone({
+        title: state.title,
+        orientation: state.orientation,
+        layout: state.layout,
+        themeId: state.themeId,
+        tree: state.tree
+      }));
+      const next = state.future.pop();
+      state.title = next.title;
+      state.orientation = next.orientation;
+      state.layout = next.layout;
+      state.themeId = next.themeId;
+      state.tree = next.tree;
+      dom.mapTitleInput.value = state.title;
+      updateUndoRedoButtons();
+      renderAll();
+      scheduleAutoSave();
+    }
+
+    function updateUndoRedoButtons() {
+      document.getElementById('btn-undo').disabled = state.history.length === 0;
+      document.getElementById('btn-redo').disabled = state.future.length === 0;
+    }
+
+    function addChildNode(parentId = state.selectedNodeId) {
+      const found = findNodeAndParent(parentId);
+      if (!found) return;
+      pushHistory();
+      found.node.collapsed = false;
+      if (!found.node.children) found.node.children = [];
+      const newId = uid();
+      const newNode = {
+        id: newId,
+        text: 'Nuevo Subtema',
+        emoji: '',
+        shape: found.node.id === 'root' ? 'rounded' : (found.node.shape || 'rounded'),
+        children: []
+      };
+      found.node.children.push(newNode);
+      state.selectedNodeId = newId;
+      renderAll();
+      scheduleAutoSave();
+      setTimeout(() => startEditingNode(newId), 30);
+    }
+
+    function addSiblingNode(nodeId = state.selectedNodeId) {
+      if (nodeId === state.tree.id) {
+        addChildNode(nodeId);
+        return;
+      }
+      const found = findNodeAndParent(nodeId);
+      if (!found || !found.parent) return;
+      pushHistory();
+      const siblings = found.parent.children;
+      const idx = siblings.findIndex(c => c.id === nodeId);
+      const newId = uid();
+      const newNode = {
+        id: newId,
+        text: 'Nuevo Tema',
+        emoji: '',
+        shape: found.node.shape || 'rounded',
+        children: []
+      };
+      siblings.splice(idx + 1, 0, newNode);
+      state.selectedNodeId = newId;
+      renderAll();
+      scheduleAutoSave();
+      setTimeout(() => startEditingNode(newId), 30);
+    }
+
+    function deleteSelectedNode() {
+      if (state.selectedNodeId === state.tree.id) {
+        showToast('El tema central no se puede eliminar', 'warning');
+        return;
+      }
+      const found = findNodeAndParent(state.selectedNodeId);
+      if (!found || !found.parent) return;
+      pushHistory();
+      found.parent.children = found.parent.children.filter(c => c.id !== state.selectedNodeId);
+      state.selectedNodeId = found.parent.id;
+      renderAll();
+      scheduleAutoSave();
+    }
+
+    /* -----------------------------------------------------------------------
+       8. MOTOR DE AUTO-AJUSTE INTELIGENTE A HOJA A4 (MÍNIMO ESTRICTO 9PX)
+       ----------------------------------------------------------------------- */
+    function getNodeEffectiveFontSize(node, depth, scale) {
+      if (typeof node.manualFontSize === 'number' && !isNaN(node.manualFontSize)) {
+        return Math.max(MIN_FONT_SIZE, node.manualFontSize);
+      }
+      const base = depth === 0 ? BASE_FONTS.root : (depth === 1 ? BASE_FONTS.l1 : BASE_FONTS.l2);
+      return Math.max(MIN_FONT_SIZE, Number((base * scale).toFixed(1)));
+    }
+
+    function measureAllNodes(scale, widthBoost = 1.0) {
+      const m = dom.measurer;
+      traverseNodes((node, depth) => {
+        const fontSize = getNodeEffectiveFontSize(node, depth, scale);
+        const fontFamily = getFontStack(node.fontFamily || 'Inter');
+        const fontWeight = node.fontWeight || (depth <= 1 ? '700' : '500');
+        const fontStyle = node.fontStyle || 'normal';
+        const shape = node.shape || (depth === 0 ? 'pill' : 'rounded');
+
+        const baseMaxW = depth === 0 ? Math.max(145, 250 * scale) : Math.max(105, 195 * scale);
+        const maxW = Math.round(baseMaxW * widthBoost);
+        const padX = shape === 'underline'
+          ? Math.max(6, 10 * scale)
+          : Math.max(7, (depth === 0 ? 20 : 13) * scale);
+        const padY = shape === 'underline'
+          ? Math.max(3, 5 * scale)
+          : Math.max(4, (depth === 0 ? 11 : 7) * scale);
+
+        m.style.maxWidth = `${maxW}px`;
+        m.style.fontSize = `${fontSize}px`;
+        m.style.fontFamily = fontFamily;
+        m.style.fontWeight = fontWeight;
+        m.style.fontStyle = fontStyle;
+        m.style.padding = `${padY}px ${padX}px`;
+
+        const prefix = node.emoji ? `${node.emoji} ` : '';
+        m.textContent = prefix + (node.text || 'Tema');
+
+        const rect = m.getBoundingClientRect();
+        let w = Math.ceil(rect.width) + 4;
+        let h = Math.ceil(rect.height) + 2;
+
+        if (shape === 'diamond') {
+          w = Math.ceil(w * 1.42);
+          h = Math.ceil(h * 1.42);
+        } else if (shape === 'hexagon' || shape === 'octagon' || shape === 'comic-burst') {
+          w = Math.ceil(w * 1.26);
+          h = Math.ceil(h * 1.26);
+        } else if (shape === 'shield') {
+          w = Math.ceil(w * 1.18);
+          h = Math.ceil(h * 1.24);
+        } else if (shape === 'cloud' || shape === 'thought' || shape === 'ellipse') {
+          w = Math.ceil(w * 1.16);
+          h = Math.ceil(h * 1.16);
+        } else if (shape === 'speech' || shape === 'speech-center' || shape === 'speech-right' || shape === 'speech-top') {
+          h += 8;
+        } else if (shape === 'bracket' || shape === 'brace') {
+          w += 14;
+        }
+
+        node._computedFontSize = fontSize;
+        node._padX = padX;
+        node._padY = padY;
+        node.w = Math.max(40, w);
+        node.h = Math.max(22, h);
+      });
+    }
+
+    function computeSubtreeSpan(node, direction, gapPrimary, gapCross) {
+      const children = (!node.collapsed && node.children) ? node.children : [];
+      if (children.length === 0) {
+        node._span = direction === 'vertical' ? node.w : node.h;
+        return node._span;
+      }
+      let total = 0;
+      children.forEach((child, i) => {
+        total += computeSubtreeSpan(child, direction, gapPrimary, gapCross);
+        if (i < children.length - 1) total += gapCross;
+      });
+      const own = direction === 'vertical' ? node.w : node.h;
+      node._span = Math.max(own, total);
+      return node._span;
+    }
+
+    function placeHorizontalBranch(node, x, centerY, dirSign, gapX, gapY) {
+      node.x = x;
+      node.y = centerY;
+      const children = (!node.collapsed && node.children) ? node.children : [];
+      if (children.length === 0) return;
+
+      let totalChildrenH = 0;
+      children.forEach((c, i) => {
+        totalChildrenH += c._span;
+        if (i < children.length - 1) totalChildrenH += gapY;
+      });
+
+      let cursorY = centerY - totalChildrenH / 2;
+      children.forEach(child => {
+        const childCenterY = cursorY + child._span / 2;
+        const childX = x + dirSign * (node.w / 2 + gapX + child.w / 2);
+        placeHorizontalBranch(child, childX, childCenterY, dirSign, gapX, gapY);
+        cursorY += child._span + gapY;
+      });
+    }
+
+    function placeVerticalBranch(node, centerX, y, gapX, gapY) {
+      node.x = centerX;
+      node.y = y;
+      const children = (!node.collapsed && node.children) ? node.children : [];
+      if (children.length === 0) return;
+
+      let totalChildrenW = 0;
+      children.forEach((c, i) => {
+        totalChildrenW += c._span;
+        if (i < children.length - 1) totalChildrenW += gapX;
+      });
+
+      let cursorX = centerX - totalChildrenW / 2;
+      children.forEach(child => {
+        const childCenterX = cursorX + child._span / 2;
+        const childY = y + (node.h / 2 + gapY + child.h / 2);
+        placeVerticalBranch(child, childCenterX, childY, gapX, gapY);
+        cursorX += child._span + gapX;
+      });
+    }
+
+    function layoutTreeAtScale(scale, widthBoost = 1.0) {
+      const sheetW = A4_DIMS[state.orientation].width;
+      const sheetH = A4_DIMS[state.orientation].height;
+      measureAllNodes(scale, widthBoost);
+
+      const root = state.tree;
+      const children = (!root.collapsed && root.children) ? root.children : [];
+
+      if (state.layout === 'free') {
+        if (typeof root.x !== 'number') root.x = sheetW / 2;
+        if (typeof root.y !== 'number') root.y = sheetH / 2;
+        traverseNodes((node, depth) => {
+          if (depth > 0 && (typeof node.x !== 'number' || typeof node.y !== 'number')) {
+            node.x = sheetW / 2 + (Math.random() - 0.5) * 240;
+            node.y = sheetH / 2 + (Math.random() - 0.5) * 180;
+          }
+        });
+        return;
+      }
+
+      const gapX = Math.max(13, 42 * scale);
+      const gapY = Math.max(5, 16 * scale);
+
+      if (state.layout === 'right') {
+        computeSubtreeSpan(root, 'horizontal', gapX, gapY);
+        placeHorizontalBranch(root, SAFE_MARGIN + root.w / 2 + 12, sheetH / 2, 1, gapX, gapY);
+      } else if (state.layout === 'org') {
+        const orgGapX = Math.max(8, 22 * scale);
+        const orgGapY = Math.max(16, 44 * scale);
+        computeSubtreeSpan(root, 'vertical', orgGapY, orgGapX);
+        placeVerticalBranch(root, sheetW / 2, SAFE_MARGIN + root.h / 2 + 12, orgGapX, orgGapY);
+      } else {
+        // Mapa Radial equilibrado izquierda / derecha
+        root.x = sheetW / 2;
+        root.y = sheetH / 2;
+
+        const rightChildren = [];
+        const leftChildren = [];
+        children.forEach((child, idx) => {
+          if (idx % 2 === 0) rightChildren.push(child);
+          else leftChildren.push(child);
+        });
+
+        rightChildren.forEach(c => computeSubtreeSpan(c, 'horizontal', gapX, gapY));
+        leftChildren.forEach(c => computeSubtreeSpan(c, 'horizontal', gapX, gapY));
+
+        const totalRightH = rightChildren.reduce((acc, c, i) => acc + c._span + (i > 0 ? gapY : 0), 0);
+        let rCursorY = root.y - totalRightH / 2;
+        rightChildren.forEach(c => {
+          const cy = rCursorY + c._span / 2;
+          const cx = root.x + root.w / 2 + gapX + c.w / 2;
+          placeHorizontalBranch(c, cx, cy, 1, gapX, gapY);
+          rCursorY += c._span + gapY;
+        });
+
+        const totalLeftH = leftChildren.reduce((acc, c, i) => acc + c._span + (i > 0 ? gapY : 0), 0);
+        let lCursorY = root.y - totalLeftH / 2;
+        leftChildren.forEach(c => {
+          const cy = lCursorY + c._span / 2;
+          const cx = root.x - root.w / 2 - gapX - c.w / 2;
+          placeHorizontalBranch(c, cx, cy, -1, gapX, gapY);
+          lCursorY += c._span + gapY;
+        });
+      }
+
+      // Centrado fino del bounding box completo dentro de los márgenes seguros de la hoja A4
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      traverseNodes(n => {
+        minX = Math.min(minX, n.x - n.w / 2);
+        maxX = Math.max(maxX, n.x + n.w / 2);
+        minY = Math.min(minY, n.y - n.h / 2);
+        maxY = Math.max(maxY, n.y + n.h / 2);
+      });
+
+      const contentW = maxX - minX;
+      const contentH = maxY - minY;
+      const availW = sheetW - SAFE_MARGIN * 2;
+      const availH = sheetH - SAFE_MARGIN * 2;
+
+      let shiftX = 0;
+      let shiftY = 0;
+      if (contentW <= availW) {
+        const targetMinX = SAFE_MARGIN + (availW - contentW) / 2;
+        shiftX = targetMinX - minX;
+      } else {
+        shiftX = SAFE_MARGIN - minX;
+      }
+
+      if (contentH <= availH) {
+        const targetMinY = SAFE_MARGIN + (availH - contentH) / 2;
+        shiftY = targetMinY - minY;
+      } else {
+        shiftY = SAFE_MARGIN - minY;
+      }
+
+      traverseNodes(n => {
+        n.x += shiftX;
+        n.y += shiftY;
+      });
+    }
+
+    function checkA4Overflow() {
+      const sheetW = A4_DIMS[state.orientation].width;
+      const sheetH = A4_DIMS[state.orientation].height;
+      let overflow = false;
+      traverseNodes(n => {
+        if (
+          n.x - n.w / 2 < SAFE_MARGIN - 1 ||
+          n.x + n.w / 2 > sheetW - SAFE_MARGIN + 1 ||
+          n.y - n.h / 2 < SAFE_MARGIN - 1 ||
+          n.y + n.h / 2 > sheetH - SAFE_MARGIN + 1
+        ) {
+          overflow = true;
+        }
+      });
+      return overflow;
+    }
+
+    function autoFitToA4() {
+      // Escala mínima permitida para que incluso el nodo central pueda bajar hasta 9px sin bajar nunca de 9px
+      const minAllowedScale = MIN_FONT_SIZE / BASE_FONTS.root;
+      let chosenScale = 1.0;
+
+      if (state.layout === 'free') {
+        layoutTreeAtScale(1.0);
+        state.fontScale = 1.0;
+        state.isOverflowing = checkA4Overflow();
+      } else {
+        let fitted = false;
+        const widthProfiles = state.orientation === 'landscape' ? [1.0, 1.25, 0.85] : [1.0, 0.82, 1.2];
+
+        for (const wBoost of widthProfiles) {
+          for (let s = 1.0; s >= minAllowedScale - 0.001; s -= 0.025) {
+            const clampedS = Math.max(minAllowedScale, Number(s.toFixed(3)));
+            layoutTreeAtScale(clampedS, wBoost);
+            if (!checkA4Overflow()) {
+              chosenScale = clampedS;
+              fitted = true;
+              break;
+            }
+          }
+          if (fitted) break;
+        }
+
+        if (!fitted) {
+          chosenScale = minAllowedScale;
+          layoutTreeAtScale(chosenScale, 1.0);
+        }
+        state.fontScale = chosenScale;
+        state.isOverflowing = !fitted;
+      }
+
+      let hasManualSizes = false;
+      traverseNodes(n => {
+        if (typeof n.manualFontSize === 'number') hasManualSizes = true;
+      });
+
+      // Actualizar banner de aviso y barra inferior
+      const resetManualBtn = document.getElementById('btn-banner-reset-manual-font');
+      if (state.isOverflowing) {
+        dom.overflowBanner.classList.remove('hidden');
+        dom.printMarginGuide.classList.add('overflow-alert');
+        dom.fontStatusDot.className = 'w-2 h-2 rounded-full bg-amber-500 shrink-0 animate-pulse';
+        if (resetManualBtn) resetManualBtn.classList.toggle('hidden', !hasManualSizes);
+      } else {
+        dom.overflowBanner.classList.add('hidden');
+        dom.printMarginGuide.classList.remove('overflow-alert');
+        dom.fontStatusDot.className = 'w-2 h-2 rounded-full bg-emerald-500 shrink-0';
+        if (resetManualBtn) resetManualBtn.classList.add('hidden');
+      }
+
+      let minCalcFont = Infinity;
+      let maxCalcFont = 0;
+      traverseNodes(n => {
+        if (n._computedFontSize) {
+          minCalcFont = Math.min(minCalcFont, n._computedFontSize);
+          maxCalcFont = Math.max(maxCalcFont, n._computedFontSize);
+        }
+      });
+      if (!isFinite(minCalcFont)) minCalcFont = BASE_FONTS.l1;
+      if (maxCalcFont === 0) maxCalcFont = BASE_FONTS.root;
+
+      dom.fontStatusBar.textContent = state.isOverflowing
+        ? `⚠️ Exceso de contenido en A4 · Letra mínima alcanzada: ${minCalcFont.toFixed(1)}px (límite 9px)`
+        : `Auto-ajuste A4 activo · Rango letra: ${minCalcFont.toFixed(1)}px – ${maxCalcFont.toFixed(1)}px (mín. 9px)`;
+    }
+
+    /* -----------------------------------------------------------------------
+       9. GENERADOR VECTORIAL DE LOS 26 ESTILOS DE BOCADILLO
+       ----------------------------------------------------------------------- */
+    function buildBubbleSVG(shape, w, h, fill, stroke, sw = 2) {
+      const p = sw / 2 + 0.5;
+      const iw = Math.max(4, w - p * 2);
+      const ih = Math.max(4, h - p * 2);
+
+      switch (shape) {
+        case 'pill':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="${ih / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+        case 'rect':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="3" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+        case 'underline':
+          // Línea orgánica continua de extremo a extremo debajo del texto
+          return `<line x1="0" y1="${h - 2}" x2="${w}" y2="${h - 2}" stroke="${stroke}" stroke-width="${sw}" stroke-linecap="round" />`;
+        case 'speech': {
+          const bh = Math.max(14, ih - 7);
+          const r = Math.min(10, bh / 3);
+          return `<path d="M ${p + r} ${p} H ${w - p - r} Q ${w - p} ${p} ${w - p} ${p + r} V ${p + bh - r} Q ${w - p} ${p + bh} ${w - p - r} ${p + bh} H ${p + 22} L ${p + 10} ${h - p} L ${p + 14} ${p + bh} H ${p + r} Q ${p} ${p + bh} ${p} ${p + bh - r} V ${p + r} Q ${p} ${p} ${p + r} ${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'speech-center': {
+          const bh = Math.max(14, ih - 7);
+          const r = Math.min(10, bh / 3);
+          const cx = w / 2;
+          return `<path d="M ${p + r} ${p} H ${w - p - r} Q ${w - p} ${p} ${w - p} ${p + r} V ${p + bh - r} Q ${w - p} ${p + bh} ${w - p - r} ${p + bh} H ${cx + 6} L ${cx} ${h - p} L ${cx - 6} ${p + bh} H ${p + r} Q ${p} ${p + bh} ${p} ${p + bh - r} V ${p + r} Q ${p} ${p} ${p + r} ${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'speech-right': {
+          const bh = Math.max(14, ih - 7);
+          const r = Math.min(10, bh / 3);
+          return `<path d="M ${p + r} ${p} H ${w - p - r} Q ${w - p} ${p} ${w - p} ${p + r} V ${p + bh - r} Q ${w - p} ${p + bh} ${w - p - r} ${p + bh} H ${w - p - 14} L ${w - p - 10} ${h - p} L ${w - p - 22} ${p + bh} H ${p + r} Q ${p} ${p + bh} ${p} ${p + bh - r} V ${p + r} Q ${p} ${p} ${p + r} ${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'speech-top': {
+          const topY = p + 7;
+          const bh = Math.max(14, ih - 7);
+          const r = Math.min(10, bh / 3);
+          return `<path d="M ${p + r} ${topY} H ${p + 14} L ${p + 10} ${p} L ${p + 22} ${topY} H ${w - p - r} Q ${w - p} ${topY} ${w - p} ${topY + r} V ${topY + bh - r} Q ${w - p} ${topY + bh} ${w - p - r} ${topY + bh} H ${p + r} Q ${p} ${topY + bh} ${p} ${topY + bh - r} V ${topY + r} Q ${p} ${topY} ${p + r} ${topY} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'thought': {
+          const bh = Math.max(14, ih - 8);
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${bh}" rx="${bh / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />
+                  <circle cx="${p + 15}" cy="${p + bh + 3}" r="3.2" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1.4, sw * 0.8)}" />
+                  <circle cx="${p + 8}" cy="${h - p - 1.5}" r="2" fill="${fill}" stroke="${stroke}" stroke-width="${Math.max(1.2, sw * 0.7)}" />`;
+        }
+        case 'cloud': {
+          const rx = iw / 2;
+          const ry = ih / 2;
+          const cx = w / 2;
+          const cy = h / 2;
+          return `<path d="M ${cx - rx * 0.55} ${cy - ry * 0.35}
+            C ${cx - rx * 0.7} ${cy - ry * 0.95}, ${cx - rx * 0.1} ${cy - ry * 1.05}, ${cx} ${cy - ry * 0.75}
+            C ${cx + rx * 0.15} ${cy - ry * 1.05}, ${cx + rx * 0.75} ${cy - ry * 0.95}, ${cx + rx * 0.6} ${cy - ry * 0.35}
+            C ${cx + rx * 1.05} ${cy - ry * 0.25}, ${cx + rx * 1.05} ${cy + ry * 0.45}, ${cx + rx * 0.6} ${cy + ry * 0.55}
+            C ${cx + rx * 0.65} ${cy + ry * 1.0}, ${cx + rx * 0.1} ${cy + ry * 1.0}, ${cx} ${cy + ry * 0.78}
+            C ${cx - rx * 0.15} ${cy + ry * 1.0}, ${cx - rx * 0.68} ${cy + ry * 1.0}, ${cx - rx * 0.6} ${cy + ry * 0.55}
+            C ${cx - rx * 1.05} ${cy + ry * 0.45}, ${cx - rx * 1.05} ${cy - ry * 0.25}, ${cx - rx * 0.55} ${cy - ry * 0.35} Z"
+            fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'comic-burst': {
+          const cx = w / 2;
+          const cy = h / 2;
+          const spikes = 14;
+          const pts = [];
+          for (let i = 0; i < spikes * 2; i++) {
+            const angle = (i * Math.PI) / spikes;
+            const factor = i % 2 === 0 ? 1.0 : 0.84;
+            const px = cx + Math.cos(angle) * (iw / 2) * factor;
+            const py = cy + Math.sin(angle) * (ih / 2) * factor;
+            pts.push(`${px.toFixed(1)},${py.toFixed(1)}`);
+          }
+          return `<polygon points="${pts.join(' ')}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'hexagon': {
+          const inset = Math.min(16, iw * 0.16);
+          const pts = `${p + inset},${p} ${w - p - inset},${p} ${w - p},${h / 2} ${w - p - inset},${h - p} ${p + inset},${h - p} ${p},${h / 2}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'octagon': {
+          const cut = Math.min(12, Math.min(iw, ih) * 0.24);
+          const pts = `${p + cut},${p} ${w - p - cut},${p} ${w - p},${p + cut} ${w - p},${h - p - cut} ${w - p - cut},${h - p} ${p + cut},${h - p} ${p},${h - p - cut} ${p},${p + cut}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'diamond': {
+          const pts = `${w / 2},${p} ${w - p},${h / 2} ${w / 2},${h - p} ${p},${h / 2}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'shield': {
+          return `<path d="M ${p} ${p} H ${w - p} V ${h * 0.58} Q ${w - p} ${h * 0.84} ${w / 2} ${h - p} Q ${p} ${h * 0.84} ${p} ${h * 0.58} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'tag': {
+          const tip = Math.min(14, iw * 0.16);
+          const pts = `${p},${p} ${w - p - tip},${p} ${w - p},${h / 2} ${w - p - tip},${h - p} ${p},${h - p}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'chevron': {
+          const tip = Math.min(14, iw * 0.16);
+          const pts = `${p},${p} ${w - p - tip},${p} ${w - p},${h / 2} ${w - p - tip},${h - p} ${p},${h - p} ${p + tip * 0.75},${h / 2}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'parallelogram': {
+          const skew = Math.min(14, iw * 0.16);
+          const pts = `${p + skew},${p} ${w - p},${p} ${w - p - skew},${h - p} ${p},${h - p}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'ribbon': {
+          const notch = Math.min(10, iw * 0.12);
+          const pts = `${p},${p} ${w - p},${p} ${w - p - notch},${h / 2} ${w - p},${h - p} ${p},${h - p} ${p + notch},${h / 2}`;
+          return `<polygon points="${pts}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'ellipse':
+          return `<ellipse cx="${w / 2}" cy="${h / 2}" rx="${iw / 2}" ry="${ih / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+        case 'circle-badge': {
+          const archR = Math.min(iw / 2, ih * 0.55);
+          return `<path d="M ${p} ${h - p} V ${p + archR} A ${iw / 2} ${archR} 0 0 1 ${w - p} ${p + archR} V ${h - p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'sticky': {
+          const fold = Math.min(12, Math.min(iw, ih) * 0.28);
+          return `<path d="M ${p} ${p} H ${w - p} V ${h - p - fold} L ${w - p - fold} ${h - p} H ${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />
+                  <path d="M ${w - p - fold} ${h - p} V ${h - p - fold} H ${w - p}" fill="none" stroke="${stroke}" stroke-width="${Math.max(1.2, sw * 0.75)}" />`;
+        }
+        case 'folder': {
+          const tabW = Math.min(34, iw * 0.36);
+          const tabH = 6;
+          return `<path d="M ${p} ${p + 3} Q ${p} ${p} ${p + 4} ${p} H ${p + tabW - 4} L ${p + tabW + 3} ${p + tabH} H ${w - p - 4} Q ${w - p} ${p + tabH} ${w - p} ${p + tabH + 4} V ${h - p - 4} Q ${w - p} ${h - p} ${w - p - 4} ${h - p} H ${p + 4} Q ${p} ${h - p} ${p} ${h - p - 4} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-linejoin="round" />`;
+        }
+        case 'double-border':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="10" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />
+                  <rect x="${p + 3.5}" y="${p + 3.5}" width="${Math.max(2, iw - 7)}" height="${Math.max(2, ih - 7)}" rx="7" fill="none" stroke="${stroke}" stroke-width="${Math.max(1, sw * 0.65)}" />`;
+        case 'bracket': {
+          const arm = Math.min(10, iw * 0.16);
+          return `<rect x="${p + 2}" y="${p + 2}" width="${Math.max(2, iw - 4)}" height="${Math.max(2, ih - 4)}" rx="4" fill="${fill}" opacity="0.45" />
+                  <path d="M ${p + arm} ${p} H ${p} V ${h - p} H ${p + arm} M ${w - p - arm} ${p} H ${w - p} V ${h - p} H ${w - p - arm}" fill="none" stroke="${stroke}" stroke-width="${Math.max(2.2, sw)}" stroke-linecap="round" stroke-linejoin="round" />`;
+        }
+        case 'brace': {
+          const cx = p + 7;
+          const rx = w - p - 7;
+          return `<rect x="${p + 4}" y="${p + 2}" width="${Math.max(2, iw - 8)}" height="${Math.max(2, ih - 4)}" rx="4" fill="${fill}" opacity="0.4" />
+                  <path d="M ${cx + 4} ${p} Q ${cx} ${p} ${cx} ${p + 6} V ${h / 2 - 4} Q ${cx} ${h / 2} ${p} ${h / 2} Q ${cx} ${h / 2} ${cx} ${h / 2 + 4} V ${h - p - 6} Q ${cx} ${h - p} ${cx + 4} ${h - p}
+                           M ${rx - 4} ${p} Q ${rx} ${p} ${rx} ${p + 6} V ${h / 2 - 4} Q ${rx} ${h / 2} ${w - p} ${h / 2} Q ${rx} ${h / 2} ${rx} ${h / 2 + 4} V ${h - p - 6} Q ${rx} ${h - p} ${rx - 4} ${h - p}"
+                        fill="none" stroke="${stroke}" stroke-width="${Math.max(2, sw)}" stroke-linecap="round" />`;
+        }
+        case 'rounded':
+        default:
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="${Math.min(11, ih / 3)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" />`;
+      }
+    }
+
+    /* -----------------------------------------------------------------------
+       10. RENDERIZADO DE CONEXIONES SVG Y NODOS EN HOJA A4
+       ----------------------------------------------------------------------- */
+    function getBranchStrokeWidth(depth) {
+      return depth === 0
+        ? Math.max(2.2, 3.1 * state.fontScale)
+        : Math.max(1.6, 2.1 * state.fontScale);
+    }
+
+    function renderConnections() {
+      const svg = dom.connectionsSvg;
+      const sheetW = A4_DIMS[state.orientation].width;
+      const sheetH = A4_DIMS[state.orientation].height;
+      svg.setAttribute('viewBox', `0 0 ${sheetW} ${sheetH}`);
+
+      let pathsHtml = '';
+
+      traverseNodes((node, depth, branchIndex) => {
+        if (!node.children || node.collapsed || node.children.length === 0) return;
+
+        const parentShape = node.shape || (depth === 0 ? 'pill' : 'rounded');
+
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIndex;
+          const branchColor = child.borderColor || getBranchColor(bIdx);
+          const childShape = child.shape || 'rounded';
+          const strokeWidth = getBranchStrokeWidth(depth);
+
+          let x1 = node.x;
+          let y1 = node.y;
+          let x2 = child.x;
+          let y2 = child.y;
+          let d = '';
+
+          if (state.layout === 'org') {
+            y1 = parentShape === 'underline' ? (node.y + node.h / 2 - 2) : (node.y + node.h / 2);
+            y2 = childShape === 'underline' ? (child.y + child.h / 2 - 2) : (child.y - child.h / 2);
+            const midY = (y1 + y2) / 2;
+            d = `M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${x1.toFixed(1)} ${midY.toFixed(1)}, ${x2.toFixed(1)} ${midY.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+          } else {
+            const goingRight = child.x >= node.x;
+            const dir = goingRight ? 1 : -1;
+
+            // Punto de salida desde el padre
+            if (parentShape === 'underline') {
+              x1 = node.x + dir * (node.w / 2);
+              y1 = node.y + node.h / 2 - 2;
+            } else if (depth === 0 && state.layout === 'radial') {
+              x1 = node.x + dir * (node.w * 0.25);
+              y1 = node.y;
+            } else {
+              x1 = node.x + dir * (node.w / 2);
+              y1 = node.y;
+            }
+
+            // Punto de llegada al hijo (en Línea Orgánica enlaza justo en el inicio de su línea inferior)
+            if (childShape === 'underline') {
+              x2 = child.x - dir * (child.w / 2);
+              y2 = child.y + child.h / 2 - 2;
+            } else {
+              x2 = child.x - dir * (child.w / 2);
+              y2 = child.y;
+            }
+
+            const dist = Math.abs(x2 - x1);
+            const c1x = x1 + dir * Math.max(18, dist * 0.45);
+            const c2x = x2 - dir * Math.max(18, dist * 0.45);
+            d = `M ${x1.toFixed(1)} ${y1.toFixed(1)} C ${c1x.toFixed(1)} ${y1.toFixed(1)}, ${c2x.toFixed(1)} ${y2.toFixed(1)}, ${x2.toFixed(1)} ${y2.toFixed(1)}`;
+          }
+
+          pathsHtml += `<path d="${d}" fill="none" stroke="${branchColor}" stroke-width="${strokeWidth.toFixed(2)}" stroke-linecap="round" />`;
+        });
+      });
+
+      svg.innerHTML = pathsHtml;
+    }
+
+    function renderNodes() {
+      const container = dom.nodesContainer;
+      container.innerHTML = '';
+
+      traverseNodes((node, depth, branchIndex) => {
+        const isSelected = node.id === state.selectedNodeId;
+        const shape = node.shape || (depth === 0 ? 'pill' : 'rounded');
+        const colors = getNodeVisualColors(node, depth, branchIndex);
+        const fontSize = node._computedFontSize || BASE_FONTS.l1;
+        const fontFamily = getFontStack(node.fontFamily || 'Inter');
+        const fontWeight = node.fontWeight || (depth <= 1 ? '700' : '500');
+        const fontStyle = node.fontStyle || 'normal';
+
+        const el = document.createElement('div');
+        el.className = `mind-node ${isSelected ? 'selected' : ''}`;
+        el.dataset.nodeId = node.id;
+        el.style.left = `${node.x}px`;
+        el.style.top = `${node.y}px`;
+        el.style.width = `${node.w}px`;
+        el.style.height = `${node.h}px`;
+        el.style.fontSize = `${fontSize}px`;
+        el.style.fontFamily = fontFamily;
+        el.style.fontWeight = fontWeight;
+        el.style.fontStyle = fontStyle;
+        el.style.color = colors.text;
+
+        const padX = node._padX || 14;
+        const padY = node._padY || 8;
+        if (shape === 'underline') {
+          el.style.padding = `1px ${padX}px 6px ${padX}px`;
+        } else if (shape === 'speech' || shape === 'speech-center' || shape === 'speech-right' || shape === 'thought') {
+          el.style.padding = `${padY}px ${padX}px ${padY + 7}px ${padX}px`;
+        } else if (shape === 'speech-top') {
+          el.style.padding = `${padY + 7}px ${padX}px ${padY}px ${padX}px`;
+        } else {
+          el.style.padding = `${padY}px ${padX}px`;
+        }
+
+        const parentDepth = Math.max(0, depth - 1);
+        const strokeW = shape === 'underline'
+          ? getBranchStrokeWidth(parentDepth)
+          : (depth === 0 ? 2.4 : (depth === 1 ? 2.1 : 1.8));
+        const svgBg = buildBubbleSVG(shape, node.w, node.h, colors.fill, colors.border, strokeW);
+
+        const emojiHtml = node.emoji ? `<span class="mr-1 shrink-0">${node.emoji}</span>` : '';
+        const textHtml = `<span class="node-label-text">${escapeHtml(node.text || '')}</span>`;
+
+        let collapseBtnHtml = '';
+        if (node.children && node.children.length > 0 && depth > 0) {
+          const dirRight = node.x >= state.tree.x;
+          const sidePos = state.layout === 'org'
+            ? 'left-1/2 -translate-x-1/2 -bottom-2.5'
+            : (dirRight ? '-right-2.5 top-1/2 -translate-y-1/2' : '-left-2.5 top-1/2 -translate-y-1/2');
+          const label = node.collapsed ? `+${node.children.length}` : '−';
+          collapseBtnHtml = `<button type="button" data-collapse-id="${node.id}" class="collapse-btn no-print absolute ${sidePos} w-4 h-4 rounded-full bg-white border border-slate-400 text-slate-700 text-[9px] font-bold flex items-center justify-center shadow-2xs hover:bg-indigo-50 hover:border-indigo-500 z-30">${label}</button>`;
+        }
+
+        el.innerHTML = `
+          <svg class="node-shape-svg" viewBox="0 0 ${node.w} ${node.h}" preserveAspectRatio="none">${svgBg}</svg>
+          <div class="node-content-wrap h-full">${emojiHtml}${textHtml}</div>
+          ${collapseBtnHtml}
+        `;
+
+        bindNodeInteractions(el, node);
+        container.appendChild(el);
+      });
+
+      dom.nodeCountLabel.textContent = `${countVisibleNodes()} nodos`;
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderAll() {
+      const dims = A4_DIMS[state.orientation];
+      dom.a4Sheet.style.width = `${dims.width}px`;
+      dom.a4Sheet.style.height = `${dims.height}px`;
+      dom.a4Sheet.classList.toggle('landscape-mode', state.orientation === 'landscape');
+      dom.a4Sheet.classList.toggle('portrait-mode', state.orientation === 'portrait');
+      dom.a4DimLabel.textContent = dims.label;
+
+      // Actualizar regla @page de impresión
+      const printStyle = document.getElementById('dynamic-print-style');
+      if (printStyle) {
+        printStyle.textContent = `@page { size: A4 ${state.orientation}; margin: 0; }`;
+      }
+
+      // Botones orientación A4
+      const btnLand = document.getElementById('btn-a4-landscape');
+      const btnPort = document.getElementById('btn-a4-portrait');
+      if (state.orientation === 'landscape') {
+        btnLand.className = 'px-2 py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-white text-indigo-600 shadow-2xs transition';
+        btnPort.className = 'px-2 py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition';
+      } else {
+        btnPort.className = 'px-2 py-1 rounded-md text-[11px] sm:text-xs font-semibold bg-white text-indigo-600 shadow-2xs transition';
+        btnLand.className = 'px-2 py-1 rounded-md text-[11px] sm:text-xs font-medium text-slate-600 hover:text-slate-900 transition';
+      }
+
+      // Botones de estructura
+      document.querySelectorAll('.layout-btn').forEach(btn => {
+        const active = btn.dataset.layout === state.layout;
+        btn.className = active
+          ? 'layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border-2 border-indigo-500 bg-indigo-50/60 text-indigo-700 text-xs font-semibold transition'
+          : 'layout-btn flex flex-col items-center gap-1 p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition';
+      });
+
+      dom.printMarginGuide.style.display = state.showMargins ? 'block' : 'none';
+      dom.sheetFooterMark.style.display = state.showFooter ? 'block' : 'none';
+
+      autoFitToA4();
+      renderConnections();
+      renderNodes();
+      updateFloatingToolbar();
+      syncInspectorUI();
+    }
+
+    /* -----------------------------------------------------------------------
+       11. EDICIÓN INLINE DE TEXTO EN EL NODO
+       ----------------------------------------------------------------------- */
+    function startEditingNode(nodeId) {
+      if (state.editingNodeId === nodeId) return;
+      const found = findNodeAndParent(nodeId);
+      if (!found) return;
+      state.editingNodeId = nodeId;
+      state.selectedNodeId = nodeId;
+      updateFloatingToolbar();
+
+      const nodeEl = dom.nodesContainer.querySelector(`[data-node-id="${nodeId}"]`);
+      if (!nodeEl) return;
+      const textSpan = nodeEl.querySelector('.node-label-text');
+      if (!textSpan) return;
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.className = 'node-editor-input';
+      input.value = found.node.text || '';
+
+      textSpan.replaceWith(input);
+      requestAnimationFrame(() => {
+        input.focus();
+        input.select();
+      });
+
+      let committed = false;
+      const commit = () => {
+        if (committed) return;
+        committed = true;
+        const newVal = input.value.trim() || 'Tema';
+        if (newVal !== found.node.text) {
+          pushHistory();
+          found.node.text = newVal;
+          scheduleAutoSave();
+        }
+        state.editingNodeId = null;
+        renderAll();
+      };
+
+      input.addEventListener('blur', commit);
+      input.addEventListener('keydown', e => {
+        e.stopPropagation();
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          commit();
+        } else if (e.key === 'Escape') {
+          committed = true;
+          state.editingNodeId = null;
+          renderAll();
+        }
+      });
+      input.addEventListener('pointerdown', e => e.stopPropagation());
+      input.addEventListener('dblclick', e => e.stopPropagation());
+    }
+
+    /* -----------------------------------------------------------------------
+       12. INTERACCIÓN CON NODOS (SELECCIÓN, ARRASTRE LIBRE, DOBLE TOQUE)
+       ----------------------------------------------------------------------- */
+    function bindNodeInteractions(el, node) {
+      // Botón colapsar / expandir rama
+      const colBtn = el.querySelector('[data-collapse-id]');
+      if (colBtn) {
+        colBtn.addEventListener('click', e => {
+          e.stopPropagation();
+          pushHistory();
+          node.collapsed = !node.collapsed;
+          renderAll();
+          scheduleAutoSave();
+        });
+      }
+
+      let lastTapTime = 0;
+      let dragging = false;
+      let startClientX = 0;
+      let startClientY = 0;
+      let origX = 0;
+      let origY = 0;
+      let moved = false;
+
+      el.addEventListener('pointerdown', e => {
+        if (e.target.closest('[data-collapse-id]') || state.editingNodeId === node.id) return;
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
+        e.stopPropagation();
+
+        // Si había otro nodo editándose, confirmarlo primero
+        if (state.editingNodeId && state.editingNodeId !== node.id) {
+          const activeInput = dom.nodesContainer.querySelector('.node-editor-input');
+          if (activeInput) activeInput.blur();
+        }
+
+        const now = Date.now();
+        if (now - lastTapTime < 350) {
+          lastTapTime = 0;
+          dragging = false;
+          startEditingNode(node.id);
+          return;
+        }
+        lastTapTime = now;
+
+        state.selectedNodeId = node.id;
+        dom.nodesContainer.querySelectorAll('.mind-node').forEach(n => {
+          n.classList.toggle('selected', n.dataset.nodeId === node.id);
+        });
+        updateFloatingToolbar();
+        syncInspectorUI();
+
+        dragging = true;
+        moved = false;
+        startClientX = e.clientX;
+        startClientY = e.clientY;
+        origX = node.x;
+        origY = node.y;
+      });
+
+      el.addEventListener('pointermove', e => {
+        if (!dragging || state.editingNodeId === node.id) return;
+        const dx = (e.clientX - startClientX) / state.zoom;
+        const dy = (e.clientY - startClientY) / state.zoom;
+        if (!moved && Math.hypot(dx, dy) > 5) {
+          moved = true;
+          try {
+            el.setPointerCapture(e.pointerId);
+          } catch (_) {}
+          pushHistory();
+          if (state.layout !== 'free') {
+            state.layout = 'free';
+          }
+          el.classList.add('dragging');
+        }
+        if (moved) {
+          const dims = A4_DIMS[state.orientation];
+          node.x = Math.max(SAFE_MARGIN + node.w / 2, Math.min(dims.width - SAFE_MARGIN - node.w / 2, origX + dx));
+          node.y = Math.max(SAFE_MARGIN + node.h / 2, Math.min(dims.height - SAFE_MARGIN - node.h / 2, origY + dy));
+          el.style.left = `${node.x}px`;
+          el.style.top = `${node.y}px`;
+          renderConnections();
+          updateFloatingToolbar();
+        }
+      });
+
+      const endDrag = () => {
+        if (!dragging) return;
+        dragging = false;
+        el.classList.remove('dragging');
+        if (moved) {
+          renderAll();
+          scheduleAutoSave();
+        }
+      };
+
+      el.addEventListener('pointerup', endDrag);
+      el.addEventListener('pointercancel', endDrag);
+      el.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        dragging = false;
+        startEditingNode(node.id);
+      });
+    }
+
+    /* -----------------------------------------------------------------------
+       13. BARRA FLOTANTE CONTEXTUAL Y PANEL INSPECTOR DERECHO
+       ----------------------------------------------------------------------- */
+    function updateFloatingToolbar() {
+      const tb = dom.floatingToolbar;
+      if (!state.selectedNodeId || state.editingNodeId) {
+        tb.classList.add('hidden');
+        return;
+      }
+      const found = findNodeAndParent(state.selectedNodeId);
+      if (!found) {
+        tb.classList.add('hidden');
+        return;
+      }
+      const nodeEl = dom.nodesContainer.querySelector(`[data-node-id="${state.selectedNodeId}"]`);
+      if (!nodeEl) {
+        tb.classList.add('hidden');
+        return;
+      }
+
+      tb.classList.remove('hidden');
+      const rect = nodeEl.getBoundingClientRect();
+      const tbRect = tb.getBoundingClientRect();
+
+      let left = rect.left + rect.width / 2 - tbRect.width / 2;
+      let top = rect.top - tbRect.height - 10;
+      if (top < 64) top = rect.bottom + 10;
+      left = Math.max(10, Math.min(window.innerWidth - tbRect.width - 10, left));
+
+      tb.style.left = `${left}px`;
+      tb.style.top = `${top}px`;
+
+      // Posicionar popovers hacia abajo si la barra está cerca del borde superior
+      const openDownward = top < 240;
+      [dom.ctxColorPopover, dom.ctxEmojiPopover].forEach(pop => {
+        if (openDownward) {
+          pop.classList.remove('bottom-full', 'mb-2');
+          pop.classList.add('top-full', 'mt-2');
+        } else {
+          pop.classList.remove('top-full', 'mt-2');
+          pop.classList.add('bottom-full', 'mb-2');
+        }
+      });
+
+      const isRoot = found.node.id === state.tree.id;
+      document.getElementById('ctx-add-sibling').disabled = isRoot;
+      document.getElementById('ctx-delete').disabled = isRoot;
+
+      const depth = getNodeDepth(found.node.id);
+      const colors = getNodeVisualColors(found.node, depth, found.branchIndex);
+      dom.ctxColorDot.style.backgroundColor = colors.border;
+      dom.ctxNativeColor.value = normalizeHexColor(colors.border) || '#3B82F6';
+      dom.ctxHexInput.value = normalizeHexColor(colors.border) || '#3B82F6';
+
+      if (found.node.emoji) {
+        dom.ctxEmojiPreview.textContent = found.node.emoji;
+        dom.ctxQuickRemoveEmoji.classList.remove('hidden');
+      } else {
+        dom.ctxEmojiPreview.textContent = '💡';
+        dom.ctxQuickRemoveEmoji.classList.add('hidden');
+      }
+    }
+
+    function syncInspectorUI() {
+      const found = findNodeAndParent(state.selectedNodeId) || { node: state.tree, branchIndex: 0 };
+      const node = found.node;
+      const depth = getNodeDepth(node.id);
+
+      dom.selectedNodeBadge.textContent = depth === 0 ? 'Central' : (depth === 1 ? 'Rama Principal' : `Nivel ${depth}`);
+
+      // 1. Forma de bocadillo activa
+      const activeShape = node.shape || (depth === 0 ? 'pill' : 'rounded');
+      const shapeObj = BUBBLE_SHAPES.find(s => s.id === activeShape) || BUBBLE_SHAPES[0];
+      dom.currentShapeName.textContent = shapeObj.name;
+      dom.bubbleShapesGallery.querySelectorAll('[data-bubble-shape]').forEach(btn => {
+        const isCurrent = btn.dataset.bubbleShape === activeShape;
+        btn.className = isCurrent
+          ? 'flex items-center gap-1.5 p-1.5 rounded-xl border-2 border-indigo-500 bg-indigo-50/70 text-indigo-700 text-left transition'
+          : 'flex items-center gap-1.5 p-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition';
+      });
+
+      // 2. Color HEX activo
+      const colors = getNodeVisualColors(node, depth, found.branchIndex);
+      const targetColor = state.activeColorTarget === 'fill'
+        ? colors.fill
+        : (state.activeColorTarget === 'border' ? colors.border : colors.text);
+      const hex = normalizeHexColor(targetColor) || '#3B82F6';
+      dom.inspectorNativeColor.value = hex;
+      dom.inspectorHexInput.value = hex;
+
+      // 3. Tamaño de letra y tipografía
+      const currentSize = Math.round((node._computedFontSize || BASE_FONTS.l1) * 10) / 10;
+      const isManual = typeof node.manualFontSize === 'number';
+      dom.fontSizeModeBadge.textContent = isManual ? `Manual · ${currentSize}px` : `Auto · ${currentSize}px`;
+      dom.fontSizeModeBadge.className = isManual
+        ? 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700'
+        : 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
+
+      dom.inputFontSizeRange.value = Math.min(48, Math.max(9, currentSize));
+      dom.inputFontSizeNum.value = Math.round(currentSize);
+
+      const activeFont = node.fontFamily || 'Inter';
+      dom.fontFamiliesList.querySelectorAll('[data-font-id]').forEach(btn => {
+        const isCurrent = btn.dataset.fontId === activeFont;
+        btn.className = isCurrent
+          ? 'w-full flex items-center justify-between px-2.5 py-2 rounded-xl border-2 border-indigo-500 bg-indigo-50/60 text-indigo-800 text-left transition'
+          : 'w-full flex items-center justify-between px-2.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition';
+      });
+
+      const isBold = (node.fontWeight || (depth <= 1 ? '700' : '500')) === '700';
+      const isItalic = node.fontStyle === 'italic';
+      dom.btnToggleBold.className = isBold
+        ? 'w-7 h-7 rounded-lg border border-indigo-500 bg-indigo-600 text-white text-xs font-extrabold transition'
+        : 'w-7 h-7 rounded-lg border border-slate-200 text-xs font-extrabold hover:bg-slate-100 transition';
+      dom.btnToggleItalic.className = isItalic
+        ? 'w-7 h-7 rounded-lg border border-indigo-500 bg-indigo-600 text-white text-xs italic font-serif transition'
+        : 'w-7 h-7 rounded-lg border border-slate-200 text-xs italic font-serif hover:bg-slate-100 transition';
+    }
+
+    function renderThemesList() {
+      dom.themesList.innerHTML = THEMES.map(theme => {
+        const active = theme.id === state.themeId;
+        const dots = theme.branches.slice(0, 6).map(c => `<span class="w-3 h-3 rounded-full" style="background:${c}"></span>`).join('');
+        return `
+          <button type="button" data-theme-id="${theme.id}" class="w-full flex items-center justify-between px-3 py-2 rounded-xl border ${active ? 'border-2 border-indigo-500 bg-indigo-50/50' : 'border-slate-200 hover:bg-slate-50'} transition">
+            <span class="text-xs font-semibold text-slate-700">${theme.name}</span>
+            <span class="flex items-center gap-1">${dots}</span>
+          </button>
+        `;
+      }).join('');
+
+      dom.themesList.querySelectorAll('[data-theme-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pushHistory();
+          state.themeId = btn.dataset.themeId;
+          renderThemesList();
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+    }
+
+    function renderBubbleShapesGallery() {
+      dom.bubbleShapesGallery.innerHTML = BUBBLE_SHAPES.map(shape => {
+        const preview = buildBubbleSVG(shape.id, 38, 22, '#EEF2FF', '#4F46E5', 1.6);
+        return `
+          <button type="button" data-bubble-shape="${shape.id}" class="flex items-center gap-1.5 p-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition">
+            <svg class="w-9 h-5 shrink-0 overflow-visible" viewBox="0 0 38 22">${preview}</svg>
+            <span class="text-[10px] font-semibold leading-tight truncate">${shape.name}</span>
+          </button>
+        `;
+      }).join('');
+
+      dom.bubbleShapesGallery.querySelectorAll('[data-bubble-shape]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const found = findNodeAndParent(state.selectedNodeId);
+          if (!found) return;
+          pushHistory();
+          found.node.shape = btn.dataset.bubbleShape;
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+    }
+
+    function applyColorHexToSelected(hexVal) {
+      const found = findNodeAndParent(state.selectedNodeId);
+      if (!found) return;
+      const valid = normalizeHexColor(hexVal);
+      if (!valid) return;
+      pushHistory();
+      if (state.activeColorTarget === 'fill') {
+        found.node.fillColor = valid;
+      } else if (state.activeColorTarget === 'border') {
+        found.node.borderColor = valid;
+      } else if (state.activeColorTarget === 'text') {
+        found.node.textColor = valid;
+      }
+      renderAll();
+      scheduleAutoSave();
+    }
+
+    function renderColorPalettes() {
+      dom.inspectorNodeColors.innerHTML = EXTENDED_PALETTE.map(hex => `
+        <button type="button" data-palette-hex="${hex}" style="background:${hex}" class="w-full h-6 rounded-lg border border-slate-300/90 hover:scale-110 transition shadow-2xs" title="${hex}"></button>
+      `).join('');
+
+      dom.inspectorNodeColors.querySelectorAll('[data-palette-hex]').forEach(btn => {
+        btn.addEventListener('click', () => applyColorHexToSelected(btn.dataset.paletteHex));
+      });
+
+      dom.ctxColorSwatches.innerHTML = QUICK_COLORS.map(hex => {
+        if (!hex) {
+          return `<button type="button" data-quick-hex="reset" class="w-6 h-6 rounded-full border border-slate-300 bg-white text-[10px] font-bold text-slate-500 flex items-center justify-center hover:bg-slate-100" title="Restaurar tema">↺</button>`;
+        }
+        return `<button type="button" data-quick-hex="${hex}" style="background:${hex}" class="w-6 h-6 rounded-full border border-white shadow-xs hover:scale-110 transition" title="${hex}"></button>`;
+      }).join('');
+
+      dom.ctxColorSwatches.querySelectorAll('[data-quick-hex]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const found = findNodeAndParent(state.selectedNodeId);
+          if (!found) return;
+          pushHistory();
+          const val = btn.dataset.quickHex;
+          if (val === 'reset') {
+            delete found.node.fillColor;
+            delete found.node.borderColor;
+            delete found.node.textColor;
+          } else {
+            const depth = getNodeDepth(found.node.id);
+            if (depth <= 1) {
+              found.node.fillColor = val;
+              found.node.borderColor = val;
+              found.node.textColor = getContrastTextColor(val);
+            } else {
+              found.node.borderColor = val;
+            }
+          }
+          dom.ctxColorPopover.classList.add('hidden');
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+    }
+
+    function renderFontFamiliesList(filterQuery = '') {
+      const q = filterQuery.trim().toLowerCase();
+      const filtered = FONT_FAMILIES.filter(f =>
+        f.label.toLowerCase().includes(q) || f.tag.toLowerCase().includes(q)
+      );
+
+      dom.fontFamiliesList.innerHTML = filtered.map(f => `
+        <button type="button" data-font-id="${f.id}" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition">
+          <span class="text-xs font-semibold truncate" style="font-family: ${f.stack}">${f.label}</span>
+          <span class="text-[10px] text-slate-400 shrink-0 ml-2">${f.tag}</span>
+        </button>
+      `).join('');
+
+      dom.fontFamiliesList.querySelectorAll('[data-font-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const found = findNodeAndParent(state.selectedNodeId);
+          if (!found) return;
+          pushHistory();
+          found.node.fontFamily = btn.dataset.fontId;
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+
+      syncInspectorUI();
+    }
+
+    function renderEmojiGrid() {
+      dom.inspectorEmojiGrid.innerHTML = INSPECTOR_EMOJIS.map(em => `
+        <button type="button" data-panel-emoji="${em}" class="p-1.5 rounded-lg hover:bg-white hover:shadow-2xs transition text-center">${em}</button>
+      `).join('');
+
+      dom.inspectorEmojiGrid.querySelectorAll('[data-panel-emoji]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const found = findNodeAndParent(state.selectedNodeId);
+          if (!found) return;
+          pushHistory();
+          const chosen = btn.dataset.panelEmoji;
+          // Si pulsa el mismo emoji activo, lo quita
+          found.node.emoji = found.node.emoji === chosen ? '' : chosen;
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+    }
+
+    function renderTemplatesGallery() {
+      dom.templatesGrid.innerHTML = TEMPLATES.map(tpl => `
+        <div class="flex flex-col justify-between p-4 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:shadow-md bg-slate-50/50 transition">
+          <div class="space-y-2">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${tpl.badgeColor}">${tpl.category}</span>
+              <span class="text-[10px] font-medium text-slate-400">${tpl.orientation === 'landscape' ? 'A4 Horiz.' : 'A4 Vert.'}</span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-800">${tpl.tree.emoji} ${tpl.name}</h3>
+            <p class="text-xs text-slate-500 leading-relaxed">${tpl.description}</p>
+          </div>
+          <button type="button" data-use-template="${tpl.id}" class="mt-4 w-full py-2 rounded-xl text-xs font-bold bg-indigo-600 hover:bg-indigo-500 text-white shadow-2xs transition">
+            Usar Plantilla
+          </button>
+        </div>
+      `).join('');
+
+      dom.templatesGrid.querySelectorAll('[data-use-template]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const tpl = TEMPLATES.find(t => t.id === btn.dataset.useTemplate);
+          if (!tpl) return;
+          closeAllModals();
+          pushHistory();
+          state.mapId = 'map_' + Date.now();
+          state.title = tpl.name;
+          state.layout = tpl.layout;
+          state.themeId = tpl.themeId;
+          state.orientation = tpl.orientation;
+          state.tree = deepClone(tpl.tree);
+          state.selectedNodeId = 'root';
+          dom.mapTitleInput.value = state.title;
+          renderAll();
+          centerSheetInViewport();
+          scheduleAutoSave();
+          showToast(`Plantilla "${tpl.name}" cargada`, 'success');
+        });
+      });
+    }
+
+    /* -----------------------------------------------------------------------
+       14. ZOOM, PAN Y GESTOS TÁCTILES (APPLE iOS/iPadOS/macOS, ANDROID, WINDOWS)
+       ----------------------------------------------------------------------- */
+    function applySheetTransform() {
+      dom.a4Sheet.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+      dom.zoomLevelLabel.textContent = `${Math.round(state.zoom * 100)}%`;
+      updateFloatingToolbar();
+    }
+
+    function centerSheetInViewport() {
+      const vpRect = dom.viewport.getBoundingClientRect();
+      const dims = A4_DIMS[state.orientation];
+      const pad = window.innerWidth < 640 ? 24 : 56;
+      const scaleX = (vpRect.width - pad * 2) / dims.width;
+      const scaleY = (vpRect.height - pad * 2) / dims.height;
+      state.zoom = Math.max(0.28, Math.min(1.15, Math.min(scaleX, scaleY)));
+      state.panX = (vpRect.width - dims.width * state.zoom) / 2;
+      state.panY = (vpRect.height - dims.height * state.zoom) / 2;
+      applySheetTransform();
+    }
+
+    function setZoom(newZoom, pivotClientX = null, pivotClientY = null) {
+      const clamped = Math.max(0.25, Math.min(2.5, newZoom));
+      const vpRect = dom.viewport.getBoundingClientRect();
+      const cx = pivotClientX !== null ? pivotClientX - vpRect.left : vpRect.width / 2;
+      const cy = pivotClientY !== null ? pivotClientY - vpRect.top : vpRect.height / 2;
+
+      const sheetX = (cx - state.panX) / state.zoom;
+      const sheetY = (cy - state.panY) / state.zoom;
+
+      state.zoom = clamped;
+      state.panX = cx - sheetX * state.zoom;
+      state.panY = cy - sheetY * state.zoom;
+      applySheetTransform();
+    }
+
+    function setupViewportInteractions() {
+      const vp = dom.viewport;
+      let isPanning = false;
+      let panStartX = 0;
+      let panStartY = 0;
+      let origPanX = 0;
+      let origPanY = 0;
+
+      // Desplazamiento con ratón / lápiz
+      vp.addEventListener('pointerdown', e => {
+        if (e.target.closest('.mind-node') || e.target.closest('#floating-node-toolbar') || e.target.closest('#zoom-controls')) return;
+        dom.ctxColorPopover.classList.add('hidden');
+        dom.ctxEmojiPopover.classList.add('hidden');
+
+        if (e.pointerType === 'mouse') {
+          isPanning = true;
+          panStartX = e.clientX;
+          panStartY = e.clientY;
+          origPanX = state.panX;
+          origPanY = state.panY;
+          vp.style.cursor = 'grabbing';
+        }
+      });
+
+      window.addEventListener('pointermove', e => {
+        if (!isPanning) return;
+        state.panX = origPanX + (e.clientX - panStartX);
+        state.panY = origPanY + (e.clientY - panStartY);
+        applySheetTransform();
+      });
+
+      window.addEventListener('pointerup', () => {
+        if (isPanning) {
+          isPanning = false;
+          vp.style.cursor = 'grab';
+        }
+      });
+
+      // Zoom con rueda / trackpad Mac
+      vp.addEventListener('wheel', e => {
+        e.preventDefault();
+        const factor = e.deltaY < 0 ? 1.09 : 0.91;
+        setZoom(state.zoom * factor, e.clientX, e.clientY);
+      }, { passive: false });
+
+      // Gestos táctiles multi-toque (1 dedo mover, 2 dedos pellizco zoom en iPad/iPhone/Android)
+      let touchMode = null;
+      let initialPinchDist = 0;
+      let initialPinchZoom = 1;
+      let tStartX = 0;
+      let tStartY = 0;
+
+      vp.addEventListener('touchstart', e => {
+        if (e.target.closest('.mind-node') || e.target.closest('#floating-node-toolbar') || e.target.closest('#zoom-controls')) return;
+        if (e.touches.length === 1) {
+          touchMode = 'pan';
+          tStartX = e.touches[0].clientX;
+          tStartY = e.touches[0].clientY;
+          origPanX = state.panX;
+          origPanY = state.panY;
+        } else if (e.touches.length === 2) {
+          touchMode = 'pinch';
+          initialPinchDist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          initialPinchZoom = state.zoom;
+        }
+      }, { passive: true });
+
+      vp.addEventListener('touchmove', e => {
+        if (touchMode === 'pan' && e.touches.length === 1) {
+          e.preventDefault();
+          state.panX = origPanX + (e.touches[0].clientX - tStartX);
+          state.panY = origPanY + (e.touches[0].clientY - tStartY);
+          applySheetTransform();
+        } else if (touchMode === 'pinch' && e.touches.length === 2) {
+          e.preventDefault();
+          const dist = Math.hypot(
+            e.touches[0].clientX - e.touches[1].clientX,
+            e.touches[0].clientY - e.touches[1].clientY
+          );
+          const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+          const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+          setZoom(initialPinchZoom * (dist / Math.max(10, initialPinchDist)), midX, midY);
+        }
+      }, { passive: false });
+
+      vp.addEventListener('touchend', () => {
+        touchMode = null;
+      });
+    }
+
+    /* -----------------------------------------------------------------------
+       15. EXPORTACIÓN: PNG 2X, JSON Y DESCARGA DE WEB APP AUTÓNOMA (.HTML)
+       ----------------------------------------------------------------------- */
+    function exportA4ToPNG() {
+      const dims = A4_DIMS[state.orientation];
+      const scale = 2;
+
+      // Construir SVG maestro con todas las conexiones, los 26 estilos de bocadillo y tipografías
+      let nodesSvgMarkup = '';
+      traverseNodes((node, depth, branchIndex) => {
+        const shape = node.shape || (depth === 0 ? 'pill' : 'rounded');
+        const colors = getNodeVisualColors(node, depth, branchIndex);
+        const x = node.x - node.w / 2;
+        const y = node.y - node.h / 2;
+        const parentDepth = Math.max(0, depth - 1);
+        const strokeW = shape === 'underline'
+          ? getBranchStrokeWidth(parentDepth)
+          : (depth === 0 ? 2.4 : (depth === 1 ? 2.1 : 1.8));
+        const bubble = buildBubbleSVG(shape, node.w, node.h, colors.fill, colors.border, strokeW);
+
+        const fontSize = node._computedFontSize || BASE_FONTS.l1;
+        const fontWeight = node.fontWeight || (depth <= 1 ? '700' : '500');
+        const fontStyle = node.fontStyle || 'normal';
+        const fontName = node.fontFamily || 'Inter';
+        const label = escapeHtml((node.emoji ? `${node.emoji} ` : '') + (node.text || ''));
+
+        let textOffsetY = 0;
+        if (shape === 'speech' || shape === 'speech-center' || shape === 'speech-right' || shape === 'thought') {
+          textOffsetY = -3.5;
+        } else if (shape === 'speech-top') {
+          textOffsetY = 3.5;
+        } else if (shape === 'underline') {
+          textOffsetY = -2.5;
+        }
+
+        nodesSvgMarkup += `
+          <g transform="translate(${x.toFixed(1)}, ${y.toFixed(1)})">
+            ${bubble}
+            <text x="${(node.w / 2).toFixed(1)}" y="${(node.h / 2 + textOffsetY).toFixed(1)}"
+              fill="${colors.text}"
+              font-family="${escapeHtml(fontName)}, sans-serif"
+              font-size="${fontSize}px"
+              font-weight="${fontWeight}"
+              font-style="${fontStyle}"
+              text-anchor="middle"
+              dominant-baseline="central">${label}</text>
+          </g>
+        `;
+      });
+
+      const footerSvg = state.showFooter
+        ? `<text x="${dims.width - 32}" y="${dims.height - 12}" fill="#94A3B8" font-family="Inter, sans-serif" font-size="10px" font-weight="500" text-anchor="end">MindFlow Studio · Hoja A4</text>`
+        : '';
+
+      const masterSvg = `
+        <svg xmlns="http://www.w3.org/2000/svg" width="${dims.width}" height="${dims.height}" viewBox="0 0 ${dims.width} ${dims.height}">
+          <rect width="100%" height="100%" fill="#FFFFFF" />
+          ${dom.connectionsSvg.innerHTML}
+          ${nodesSvgMarkup}
+          ${footerSvg}
+        </svg>
+      `;
+
+      const svgBlob = new Blob([masterSvg], { type: 'image/svg+xml;charset=utf-8' });
+      const svgUrl = URL.createObjectURL(svgBlob);
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = dims.width * scale;
+        canvas.height = dims.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.scale(scale, scale);
+        ctx.drawImage(img, 0, 0, dims.width, dims.height);
+        URL.revokeObjectURL(svgUrl);
+
+        const link = document.createElement('a');
+        const safeName = (state.title || 'mapa-mental').toLowerCase().replace(/[^a-z0-9]+/gi, '-');
+        link.download = `${safeName}-A4.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+        showToast('Imagen PNG A4 (2x) descargada', 'success');
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(svgUrl);
+        showToast('No se pudo generar el PNG; usa Imprimir / Guardar PDF', 'warning');
+      };
+      img.src = svgUrl;
+    }
+
+    function downloadStandaloneWebApp() {
+      const cleanDoc = document.documentElement.cloneNode(true);
+      const cleanNodes = cleanDoc.querySelector('#nodes-container');
+      const cleanSvg = cleanDoc.querySelector('#connections-svg');
+      const cleanToasts = cleanDoc.querySelector('#toast-container');
+      const cleanBackdrop = cleanDoc.querySelector('#modal-backdrop');
+      if (cleanNodes) cleanNodes.innerHTML = '';
+      if (cleanSvg) cleanSvg.innerHTML = '';
+      if (cleanToasts) cleanToasts.innerHTML = '';
+      if (cleanBackdrop) cleanBackdrop.classList.add('hidden');
+
+      const htmlContent = '<!DOCTYPE html>\n' + cleanDoc.outerHTML;
+      const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'MindFlow-Studio-App.html';
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      showToast('Web App descargada (MindFlow-Studio-App.html)', 'success');
+    }
+
+    function exportMapJSON() {
+      const payload = {
+        app: 'MindFlow Studio',
+        version: '2.0',
+        mapId: state.mapId,
+        title: state.title,
+        orientation: state.orientation,
+        layout: state.layout,
+        themeId: state.themeId,
+        tree: state.tree,
+        exportedAt: new Date().toISOString()
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const safeName = (state.title || 'mapa-mental').toLowerCase().replace(/[^a-z0-9]+/gi, '-');
+      a.href = url;
+      a.download = `${safeName}.json`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+      showToast('Archivo .JSON exportado', 'success');
+    }
+
+    /* -----------------------------------------------------------------------
+       16. SINCRONIZACIÓN EN TIEMPO REAL CON FIREBASE AUTH & FIRESTORE
+       ----------------------------------------------------------------------- */
+    let unsubscribeMaps = null;
+
+    function saveLocalBackup(mapData) {
+      try {
+        const raw = localStorage.getItem(LOCAL_BACKUP_KEY);
+        const list = raw ? JSON.parse(raw) : [];
+        const idx = list.findIndex(m => m.mapId === mapData.mapId);
+        if (idx >= 0) list[idx] = mapData;
+        else list.unshift(mapData);
+        localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(list.slice(0, 30)));
+      } catch (err) {
+        console.warn('No se pudo guardar respaldo local:', err);
+      }
+    }
+
+    function loadLocalBackups() {
+      try {
+        const raw = localStorage.getItem(LOCAL_BACKUP_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (err) {
+        return [];
+      }
+    }
+
+    function buildCurrentMapPayload() {
+      return {
+        mapId: state.mapId,
+        title: state.title || 'Mapa Sin Título',
+        orientation: state.orientation,
+        layout: state.layout,
+        themeId: state.themeId,
+        tree: deepClone(state.tree),
+        ownerUid: state.user ? state.user.uid : 'local',
+        ownerEmail: state.user && state.user.email ? state.user.email : 'Sesión Anónima',
+        updatedAt: Date.now()
+      };
+    }
+
+    async function saveCurrentMapToCloud(silent = false) {
+      const payload = buildCurrentMapPayload();
+      saveLocalBackup(payload);
+
+      if (!state.user) {
+        if (!silent) showToast('Guardado en respaldo local del navegador', 'info');
+        renderSavedMapsList();
+        return;
+      }
+
+      try {
+        dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-400 animate-pulse';
+        dom.syncText.textContent = 'Sincronizando...';
+
+        const docId = `${state.user.uid}_${state.mapId}`;
+        await setDoc(doc(db, 'mindmaps', docId), payload, { merge: true });
+
+        dom.syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+        dom.syncText.textContent = state.user.email ? state.user.email : 'Nube Firebase Activa';
+        if (!silent) showToast('Mapa guardado en Firebase correctamente', 'success');
+      } catch (err) {
+        console.error('Error guardando en Firestore:', err);
+        dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+        dom.syncText.textContent = 'Respaldo Local Activo';
+        if (!silent) showToast('Guardado localmente (revisa reglas Firestore si es necesario)', 'warning');
+      }
+      renderSavedMapsList();
+    }
+
+    function scheduleAutoSave() {
+      clearTimeout(state.autoSaveTimer);
+      state.autoSaveTimer = setTimeout(() => {
+        saveCurrentMapToCloud(true);
+      }, 1400);
+    }
+
+    async function deleteSavedMap(item) {
+      const ok = await openConfirmModal(
+        'Eliminar mapa',
+        `¿Seguro que deseas eliminar "${item.title}"?`,
+        'Eliminar'
+      );
+      if (!ok) return;
+
+      // Borrar de localStorage
+      const locals = loadLocalBackups().filter(m => m.mapId !== item.mapId);
+      localStorage.setItem(LOCAL_BACKUP_KEY, JSON.stringify(locals));
+
+      // Borrar de Firestore si existe
+      if (state.user && item._docId) {
+        try {
+          await deleteDoc(doc(db, 'mindmaps', item._docId));
+        } catch (err) {
+          console.warn('Error eliminando en Firestore:', err);
+        }
+      }
+      renderSavedMapsList();
+      showToast('Mapa eliminado', 'info');
+    }
+
+    function loadMapIntoEditor(item) {
+      pushHistory();
+      state.mapId = item.mapId || ('map_' + Date.now());
+      state.title = item.title || 'Mapa Mental';
+      state.orientation = item.orientation || 'landscape';
+      state.layout = item.layout || 'radial';
+      state.themeId = item.themeId || 'xmind-classic';
+      state.tree = deepClone(item.tree);
+      state.selectedNodeId = state.tree.id;
+      dom.mapTitleInput.value = state.title;
+      closeAllModals();
+      renderAll();
+      centerSheetInViewport();
+      showToast(`Mapa "${state.title}" abierto`, 'success');
+    }
+
+    function renderSavedMapsList() {
+      const merged = new Map();
+      loadLocalBackups().forEach(m => merged.set(m.mapId, m));
+      state.cloudMaps.forEach(m => merged.set(m.mapId, m));
+
+      const items = Array.from(merged.values()).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
+
+      if (items.length === 0) {
+        dom.savedMapsList.innerHTML = `
+          <div class="text-center py-10 text-xs text-slate-500">
+            Aún no tienes mapas guardados. Pulsa <strong>"Guardar en Nube"</strong> para almacenar tu mapa actual en Firebase.
+          </div>
+        `;
+        return;
+      }
+
+      dom.savedMapsList.innerHTML = items.map((item, index) => {
+        const isCurrent = item.mapId === state.mapId;
+        const dateStr = item.updatedAt ? new Date(item.updatedAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : 'Reciente';
+        const sourceBadge = item._docId
+          ? '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-700">☁️ Firebase</span>'
+          : '<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 text-slate-600">💾 Local</span>';
+
+        return `
+          <div class="flex items-center justify-between gap-3 p-3 rounded-xl border ${isCurrent ? 'border-indigo-400 bg-indigo-50/40' : 'border-slate-200 hover:bg-slate-50'} transition">
+            <div class="min-w-0 flex-1">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-slate-800 truncate">${escapeHtml(item.title || 'Sin título')}</span>
+                ${sourceBadge}
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5">
+                ${item.orientation === 'portrait' ? 'A4 Vertical' : 'A4 Horizontal'} · Actualizado: ${dateStr}
+              </div>
+            </div>
+            <div class="flex items-center gap-1.5 shrink-0">
+              <button type="button" data-open-map-idx="${index}" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition">Abrir</button>
+              <button type="button" data-del-map-idx="${index}" class="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 transition" title="Eliminar">✕</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      dom.savedMapsList.querySelectorAll('[data-open-map-idx]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = items[Number(btn.dataset.openMapIdx)];
+          if (item) loadMapIntoEditor(item);
+        });
+      });
+
+      dom.savedMapsList.querySelectorAll('[data-del-map-idx]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = items[Number(btn.dataset.delMapIdx)];
+          if (item) deleteSavedMap(item);
+        });
+      });
+    }
+
+    function initFirebaseSync() {
+      const signOutBtn = document.getElementById('btn-auth-signout');
+      onAuthStateChanged(auth, user => {
+        state.user = user;
+        if (unsubscribeMaps) {
+          unsubscribeMaps();
+          unsubscribeMaps = null;
+        }
+
+        if (user) {
+          const isNamedUser = Boolean(user.email);
+          const label = isNamedUser ? user.email : `Invitado (${user.uid.slice(0, 6)})`;
+          dom.syncDot.className = 'w-2 h-2 rounded-full bg-emerald-500';
+          dom.syncText.textContent = label;
+          dom.firebaseUserLabel.textContent = `Conectado como ${label} · mindflow-studio-1f083`;
+          if (signOutBtn) signOutBtn.classList.toggle('hidden', !isNamedUser);
+
+          const colRef = collection(db, 'mindmaps');
+          unsubscribeMaps = onSnapshot(colRef, snapshot => {
+            const list = [];
+            snapshot.forEach(docSnap => {
+              const data = docSnap.data();
+              if (!data.ownerUid || data.ownerUid === user.uid) {
+                list.push({ ...data, _docId: docSnap.id });
+              }
+            });
+            state.cloudMaps = list;
+            renderSavedMapsList();
+          }, err => {
+            console.warn('Firestore snapshot aviso:', err.message);
+            dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-500';
+            dom.syncText.textContent = 'Modo Local + Firebase';
+          });
+        } else {
+          if (signOutBtn) signOutBtn.classList.add('hidden');
+          dom.syncDot.className = 'w-2 h-2 rounded-full bg-amber-400';
+          dom.syncText.textContent = 'Iniciando sesión...';
+          signInAnonymously(auth).catch(err => {
+            console.warn('Auth anónima no disponible, usando almacenamiento local:', err.message);
+            dom.syncDot.className = 'w-2 h-2 rounded-full bg-slate-400';
+            dom.syncText.textContent = 'Almacenamiento Local';
+            dom.firebaseUserLabel.textContent = 'Firebase listo (inicia sesión con Google o correo)';
+          });
+        }
+      });
+    }
+
+    /* -----------------------------------------------------------------------
+       17. EVENTOS DE INTERFAZ Y ATAJOS DE TECLADO
+       ----------------------------------------------------------------------- */
+    function bindAllEvents() {
+      // Título del mapa
+      dom.mapTitleInput.addEventListener('input', e => {
+        state.title = e.target.value;
+        scheduleAutoSave();
+      });
+
+      // Orientación A4
+      document.getElementById('btn-a4-landscape').addEventListener('click', () => {
+        if (state.orientation === 'landscape') return;
+        pushHistory();
+        state.orientation = 'landscape';
+        renderAll();
+        centerSheetInViewport();
+        scheduleAutoSave();
+      });
+
+      document.getElementById('btn-a4-portrait').addEventListener('click', () => {
+        if (state.orientation === 'portrait') return;
+        pushHistory();
+        state.orientation = 'portrait';
+        renderAll();
+        centerSheetInViewport();
+        scheduleAutoSave();
+      });
+
+      document.getElementById('btn-banner-switch-orientation').addEventListener('click', () => {
+        pushHistory();
+        state.orientation = state.orientation === 'landscape' ? 'portrait' : 'landscape';
+        renderAll();
+        centerSheetInViewport();
+        scheduleAutoSave();
+      });
+
+      document.getElementById('btn-banner-reset-manual-font').addEventListener('click', () => {
+        pushHistory();
+        traverseAllNodesIncludingCollapsed(n => {
+          delete n.manualFontSize;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast('Tamaños de letra restaurados a Auto A4', 'success');
+      });
+
+      document.getElementById('btn-autofit-now').addEventListener('click', () => {
+        pushHistory();
+        if (state.layout === 'free') {
+          state.layout = 'radial';
+        }
+        renderAll();
+        centerSheetInViewport();
+        scheduleAutoSave();
+        showToast('Mapa reorganizado y encajado en hoja A4', 'success');
+      });
+
+      // Deshacer / Rehacer
+      document.getElementById('btn-undo').addEventListener('click', undo);
+      document.getElementById('btn-redo').addEventListener('click', redo);
+
+      // Imprimir PDF
+      document.getElementById('btn-print').addEventListener('click', () => {
+        window.print();
+      });
+
+      // Modales
+      document.getElementById('btn-open-templates').addEventListener('click', () => openModal('templates'));
+      document.getElementById('btn-open-maps').addEventListener('click', () => {
+        renderSavedMapsList();
+        openModal('maps');
+      });
+      document.getElementById('sync-status-badge').addEventListener('click', () => {
+        renderSavedMapsList();
+        openModal('maps');
+      });
+      document.getElementById('btn-open-export').addEventListener('click', () => openModal('export'));
+
+      document.querySelectorAll('.modal-close-btn').forEach(btn => {
+        btn.addEventListener('click', closeAllModals);
+      });
+      dom.modalBackdrop.addEventListener('click', e => {
+        if (e.target === dom.modalBackdrop) closeAllModals();
+      });
+
+      document.getElementById('confirm-cancel-btn').addEventListener('click', () => {
+        if (confirmResolve) confirmResolve(false);
+        confirmResolve = null;
+        closeAllModals();
+      });
+      document.getElementById('confirm-accept-btn').addEventListener('click', () => {
+        if (confirmResolve) confirmResolve(true);
+        confirmResolve = null;
+        closeAllModals();
+      });
+
+      // Inspector derecho móvil / escritorio
+      document.getElementById('btn-toggle-inspector').addEventListener('click', () => {
+        dom.inspectorPanel.classList.toggle('hidden');
+      });
+      document.getElementById('btn-close-inspector').addEventListener('click', () => {
+        dom.inspectorPanel.classList.add('hidden');
+      });
+
+      // Controles de Zoom
+      document.getElementById('btn-zoom-in').addEventListener('click', () => setZoom(state.zoom * 1.15));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => setZoom(state.zoom * 0.85));
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => setZoom(1));
+      document.getElementById('btn-center-sheet').addEventListener('click', centerSheetInViewport);
+
+      // Barra flotante contextual
+      document.getElementById('ctx-add-child').addEventListener('click', () => addChildNode());
+      document.getElementById('ctx-add-sibling').addEventListener('click', () => addSiblingNode());
+      document.getElementById('ctx-edit-text').addEventListener('click', () => startEditingNode(state.selectedNodeId));
+      document.getElementById('ctx-delete').addEventListener('click', deleteSelectedNode);
+
+      document.getElementById('ctx-color-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        dom.ctxEmojiPopover.classList.add('hidden');
+        dom.ctxColorPopover.classList.toggle('hidden');
+      });
+
+      dom.ctxNativeColor.addEventListener('input', e => {
+        dom.ctxHexInput.value = e.target.value.toUpperCase();
+        applyColorHexToSelected(e.target.value);
+      });
+
+      dom.ctxHexInput.addEventListener('input', e => {
+        const valid = normalizeHexColor(e.target.value);
+        if (valid) {
+          dom.ctxNativeColor.value = valid;
+          applyColorHexToSelected(valid);
+        }
+      });
+
+      dom.ctxHexInput.addEventListener('change', e => {
+        const valid = normalizeHexColor(e.target.value);
+        if (valid) {
+          dom.ctxNativeColor.value = valid;
+          applyColorHexToSelected(valid);
+        }
+      });
+
+      document.getElementById('ctx-emoji-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        dom.ctxColorPopover.classList.add('hidden');
+        dom.ctxEmojiPopover.classList.toggle('hidden');
+      });
+
+      dom.ctxEmojiPopover.querySelectorAll('[data-emoji]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const found = findNodeAndParent(state.selectedNodeId);
+          if (!found) return;
+          pushHistory();
+          found.node.emoji = btn.dataset.emoji;
+          dom.ctxEmojiPopover.classList.add('hidden');
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+
+      // Botón rápido para quitar emoji
+      dom.ctxQuickRemoveEmoji.addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        found.node.emoji = '';
+        renderAll();
+        scheduleAutoSave();
+        showToast('Emoji eliminado del nodo', 'info');
+      });
+
+      document.getElementById('btn-inspector-remove-emoji').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        found.node.emoji = '';
+        renderAll();
+        scheduleAutoSave();
+        showToast('Emoji eliminado del nodo', 'info');
+      });
+
+      // Estructura del mapa
+      document.querySelectorAll('.layout-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          pushHistory();
+          state.layout = btn.dataset.layout;
+          renderAll();
+          scheduleAutoSave();
+        });
+      });
+
+      // Pestañas del Inspector Derecho
+      document.querySelectorAll('.inspector-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeInspectorTab = btn.dataset.inspectorTab;
+          document.querySelectorAll('.inspector-tab-btn').forEach(b => {
+            const active = b.dataset.inspectorTab === state.activeInspectorTab;
+            b.className = active
+              ? 'inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-bold bg-white text-indigo-600 shadow-2xs transition'
+              : 'inspector-tab-btn py-1.5 px-1 rounded-lg text-[11px] font-semibold text-slate-600 hover:text-slate-900 transition';
+          });
+          document.getElementById('tab-panel-bubble').classList.toggle('hidden', state.activeInspectorTab !== 'bubble');
+          document.getElementById('tab-panel-color').classList.toggle('hidden', state.activeInspectorTab !== 'color');
+          document.getElementById('tab-panel-font').classList.toggle('hidden', state.activeInspectorTab !== 'font');
+          document.getElementById('tab-panel-emoji').classList.toggle('hidden', state.activeInspectorTab !== 'emoji');
+        });
+      });
+
+      // Acciones masivas de bocadillo
+      document.getElementById('btn-apply-shape-level').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const targetDepth = getNodeDepth(found.node.id);
+        const shapeToApply = found.node.shape || 'rounded';
+        pushHistory();
+        traverseAllNodesIncludingCollapsed((n, d) => {
+          if (d === targetDepth) n.shape = shapeToApply;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast('Bocadillo aplicado a todo el nivel', 'success');
+      });
+
+      document.getElementById('btn-apply-shape-all').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const shapeToApply = found.node.shape || 'rounded';
+        pushHistory();
+        traverseAllNodesIncludingCollapsed(n => {
+          n.shape = shapeToApply;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast('Bocadillo aplicado a todo el mapa', 'success');
+      });
+
+      // Selector destino de color (Fondo / Borde / Texto) + HEX
+      document.querySelectorAll('.color-target-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.activeColorTarget = btn.dataset.colorTarget;
+          document.querySelectorAll('.color-target-btn').forEach(b => {
+            const active = b.dataset.colorTarget === state.activeColorTarget;
+            b.className = active
+              ? 'color-target-btn py-1 rounded-md text-[11px] font-bold bg-white text-indigo-600 shadow-2xs'
+              : 'color-target-btn py-1 rounded-md text-[11px] font-medium text-slate-600';
+          });
+          syncInspectorUI();
+        });
+      });
+
+      dom.inspectorNativeColor.addEventListener('input', e => {
+        dom.inspectorHexInput.value = e.target.value.toUpperCase();
+        applyColorHexToSelected(e.target.value);
+      });
+
+      dom.inspectorHexInput.addEventListener('input', e => {
+        const valid = normalizeHexColor(e.target.value);
+        if (valid) {
+          dom.inspectorNativeColor.value = valid;
+          applyColorHexToSelected(valid);
+        }
+      });
+
+      dom.inspectorHexInput.addEventListener('change', e => {
+        const valid = normalizeHexColor(e.target.value);
+        if (valid) {
+          dom.inspectorNativeColor.value = valid;
+          applyColorHexToSelected(valid);
+        } else {
+          showToast('Introduce un código HEX válido (ej. #3B82F6)', 'warning');
+        }
+      });
+
+      document.getElementById('btn-apply-color-subbranches').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        const { fillColor, borderColor, textColor } = found.node;
+        traverseAllNodesIncludingCollapsed(n => {
+          if (fillColor) n.fillColor = fillColor;
+          if (borderColor) n.borderColor = borderColor;
+          if (textColor) n.textColor = textColor;
+        }, found.node);
+        renderAll();
+        scheduleAutoSave();
+        showToast('Colores aplicados a las subramas', 'success');
+      });
+
+      document.getElementById('btn-reset-node-color').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        delete found.node.fillColor;
+        delete found.node.borderColor;
+        delete found.node.textColor;
+        renderAll();
+        scheduleAutoSave();
+        showToast('Color restaurado al tema XMind', 'info');
+      });
+
+      // Controles de tamaño de letra (mínimo 9px) + tipografía
+      const setManualSizeOnSelected = newSize => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const clamped = Math.max(MIN_FONT_SIZE, Math.min(72, Number(newSize)));
+        pushHistory();
+        found.node.manualFontSize = clamped;
+        renderAll();
+        scheduleAutoSave();
+      };
+
+      document.getElementById('btn-font-size-dec').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const curr = found.node._computedFontSize || BASE_FONTS.l1;
+        setManualSizeOnSelected(Math.max(MIN_FONT_SIZE, Math.round(curr - 1)));
+      });
+
+      document.getElementById('btn-font-size-inc').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const curr = found.node._computedFontSize || BASE_FONTS.l1;
+        setManualSizeOnSelected(Math.min(72, Math.round(curr + 1)));
+      });
+
+      dom.inputFontSizeRange.addEventListener('input', e => {
+        setManualSizeOnSelected(e.target.value);
+      });
+
+      dom.inputFontSizeNum.addEventListener('change', e => {
+        setManualSizeOnSelected(e.target.value);
+      });
+
+      document.getElementById('btn-font-size-auto').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        delete found.node.manualFontSize;
+        renderAll();
+        scheduleAutoSave();
+        showToast('Tamaño automático A4 restaurado en el nodo', 'info');
+      });
+
+      document.getElementById('btn-apply-size-level').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const targetDepth = getNodeDepth(found.node.id);
+        const sz = Math.max(MIN_FONT_SIZE, found.node._computedFontSize || BASE_FONTS.l1);
+        pushHistory();
+        traverseAllNodesIncludingCollapsed((n, d) => {
+          if (d === targetDepth) n.manualFontSize = sz;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast(`Tamaño ${sz}px aplicado a todo el nivel`, 'success');
+      });
+
+      document.getElementById('btn-apply-size-all').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const sz = Math.max(MIN_FONT_SIZE, found.node._computedFontSize || BASE_FONTS.l1);
+        pushHistory();
+        traverseAllNodesIncludingCollapsed(n => {
+          n.manualFontSize = sz;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast(`Tamaño ${sz}px aplicado a todo el mapa`, 'success');
+      });
+
+      document.getElementById('btn-reset-all-auto-size').addEventListener('click', () => {
+        pushHistory();
+        traverseAllNodesIncludingCollapsed(n => {
+          delete n.manualFontSize;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast('Todo el mapa volvió al tamaño automático A4', 'success');
+      });
+
+      dom.fontSearchInput.addEventListener('input', e => {
+        renderFontFamiliesList(e.target.value);
+      });
+
+      dom.btnToggleBold.addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const depth = getNodeDepth(found.node.id);
+        const curr = found.node.fontWeight || (depth <= 1 ? '700' : '500');
+        pushHistory();
+        found.node.fontWeight = curr === '700' ? '400' : '700';
+        renderAll();
+        scheduleAutoSave();
+      });
+
+      dom.btnToggleItalic.addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        pushHistory();
+        found.node.fontStyle = found.node.fontStyle === 'italic' ? 'normal' : 'italic';
+        renderAll();
+        scheduleAutoSave();
+      });
+
+      document.getElementById('btn-apply-font-all').addEventListener('click', () => {
+        const found = findNodeAndParent(state.selectedNodeId);
+        if (!found) return;
+        const fam = found.node.fontFamily || 'Inter';
+        pushHistory();
+        traverseAllNodesIncludingCollapsed(n => {
+          n.fontFamily = fam;
+        });
+        renderAll();
+        scheduleAutoSave();
+        showToast(`Tipografía "${fam}" aplicada a todo el mapa`, 'success');
+      });
+
+      // Márgenes y sello A4
+      document.getElementById('toggle-margins-checkbox').addEventListener('change', e => {
+        state.showMargins = e.target.checked;
+        renderAll();
+      });
+
+      document.getElementById('toggle-footer-checkbox').addEventListener('change', e => {
+        state.showFooter = e.target.checked;
+        renderAll();
+      });
+
+      // Acciones Modal Mis Mapas y Autenticación Firebase
+      document.getElementById('btn-save-now').addEventListener('click', () => saveCurrentMapToCloud(false));
+
+      document.getElementById('btn-new-blank-map').addEventListener('click', () => {
+        pushHistory();
+        state.mapId = 'map_' + Date.now();
+        state.title = 'Nuevo Mapa Mental';
+        state.layout = 'radial';
+        state.orientation = 'landscape';
+        state.tree = {
+          id: 'root',
+          text: 'Idea Principal',
+          emoji: '💡',
+          shape: 'pill',
+          children: [
+            { id: uid(), text: 'Rama 1', emoji: '', children: [] },
+            { id: uid(), text: 'Rama 2', emoji: '', children: [] }
+          ]
+        };
+        state.selectedNodeId = 'root';
+        dom.mapTitleInput.value = state.title;
+        closeAllModals();
+        renderAll();
+        centerSheetInViewport();
+        scheduleAutoSave();
+        showToast('Nuevo mapa creado', 'info');
+      });
+
+      document.getElementById('btn-auth-google').addEventListener('click', async () => {
+        try {
+          const provider = new GoogleAuthProvider();
+          await signInWithPopup(auth, provider);
+          showToast('Sesión iniciada con Google', 'success');
+        } catch (err) {
+          showToast('No se pudo abrir ventana de Google: ' + err.message, 'warning');
+        }
+      });
+
+      document.getElementById('btn-toggle-email-auth').addEventListener('click', () => {
+        document.getElementById('email-auth-form').classList.toggle('hidden');
+      });
+
+      document.getElementById('btn-auth-anon').addEventListener('click', async () => {
+        try {
+          await signInAnonymously(auth);
+          showToast('Sesión automática conectada', 'success');
+        } catch (err) {
+          showToast('Activa "Anónimo" en Firebase Auth o usa Google/Correo', 'warning');
+        }
+      });
+
+      document.getElementById('btn-auth-signout').addEventListener('click', async () => {
+        try {
+          await signOut(auth);
+          showToast('Sesión cerrada', 'info');
+        } catch (err) {
+          showToast('Error al cerrar sesión: ' + err.message, 'error');
+        }
+      });
+
+      document.getElementById('btn-email-login').addEventListener('click', async () => {
+        const email = document.getElementById('auth-email-input').value.trim();
+        const pass = document.getElementById('auth-pass-input').value;
+        if (!email || !pass) return showToast('Introduce correo y contraseña', 'warning');
+        try {
+          await signInWithEmailAndPassword(auth, email, pass);
+          showToast('Sesión iniciada correctamente', 'success');
+        } catch (err) {
+          showToast('Error al entrar: ' + err.message, 'error');
+        }
+      });
+
+      document.getElementById('btn-email-register').addEventListener('click', async () => {
+        const email = document.getElementById('auth-email-input').value.trim();
+        const pass = document.getElementById('auth-pass-input').value;
+        if (!email || pass.length < 6) return showToast('Usa un correo válido y contraseña de al menos 6 caracteres', 'warning');
+        try {
+          await createUserWithEmailAndPassword(auth, email, pass);
+          showToast('Cuenta creada y conectada', 'success');
+        } catch (err) {
+          showToast('Error al registrar: ' + err.message, 'error');
+        }
+      });
+
+      // Acciones Modal Exportar / Descargar
+      document.getElementById('btn-download-html-app').addEventListener('click', downloadStandaloneWebApp);
+      document.getElementById('btn-export-print-pdf').addEventListener('click', () => {
+        closeAllModals();
+        setTimeout(() => window.print(), 150);
+      });
+      document.getElementById('btn-export-png').addEventListener('click', () => {
+        closeAllModals();
+        exportA4ToPNG();
+      });
+      document.getElementById('btn-export-json').addEventListener('click', exportMapJSON);
+
+      document.getElementById('input-import-json').addEventListener('change', e => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = ev => {
+          try {
+            const parsed = JSON.parse(ev.target.result);
+            if (!parsed || !parsed.tree) throw new Error('Formato inválido');
+            loadMapIntoEditor(parsed);
+          } catch (err) {
+            showToast('El archivo JSON no es válido', 'error');
+          }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
+      });
+
+      // Atajos globales de teclado
+      window.addEventListener('keydown', e => {
+        if (state.editingNodeId) return;
+        const tag = document.activeElement && document.activeElement.tagName;
+        if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return;
+
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') {
+          e.preventDefault();
+          if (e.shiftKey) redo();
+          else undo();
+          return;
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') {
+          e.preventDefault();
+          redo();
+          return;
+        }
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          addChildNode();
+        } else if (e.key === 'Enter') {
+          e.preventDefault();
+          addSiblingNode();
+        } else if (e.key === 'F2') {
+          e.preventDefault();
+          startEditingNode(state.selectedNodeId);
+        } else if (e.key === 'Delete' || e.key === 'Backspace') {
+          e.preventDefault();
+          deleteSelectedNode();
+        } else if (e.key === 'Escape') {
+          closeAllModals();
+          dom.ctxColorPopover.classList.add('hidden');
+          dom.ctxEmojiPopover.classList.add('hidden');
+        }
+      });
+
+      window.addEventListener('resize', () => {
+        updateFloatingToolbar();
+      });
+    }
+
+    /* -----------------------------------------------------------------------
+       18. ARRANQUE INICIAL DE LA APLICACIÓN
+       ----------------------------------------------------------------------- */
+    function initApp() {
+      if (window.innerWidth < 768) {
+        dom.inspectorPanel.classList.add('hidden');
+      }
+      renderThemesList();
+      renderBubbleShapesGallery();
+      renderColorPalettes();
+      renderFontFamiliesList();
+      renderEmojiGrid();
+      renderTemplatesGallery();
+      setupViewportInteractions();
+      bindAllEvents();
+      renderAll();
+      centerSheetInViewport();
+      updateUndoRedoButtons();
+      initFirebaseSync();
+    }
+
+    initApp();
+  </script>
+</body>
+</html>
