@@ -13,10 +13,10 @@
   <link id="apple-touch-icon-link" rel="apple-touch-icon" />
   <title>MindFlow Studio — Mapas Mentales A4 estilo XMind</title>
 
-  <!-- Tipografías Google Fonts (23 estilos seleccionables) con respaldo nativo Apple y Windows -->
+  <!-- Tipografías Google Fonts (40 estilos con caligrafía, escrita a mano, clásicas y modernas) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Anton&family=Bebas+Neue&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=DM+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Dancing+Script:wght@500;700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Oswald:wght@500;600;700&family=Pacifico&family=Patrick+Hand&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@500;600;700&family=Raleway:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Slab:wght@400;600;700&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&family=Shadows+Into+Light&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Abril+Fatface&family=Alex+Brush&family=Allura&family=Amatic+SC:wght@400;700&family=Anton&family=Architects+Daughter&family=Bebas+Neue&family=Caveat:wght@500;700&family=Cinzel:wght@500;700&family=Courgette&family=DM+Sans:ital,wght@0,400;0,600;0,700;1,400&family=Dancing+Script:wght@500;700&family=Great+Vibes&family=Indie+Flower&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600;700&family=Kalam:wght@400;700&family=Kaushan+Script&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Marck+Script&family=Merriweather:ital,wght@0,400;0,700;1,400&family=Montserrat:ital,wght@0,400;0,600;0,700;1,400&family=Nunito:ital,wght@0,400;0,600;0,700;1,400&family=Oswald:wght@500;600;700&family=Pacifico&family=Parisienne&family=Patrick+Hand&family=Permanent+Marker&family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Poppins:ital,wght@0,400;0,600;0,700;1,400&family=Quicksand:wght@500;600;700&family=Raleway:ital,wght@0,400;0,600;0,700;1,400&family=Roboto+Slab:wght@400;600;700&family=Rubik:ital,wght@0,400;0,600;0,700;1,400&family=Sacramento&family=Satisfy&family=Shadows+Into+Light&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Tangerine:wght@400;700&family=Yellowtail&display=swap" rel="stylesheet" />
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -816,18 +816,27 @@
                 <button type="button" id="btn-font-size-auto" class="py-1 px-1.5 rounded-lg text-[10px] font-bold bg-emerald-600 text-white hover:bg-emerald-500 transition" title="Volver al cálculo automático A4">
                   Auto A4
                 </button>
-                <button type="button" id="btn-apply-size-level" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
-                  A este nivel
+                <button type="button" id="btn-apply-size-level" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition" title="Aplicar este tamaño a todo el nivel">
+                  Nivel
                 </button>
-                <button type="button" id="btn-apply-size-all" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition">
-                  A todo el mapa
+                <button type="button" id="btn-apply-size-all" class="py-1 px-1.5 rounded-lg text-[10px] font-semibold bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition" title="Aplicar este tamaño a todo el mapa">
+                  Todo
                 </button>
               </div>
             </div>
 
+            <!-- Filtros rápidos por estilo de letra -->
+            <div class="flex flex-wrap gap-1">
+              <button type="button" data-font-cat="all" class="font-cat-btn px-2 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white transition">Todas (40)</button>
+              <button type="button" data-font-cat="calligraphy" class="font-cat-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">✒️ Caligrafía</button>
+              <button type="button" data-font-cat="handwriting" class="font-cat-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">✍️ Escrita</button>
+              <button type="button" data-font-cat="modern" class="font-cat-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Moderna</button>
+              <button type="button" data-font-cat="classic" class="font-cat-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">Clásica</button>
+            </div>
+
             <!-- Negrita, Cursiva y Buscador de Tipografías -->
             <div class="flex items-center justify-between gap-1.5">
-              <input id="font-search-input" type="text" placeholder="Buscar entre 23 letras..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 border border-slate-200 outline-none focus:border-indigo-500" />
+              <input id="font-search-input" type="text" placeholder="Buscar entre 40 letras..." class="flex-1 min-w-0 px-2.5 py-1.5 rounded-lg text-xs bg-slate-50 border border-slate-200 outline-none focus:border-indigo-500" />
               <div class="flex items-center gap-1 shrink-0">
                 <button type="button" id="btn-toggle-bold" class="w-7 h-7 rounded-lg border border-slate-200 text-xs font-extrabold hover:bg-slate-100 transition" title="Negrita">B</button>
                 <button type="button" id="btn-toggle-italic" class="w-7 h-7 rounded-lg border border-slate-200 text-xs italic font-serif hover:bg-slate-100 transition" title="Cursiva">I</button>
@@ -1323,29 +1332,53 @@
     ];
 
     const FONT_FAMILIES = [
-      { id: 'Inter', label: 'Inter', tag: 'Moderna Sans', stack: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" },
-      { id: 'Poppins', label: 'Poppins', tag: 'Geométrica', stack: "'Poppins', sans-serif" },
-      { id: 'Montserrat', label: 'Montserrat', tag: 'Elegante Sans', stack: "'Montserrat', sans-serif" },
-      { id: 'Raleway', label: 'Raleway', tag: 'Fina Estilizada', stack: "'Raleway', sans-serif" },
-      { id: 'Nunito', label: 'Nunito', tag: 'Redondeada', stack: "'Nunito', sans-serif" },
-      { id: 'Quicksand', label: 'Quicksand', tag: 'Suave Redonda', stack: "'Quicksand', sans-serif" },
-      { id: 'Rubik', label: 'Rubik', tag: 'Moderna Suave', stack: "'Rubik', sans-serif" },
-      { id: 'DM Sans', label: 'DM Sans', tag: 'Editorial Limpia', stack: "'DM Sans', sans-serif" },
-      { id: 'Oswald', label: 'Oswald', tag: 'Condensada', stack: "'Oswald', sans-serif" },
-      { id: 'Bebas Neue', label: 'Bebas Neue', tag: 'Titular Alto', stack: "'Bebas Neue', sans-serif" },
-      { id: 'Anton', label: 'Anton', tag: 'Ultra Impacto', stack: "'Anton', sans-serif" },
-      { id: 'Merriweather', label: 'Merriweather', tag: 'Editorial Serif', stack: "'Merriweather', Georgia, serif" },
-      { id: 'Playfair Display', label: 'Playfair Display', tag: 'Clásica Lujo', stack: "'Playfair Display', Georgia, serif" },
-      { id: 'Lora', label: 'Lora', tag: 'Literaria Serif', stack: "'Lora', Georgia, serif" },
-      { id: 'Cinzel', label: 'Cinzel', tag: 'Romana Clásica', stack: "'Cinzel', Georgia, serif" },
-      { id: 'Roboto Slab', label: 'Roboto Slab', tag: 'Mecánica Slab', stack: "'Roboto Slab', serif" },
-      { id: 'Caveat', label: 'Caveat', tag: 'Manuscrita', stack: "'Caveat', cursive" },
-      { id: 'Pacifico', label: 'Pacifico', tag: 'Caligráfica', stack: "'Pacifico', cursive" },
-      { id: 'Dancing Script', label: 'Dancing Script', tag: 'Cursiva Fluida', stack: "'Dancing Script', cursive" },
-      { id: 'Shadows Into Light', label: 'Shadows Into Light', tag: 'Apuntes Mano', stack: "'Shadows Into Light', cursive" },
-      { id: 'Patrick Hand', label: 'Patrick Hand', tag: 'Cuaderno', stack: "'Patrick Hand', cursive" },
-      { id: 'JetBrains Mono', label: 'JetBrains Mono', tag: 'Técnica Mono', stack: "'JetBrains Mono', monospace" },
-      { id: 'Space Mono', label: 'Space Mono', tag: 'Retro Tech', stack: "'Space Mono', monospace" }
+      // Caligrafía y Cursiva Artística
+      { id: 'Great Vibes', label: 'Great Vibes', tag: 'Caligrafía Elegante', category: 'calligraphy', stack: "'Great Vibes', cursive" },
+      { id: 'Alex Brush', label: 'Alex Brush', tag: 'Caligrafía Clásica', category: 'calligraphy', stack: "'Alex Brush', cursive" },
+      { id: 'Allura', label: 'Allura', tag: 'Caligrafía Fina', category: 'calligraphy', stack: "'Allura', cursive" },
+      { id: 'Dancing Script', label: 'Dancing Script', tag: 'Caligrafía Fluida', category: 'calligraphy', stack: "'Dancing Script', cursive" },
+      { id: 'Sacramento', label: 'Sacramento', tag: 'Pluma Monolínea', category: 'calligraphy', stack: "'Sacramento', cursive" },
+      { id: 'Parisienne', label: 'Parisienne', tag: 'Caligrafía Francesa', category: 'calligraphy', stack: "'Parisienne', cursive" },
+      { id: 'Tangerine', label: 'Tangerine', tag: 'Pluma Estilográfica', category: 'calligraphy', stack: "'Tangerine', cursive" },
+      { id: 'Marck Script', label: 'Marck Script', tag: 'Pluma Natural', category: 'calligraphy', stack: "'Marck Script', cursive" },
+      { id: 'Pacifico', label: 'Pacifico', tag: 'Caligrafía Pincel', category: 'calligraphy', stack: "'Pacifico', cursive" },
+      { id: 'Satisfy', label: 'Satisfy', tag: 'Pincel Cursivo', category: 'calligraphy', stack: "'Satisfy', cursive" },
+      { id: 'Courgette', label: 'Courgette', tag: 'Cursiva Suave', category: 'calligraphy', stack: "'Courgette', cursive" },
+      { id: 'Kaushan Script', label: 'Kaushan Script', tag: 'Pincel Dinámico', category: 'calligraphy', stack: "'Kaushan Script', cursive" },
+      { id: 'Yellowtail', label: 'Yellowtail', tag: 'Brocha Retro', category: 'calligraphy', stack: "'Yellowtail', cursive" },
+
+      // Letra Escrita a Mano, Apuntes y Rotulador
+      { id: 'Caveat', label: 'Caveat', tag: 'Escrita a Mano', category: 'handwriting', stack: "'Caveat', cursive" },
+      { id: 'Indie Flower', label: 'Indie Flower', tag: 'Letra Escrita', category: 'handwriting', stack: "'Indie Flower', cursive" },
+      { id: 'Patrick Hand', label: 'Patrick Hand', tag: 'Cuaderno Mano', category: 'handwriting', stack: "'Patrick Hand', cursive" },
+      { id: 'Shadows Into Light', label: 'Shadows Into Light', tag: 'Apuntes Rápidos', category: 'handwriting', stack: "'Shadows Into Light', cursive" },
+      { id: 'Kalam', label: 'Kalam', tag: 'Bolígrafo Mano', category: 'handwriting', stack: "'Kalam', cursive" },
+      { id: 'Architects Daughter', label: 'Architects Daughter', tag: 'Boceto Técnico', category: 'handwriting', stack: "'Architects Daughter', cursive" },
+      { id: 'Amatic SC', label: 'Amatic SC', tag: 'Escrita Alta', category: 'handwriting', stack: "'Amatic SC', cursive" },
+      { id: 'Permanent Marker', label: 'Permanent Marker', tag: 'Rotulador Grueso', category: 'handwriting', stack: "'Permanent Marker', cursive" },
+
+      // Modernas Sans y Titulares
+      { id: 'Inter', label: 'Inter', tag: 'Moderna Sans', category: 'modern', stack: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif" },
+      { id: 'Poppins', label: 'Poppins', tag: 'Geométrica', category: 'modern', stack: "'Poppins', sans-serif" },
+      { id: 'Montserrat', label: 'Montserrat', tag: 'Elegante Sans', category: 'modern', stack: "'Montserrat', sans-serif" },
+      { id: 'Raleway', label: 'Raleway', tag: 'Fina Estilizada', category: 'modern', stack: "'Raleway', sans-serif" },
+      { id: 'Nunito', label: 'Nunito', tag: 'Redondeada', category: 'modern', stack: "'Nunito', sans-serif" },
+      { id: 'Quicksand', label: 'Quicksand', tag: 'Suave Redonda', category: 'modern', stack: "'Quicksand', sans-serif" },
+      { id: 'Rubik', label: 'Rubik', tag: 'Moderna Suave', category: 'modern', stack: "'Rubik', sans-serif" },
+      { id: 'DM Sans', label: 'DM Sans', tag: 'Editorial Limpia', category: 'modern', stack: "'DM Sans', sans-serif" },
+      { id: 'Oswald', label: 'Oswald', tag: 'Condensada', category: 'modern', stack: "'Oswald', sans-serif" },
+      { id: 'Bebas Neue', label: 'Bebas Neue', tag: 'Titular Alto', category: 'modern', stack: "'Bebas Neue', sans-serif" },
+      { id: 'Anton', label: 'Anton', tag: 'Ultra Impacto', category: 'modern', stack: "'Anton', sans-serif" },
+
+      // Clásicas Serif y Técnicas
+      { id: 'Merriweather', label: 'Merriweather', tag: 'Editorial Serif', category: 'classic', stack: "'Merriweather', Georgia, serif" },
+      { id: 'Playfair Display', label: 'Playfair Display', tag: 'Clásica Lujo', category: 'classic', stack: "'Playfair Display', Georgia, serif" },
+      { id: 'Lora', label: 'Lora', tag: 'Literaria Serif', category: 'classic', stack: "'Lora', Georgia, serif" },
+      { id: 'Cinzel', label: 'Cinzel', tag: 'Romana Clásica', category: 'classic', stack: "'Cinzel', Georgia, serif" },
+      { id: 'Roboto Slab', label: 'Roboto Slab', tag: 'Mecánica Slab', category: 'classic', stack: "'Roboto Slab', serif" },
+      { id: 'Abril Fatface', label: 'Abril Fatface', tag: 'Revista Clásica', category: 'classic', stack: "'Abril Fatface', Georgia, serif" },
+      { id: 'JetBrains Mono', label: 'JetBrains Mono', tag: 'Técnica Mono', category: 'classic', stack: "'JetBrains Mono', monospace" },
+      { id: 'Space Mono', label: 'Space Mono', tag: 'Retro Tech', category: 'classic', stack: "'Space Mono', monospace" }
     ];
 
     const BUBBLE_SHAPES = [
@@ -1777,6 +1810,7 @@
       editingNodeId: null,
       activeInspectorTab: 'bubble',
       activeColorTarget: 'fill',
+      fontCategoryFilter: 'all',
       showMargins: true,
       showFooter: true,
       fontScale: 1,
@@ -3471,16 +3505,23 @@
 
     function renderFontFamiliesList(filterQuery = '') {
       const q = filterQuery.trim().toLowerCase();
-      const filtered = FONT_FAMILIES.filter(f =>
-        f.label.toLowerCase().includes(q) || f.tag.toLowerCase().includes(q)
-      );
+      const cat = state.fontCategoryFilter || 'all';
+      const filtered = FONT_FAMILIES.filter(f => {
+        const matchesCat = cat === 'all' || f.category === cat;
+        const matchesText = f.label.toLowerCase().includes(q) || f.tag.toLowerCase().includes(q);
+        return matchesCat && matchesText;
+      });
 
-      dom.fontFamiliesList.innerHTML = filtered.map(f => `
-        <button type="button" data-font-id="${f.id}" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition">
-          <span class="text-xs font-semibold truncate" style="font-family: ${f.stack}">${f.label}</span>
-          <span class="text-[10px] text-slate-400 shrink-0 ml-2">${f.tag}</span>
-        </button>
-      `).join('');
+      dom.fontFamiliesList.innerHTML = filtered.map(f => {
+        const isScript = f.category === 'calligraphy' || f.category === 'handwriting';
+        const previewSizeClass = isScript ? 'text-base leading-tight' : 'text-xs';
+        return `
+          <button type="button" data-font-id="${f.id}" class="w-full flex items-center justify-between px-2.5 py-2 rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 text-left transition">
+            <span class="${previewSizeClass} font-semibold truncate" style="font-family: ${f.stack}">${f.label}</span>
+            <span class="text-[10px] text-slate-400 shrink-0 ml-2">${f.tag}</span>
+          </button>
+        `;
+      }).join('');
 
       dom.fontFamiliesList.querySelectorAll('[data-font-id]').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -4750,7 +4791,20 @@
         });
         renderAll();
         scheduleAutoSave();
-        showToast('Todo el mapa volvió al tamaño automático A4', 'success');
+        showToast('Tamaños de letra restaurados a Auto A4', 'success');
+      });
+
+      document.querySelectorAll('.font-cat-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          state.fontCategoryFilter = btn.dataset.fontCat;
+          document.querySelectorAll('.font-cat-btn').forEach(b => {
+            const active = b.dataset.fontCat === state.fontCategoryFilter;
+            b.className = active
+              ? 'font-cat-btn px-2 py-1 rounded-lg text-[10px] font-bold bg-indigo-600 text-white transition'
+              : 'font-cat-btn px-2 py-1 rounded-lg text-[10px] font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 transition';
+          });
+          renderFontFamiliesList(dom.fontSearchInput.value);
+        });
       });
 
       dom.fontSearchInput.addEventListener('input', e => {
