@@ -5,7 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-  <meta name="theme-color" content="#ffffff" />
+  <meta name="apple-mobile-web-app-title" content="MindFlow Studio" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="application-name" content="MindFlow Studio" />
+  <meta name="theme-color" content="#4F46E5" />
+  <link id="pwa-manifest-link" rel="manifest" />
+  <link id="apple-touch-icon-link" rel="apple-touch-icon" />
   <title>MindFlow Studio — Mapas Mentales A4 estilo XMind</title>
 
   <!-- Tipografías Google Fonts (23 estilos seleccionables) con respaldo nativo Apple y Windows -->
@@ -362,13 +367,13 @@
             <span>Crear Nuevo Proyecto</span>
           </button>
 
-          <button id="btn-home-download-app" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 border border-slate-200 transition">
-            <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
+          <button id="btn-home-install-pwa" class="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200/90 transition">
+            <svg class="w-4 h-4 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+              <line x1="12" y1="18" x2="12.01" y2="18" />
             </svg>
-            <span>Descargar Web App (.html)</span>
+            <span id="btn-home-pwa-label">Instalar App (PWA)</span>
+            <span class="px-1.5 py-0.5 rounded-md text-[10px] font-extrabold bg-indigo-600 text-white">PWA</span>
           </button>
         </div>
       </section>
@@ -1069,14 +1074,21 @@
       </div>
 
       <div class="p-5 space-y-3">
-        <!-- Descargar Web App Completa (.html) -->
-        <button id="btn-download-html-app" class="w-full flex items-center gap-3.5 p-3.5 rounded-2xl border-2 border-indigo-500/85 bg-indigo-50/60 hover:bg-indigo-50 text-left transition group">
+        <!-- Instalar como Aplicación PWA -->
+        <button id="btn-install-pwa-app" class="w-full flex items-center gap-3.5 p-3.5 rounded-2xl border-2 border-indigo-500/85 bg-indigo-50/60 hover:bg-indigo-50 text-left transition group">
           <div class="w-11 h-11 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 shadow-xs group-hover:scale-105 transition">
-            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2" />
+              <path d="M12 8v6" />
+              <polyline points="9 11 12 14 15 11" />
+            </svg>
           </div>
           <div class="flex-1 min-w-0">
-            <div class="text-sm font-bold text-slate-800">Descargar Web App (.html)</div>
-            <div class="text-xs text-slate-600">Guarda toda la app conectada a Firebase en un archivo autónomo</div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-bold text-slate-800">Instalar App (PWA)</span>
+              <span class="px-1.5 py-0.5 rounded text-[10px] font-extrabold bg-indigo-600 text-white">APP</span>
+            </div>
+            <div class="text-xs text-slate-600">Instala MindFlow Studio en Apple, Android o Windows como app independiente</div>
           </div>
         </button>
 
@@ -1127,6 +1139,63 @@
       <div class="flex justify-end gap-2">
         <button id="confirm-cancel-btn" class="px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 transition">Cancelar</button>
         <button id="confirm-accept-btn" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-500 transition">Continuar</button>
+      </div>
+    </div>
+
+    <!-- MODAL 5: INSTALACIÓN DE PWA MULTIPLATAFORMA (APPLE, ANDROID, WINDOWS) -->
+    <div id="modal-pwa-install" class="hidden bg-white rounded-3xl shadow-2xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-5 bg-gradient-to-br from-indigo-600 via-blue-600 to-indigo-700 text-white flex items-start justify-between gap-3">
+        <div class="flex items-center gap-3.5">
+          <div class="w-12 h-12 rounded-2xl bg-white/15 backdrop-blur-xs border border-white/25 flex items-center justify-center shrink-0 shadow-sm">
+            <svg class="w-6 h-6 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M12 9V4M12 20v-5M9 12H4M20 12h-5M17.6 6.4l-3.5 3.5M9.9 14.1l-3.5 3.5M6.4 6.4l3.5 3.5M14.1 14.1l3.5 3.5" />
+            </svg>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h2 class="text-base font-extrabold tracking-tight">Instalar MindFlow Studio (PWA)</h2>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-400/20 text-emerald-100 border border-emerald-300/30">v2.0</span>
+            </div>
+            <p class="text-xs text-indigo-100 mt-0.5">App instalable en pantalla completa con iconos HD y soporte offline</p>
+          </div>
+        </div>
+        <button class="modal-close-btn p-1.5 rounded-xl text-white/80 hover:text-white hover:bg-white/10 transition">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4">
+        <!-- Botón de instalación nativa inmediata si el navegador soporta beforeinstallprompt -->
+        <div id="pwa-native-prompt-box" class="hidden p-4 rounded-2xl bg-emerald-50 border border-emerald-200 space-y-2.5">
+          <div class="flex items-center gap-2 text-emerald-900 text-xs font-bold">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span>¡Tu navegador permite instalación directa en 1 clic!</span>
+          </div>
+          <button type="button" id="btn-pwa-trigger-native" class="w-full py-3 rounded-xl text-xs font-extrabold text-white bg-emerald-600 hover:bg-emerald-500 shadow-sm transition">
+            Instalar MindFlow Studio Ahora
+          </button>
+        </div>
+
+        <!-- Guía visual adaptada al dispositivo detectado -->
+        <div class="bg-slate-50 rounded-2xl border border-slate-200/90 p-4 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-slate-800">Cómo instalar en tu dispositivo:</span>
+            <span id="pwa-detected-os-badge" class="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-100 text-indigo-700">Detectando sistema...</span>
+          </div>
+          <div id="pwa-os-instructions" class="text-xs text-slate-600 space-y-1.5 leading-relaxed">
+          </div>
+        </div>
+
+        <!-- Opción de descarga del paquete PWA autónomo -->
+        <div class="pt-1 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+          <p class="text-[11px] text-slate-500">
+            ¿Estás en una vista previa? Descarga el paquete PWA autónomo para abrirlo e instalarlo directamente:
+          </p>
+          <button type="button" id="btn-pwa-download-bundle" class="w-full sm:w-auto shrink-0 px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition">
+            Descargar PWA (.html)
+          </button>
+        </div>
       </div>
     </div>
 
@@ -1721,7 +1790,8 @@
       cloudMaps: [],
       autoSaveTimer: null,
       pendingAction: null,
-      authGateMode: 'register'
+      authGateMode: 'register',
+      deferredInstallPrompt: null
     };
 
     /* -----------------------------------------------------------------------
@@ -1785,6 +1855,7 @@
       modalMaps: document.getElementById('modal-maps'),
       modalExport: document.getElementById('modal-export'),
       modalConfirm: document.getElementById('modal-confirm'),
+      modalPwaInstall: document.getElementById('modal-pwa-install'),
       templatesGrid: document.getElementById('templates-grid'),
       savedMapsList: document.getElementById('saved-maps-list'),
       toastContainer: document.getElementById('toast-container')
@@ -1869,11 +1940,13 @@
       dom.modalMaps.classList.add('hidden');
       dom.modalExport.classList.add('hidden');
       dom.modalConfirm.classList.add('hidden');
+      dom.modalPwaInstall.classList.add('hidden');
       if (modalKey === 'auth-gate') dom.modalAuthGate.classList.remove('hidden');
       if (modalKey === 'templates') dom.modalTemplates.classList.remove('hidden');
       if (modalKey === 'maps') dom.modalMaps.classList.remove('hidden');
       if (modalKey === 'export') dom.modalExport.classList.remove('hidden');
       if (modalKey === 'confirm') dom.modalConfirm.classList.remove('hidden');
+      if (modalKey === 'pwa-install') dom.modalPwaInstall.classList.remove('hidden');
     }
 
     function closeAllModals() {
@@ -1883,6 +1956,7 @@
       dom.modalMaps.classList.add('hidden');
       dom.modalExport.classList.add('hidden');
       dom.modalConfirm.classList.add('hidden');
+      dom.modalPwaInstall.classList.add('hidden');
       if (confirmResolve) {
         confirmResolve(false);
         confirmResolve = null;
@@ -3709,6 +3783,8 @@
       const cleanSvg = cleanDoc.querySelector('#connections-svg');
       const cleanToasts = cleanDoc.querySelector('#toast-container');
       const cleanBackdrop = cleanDoc.querySelector('#modal-backdrop');
+      const cleanManifest = cleanDoc.querySelector('#pwa-manifest-link');
+      const cleanAppleIcon = cleanDoc.querySelector('#apple-touch-icon-link');
       if (cleanHome) cleanHome.classList.remove('hidden');
       if (cleanEditor) {
         cleanEditor.classList.add('hidden');
@@ -3718,16 +3794,239 @@
       if (cleanSvg) cleanSvg.innerHTML = '';
       if (cleanToasts) cleanToasts.innerHTML = '';
       if (cleanBackdrop) cleanBackdrop.classList.add('hidden');
+      if (cleanManifest) cleanManifest.removeAttribute('href');
+      if (cleanAppleIcon) cleanAppleIcon.removeAttribute('href');
 
       const htmlContent = '<!DOCTYPE html>\n' + cleanDoc.outerHTML;
       const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'MindFlow-Studio-App.html';
+      a.download = 'MindFlow-Studio-PWA.html';
       a.click();
       setTimeout(() => URL.revokeObjectURL(url), 1500);
-      showToast('Web App descargada (MindFlow-Studio-App.html)', 'success');
+      showToast('Paquete PWA descargado (MindFlow-Studio-PWA.html)', 'success');
+    }
+
+    /* -----------------------------------------------------------------------
+       15B. MOTOR PWA (MANIFIESTO DINÁMICO, ICONOS PNG HD, SERVICE WORKER E INSTALACIÓN)
+       ----------------------------------------------------------------------- */
+    function generatePWAIconDataURL(size) {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Fondo redondeado con degradado cálido MindFlow
+      const r = size * 0.22;
+      const grad = ctx.createLinearGradient(0, 0, size, size);
+      grad.addColorStop(0, '#F43F5E');
+      grad.addColorStop(0.5, '#F97316');
+      grad.addColorStop(1, '#4F46E5');
+
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.arcTo(size, 0, size, size, r);
+      ctx.arcTo(size, size, 0, size, r);
+      ctx.arcTo(0, size, 0, 0, r);
+      ctx.arcTo(0, 0, size, 0, r);
+      ctx.closePath();
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Nodos y rayos del mapa mental en blanco nítido
+      const cx = size / 2;
+      const cy = size / 2;
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = Math.max(4, size * 0.065);
+      ctx.lineCap = 'round';
+
+      const dirs = [
+        [0, -1], [0, 1], [-1, 0], [1, 0],
+        [0.72, -0.72], [-0.72, 0.72], [-0.72, -0.72], [0.72, 0.72]
+      ];
+      dirs.forEach(([dx, dy]) => {
+        ctx.beginPath();
+        ctx.moveTo(cx + dx * size * 0.14, cy + dy * size * 0.14);
+        ctx.lineTo(cx + dx * size * 0.33, cy + dy * size * 0.33);
+        ctx.stroke();
+      });
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, size * 0.12, 0, Math.PI * 2);
+      ctx.stroke();
+
+      return canvas.toDataURL('image/png');
+    }
+
+    function detectPlatformForPWA() {
+      const ua = navigator.userAgent || '';
+      const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      const isIPhone = /iPhone|iPod/.test(ua);
+      const isMac = /Macintosh|Mac OS X/.test(ua) && !isIPad;
+      const isAndroid = /Android/.test(ua);
+
+      if (isIPhone || isIPad) {
+        return {
+          os: isIPad ? 'iPadOS (Safari)' : 'iOS (Safari)',
+          steps: `
+            <p>1. Pulsa el botón <strong>Compartir</strong> (cuadrado con flecha hacia arriba <strong>⍐</strong>) en la barra de Safari.</p>
+            <p>2. Desliza hacia abajo y selecciona <strong>"Añadir a pantalla de inicio"</strong>.</p>
+            <p>3. Pulsa <strong>"Añadir"</strong> para abrir MindFlow Studio como app a pantalla completa.</p>
+          `
+        };
+      }
+      if (isMac) {
+        return {
+          os: 'macOS (Safari / Chrome)',
+          steps: `
+            <p>1. En <strong>Safari</strong>: ve al menú superior <strong>Archivo → Añadir al Dock</strong>.</p>
+            <p>2. En <strong>Google Chrome / Edge</strong>: pulsa el icono de instalación <strong>⊕</strong> en la barra de direcciones o <strong>⋮ → Guardar y compartir → Instalar página como aplicación</strong>.</p>
+          `
+        };
+      }
+      if (isAndroid) {
+        return {
+          os: 'Android (Chrome / Edge)',
+          steps: `
+            <p>1. Pulsa el menú de tres puntos <strong>⋮</strong> en la esquina superior derecha del navegador.</p>
+            <p>2. Selecciona <strong>"Instalar aplicación"</strong> o <strong>"Añadir a pantalla de inicio"</strong>.</p>
+          `
+        };
+      }
+      return {
+        os: 'Windows (Chrome / Edge)',
+        steps: `
+          <p>1. Haz clic en el icono <strong>Instalar aplicación</strong> en el extremo derecho de la barra de direcciones.</p>
+          <p>2. O abre el menú <strong>⋮ / ⋯ → Aplicaciones → Instalar este sitio como una aplicación</strong>.</p>
+        `
+      };
+    }
+
+    function updatePWAInstallModalUI() {
+      const nativeBox = document.getElementById('pwa-native-prompt-box');
+      const osBadge = document.getElementById('pwa-detected-os-badge');
+      const osInstructions = document.getElementById('pwa-os-instructions');
+      const homeLabel = document.getElementById('btn-home-pwa-label');
+
+      if (state.deferredInstallPrompt) {
+        nativeBox.classList.remove('hidden');
+        if (homeLabel) homeLabel.textContent = 'Instalar App (PWA) · Listo';
+      } else {
+        nativeBox.classList.add('hidden');
+        if (homeLabel) homeLabel.textContent = 'Instalar App (PWA)';
+      }
+
+      const info = detectPlatformForPWA();
+      osBadge.textContent = info.os;
+      osInstructions.innerHTML = info.steps;
+    }
+
+    async function promptNativePWAInstall() {
+      if (!state.deferredInstallPrompt) return false;
+      try {
+        state.deferredInstallPrompt.prompt();
+        const choice = await state.deferredInstallPrompt.userChoice;
+        state.deferredInstallPrompt = null;
+        updatePWAInstallModalUI();
+        if (choice && choice.outcome === 'accepted') {
+          closeAllModals();
+          showToast('¡MindFlow Studio instalada como PWA!', 'success');
+          return true;
+        }
+      } catch (err) {
+        console.warn('Aviso al lanzar prompt PWA:', err);
+      }
+      return false;
+    }
+
+    async function handleInstallPWAClick() {
+      if (state.deferredInstallPrompt) {
+        await promptNativePWAInstall();
+        return;
+      }
+      updatePWAInstallModalUI();
+      openModal('pwa-install');
+    }
+
+    function initPWAEngine() {
+      try {
+        const icon180 = generatePWAIconDataURL(180);
+        const icon192 = generatePWAIconDataURL(192);
+        const icon512 = generatePWAIconDataURL(512);
+
+        const appleLink = document.getElementById('apple-touch-icon-link');
+        if (appleLink) appleLink.href = icon180;
+
+        const manifest = {
+          name: 'MindFlow Studio — Mapas Mentales A4',
+          short_name: 'MindFlow',
+          description: 'Editor profesional de mapas mentales estilo XMind en hojas A4 sincronizado con Firebase.',
+          start_url: window.location.href,
+          scope: './',
+          display: 'standalone',
+          orientation: 'any',
+          background_color: '#ffffff',
+          theme_color: '#4F46E5',
+          categories: ['productivity', 'education', 'business'],
+          icons: [
+            { src: icon192, sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+            { src: icon512, sizes: '512x512', type: 'image/png', purpose: 'any maskable' }
+          ]
+        };
+
+        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/manifest+json' });
+        const manifestUrl = URL.createObjectURL(manifestBlob);
+        const manifestLink = document.getElementById('pwa-manifest-link');
+        if (manifestLink) manifestLink.href = manifestUrl;
+      } catch (err) {
+        console.warn('No se pudo inicializar el manifiesto PWA:', err);
+      }
+
+      // Registrar Service Worker cuando se ejecuta en origen HTTP/HTTPS
+      if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+        const swSource = `
+          const CACHE_NAME = 'mindflow-pwa-v2';
+          self.addEventListener('install', (event) => {
+            self.skipWaiting();
+          });
+          self.addEventListener('activate', (event) => {
+            event.waitUntil(self.clients.claim());
+          });
+          self.addEventListener('fetch', (event) => {
+            if (event.request.method !== 'GET') return;
+            event.respondWith(
+              fetch(event.request)
+                .then((res) => {
+                  const copy = res.clone();
+                  caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy)).catch(() => {});
+                  return res;
+                })
+                .catch(() => caches.match(event.request))
+            );
+          });
+        `;
+        try {
+          const swBlob = new Blob([swSource], { type: 'application/javascript' });
+          const swUrl = URL.createObjectURL(swBlob);
+          navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (_) {}
+      }
+
+      window.addEventListener('beforeinstallprompt', e => {
+        e.preventDefault();
+        state.deferredInstallPrompt = e;
+        updatePWAInstallModalUI();
+      });
+
+      window.addEventListener('appinstalled', () => {
+        state.deferredInstallPrompt = null;
+        updatePWAInstallModalUI();
+        closeAllModals();
+        showToast('MindFlow Studio instalada correctamente en tu dispositivo', 'success');
+      });
+
+      updatePWAInstallModalUI();
     }
 
     function exportMapJSON() {
@@ -3990,7 +4289,9 @@
         requestNewProjectWithAuth({ type: 'new-blank' });
       });
 
-      document.getElementById('btn-home-download-app').addEventListener('click', downloadStandaloneWebApp);
+      document.getElementById('btn-home-install-pwa').addEventListener('click', handleInstallPWAClick);
+      document.getElementById('btn-pwa-trigger-native').addEventListener('click', promptNativePWAInstall);
+      document.getElementById('btn-pwa-download-bundle').addEventListener('click', downloadStandaloneWebApp);
 
       document.getElementById('btn-home-login').addEventListener('click', () => {
         openAuthGateModal('login', null);
@@ -4567,7 +4868,7 @@
       });
 
       // Acciones Modal Exportar / Descargar
-      document.getElementById('btn-download-html-app').addEventListener('click', downloadStandaloneWebApp);
+      document.getElementById('btn-install-pwa-app').addEventListener('click', handleInstallPWAClick);
       document.getElementById('btn-export-print-pdf').addEventListener('click', () => {
         closeAllModals();
         setTimeout(() => window.print(), 150);
@@ -4651,6 +4952,7 @@
       renderTemplatesGallery();
       setupViewportInteractions();
       bindAllEvents();
+      initPWAEngine();
       renderHomeUI();
       updateUndoRedoButtons();
       initFirebaseSync();
