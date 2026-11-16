@@ -39,8 +39,9 @@
       height: 100%;
       height: 100dvh;
       overflow: hidden;
+      overscroll-behavior: none;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #eef2f6;
+      background-color: #ffffff;
       color: #0f172a;
       user-select: none;
       -webkit-user-select: none;
@@ -50,6 +51,7 @@
     #app-shell {
       height: 100%;
       height: 100dvh;
+      background-color: #ffffff;
       padding-top: var(--safe-top);
       padding-bottom: var(--safe-bottom);
       padding-left: var(--safe-left);
@@ -57,6 +59,8 @@
     }
 
     #home-screen {
+      background-color: #ffffff;
+      overscroll-behavior: none;
       padding-top: calc(16px + var(--safe-top));
       padding-bottom: calc(24px + var(--safe-bottom));
     }
@@ -169,34 +173,77 @@
     /* Tiradores de múltiples puntos de salida (naranja) y entrada (azul) por cada bocadillo */
     .anchor-handle-out {
       position: absolute;
-      width: 16px;
-      height: 16px;
+      width: 20px;
+      height: 20px;
       border-radius: 9999px;
       background: #F97316;
       border: 2.5px solid #FFFFFF;
-      box-shadow: 0 2px 7px rgba(249, 115, 22, 0.6);
+      box-shadow: 0 2px 8px rgba(249, 115, 22, 0.7);
       cursor: grab;
       pointer-events: auto;
-      z-index: 38;
+      z-index: 42;
       touch-action: none;
       transition: transform 0.12s ease, background-color 0.12s ease;
     }
 
+    .anchor-handle-out::before,
+    .anchor-handle-in::before {
+      content: '';
+      position: absolute;
+      inset: -10px;
+      border-radius: 9999px;
+    }
+
     .anchor-handle-out:hover,
-    .anchor-handle-out:active {
+    .anchor-handle-out:active,
+    .anchor-handle-out.dragging-handle {
       background: #EA580C;
       transform: scale(1.26);
       cursor: grabbing;
+      z-index: 48;
     }
 
     .anchor-handle-in {
       position: absolute;
-      width: 15px;
-      height: 15px;
+      width: 20px;
+      height: 20px;
       border-radius: 9999px;
       background: #0EA5E9;
       border: 2.5px solid #FFFFFF;
-      box-shadow: 0 2px 7px rgba(14, 165, 233, 0.6);
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.7);
+      cursor: grab;
+      pointer-events: auto;
+      z-index: 42;
+      touch-action: none;
+      transition: transform 0.12s ease, background-color 0.12s ease;
+    }
+
+    .anchor-handle-in:hover,
+    .anchor-handle-in:active,
+    .anchor-handle-in.dragging-handle {
+      background: #0284C7;
+      transform: scale(1.26);
+      cursor: grabbing;
+      z-index: 48;
+    }
+
+    .anchor-handle-out:hover,
+    .anchor-handle-out:active,
+    .anchor-handle-out.dragging-handle {
+      background: #EA580C;
+      transform: scale(1.28);
+      cursor: grabbing;
+      z-index: 45;
+    }
+
+    .anchor-handle-in {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      border-radius: 9999px;
+      background: #0EA5E9;
+      border: 2.5px solid #FFFFFF;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.65);
       cursor: grab;
       pointer-events: auto;
       z-index: 38;
@@ -205,10 +252,12 @@
     }
 
     .anchor-handle-in:hover,
-    .anchor-handle-in:active {
+    .anchor-handle-in:active,
+    .anchor-handle-in.dragging-handle {
       background: #0284C7;
-      transform: scale(1.26);
+      transform: scale(1.28);
       cursor: grabbing;
+      z-index: 45;
     }
 
     /* Fondo vectorial SVG para los 26 estilos de bocadillo */
@@ -359,7 +408,7 @@
   <div id="app-shell" class="flex flex-col w-full overflow-hidden">
 
     <!-- ==================== PÁGINA DE INICIO (BIENVENIDA, CUENTA Y PROYECTOS) ==================== -->
-    <div id="home-screen" class="fixed inset-0 z-50 bg-gradient-to-br from-slate-50 via-indigo-50/40 to-slate-100 overflow-y-auto px-4 sm:px-8">
+    <div id="home-screen" class="fixed inset-0 z-50 bg-white overflow-y-auto px-4 sm:px-8">
       <div class="max-w-6xl mx-auto space-y-6">
         <!-- Cabecera de Inicio -->
         <header class="flex flex-wrap items-center justify-between gap-3 bg-white/95 backdrop-blur border border-slate-200/80 rounded-2xl px-4 sm:px-6 py-3.5 shadow-sm">
@@ -465,7 +514,7 @@
     </div>
 
     <!-- ==================== BARRA SUPERIOR DE HERRAMIENTAS (EDITOR) ==================== -->
-    <header id="top-toolbar" class="no-print h-14 bg-white border-b border-slate-200 px-2.5 sm:px-4 flex items-center justify-between gap-2 shrink-0 z-30 shadow-sm">
+    <header id="top-toolbar" class="no-print hidden h-14 bg-white border-b border-slate-200 px-2.5 sm:px-4 flex items-center justify-between gap-2 shrink-0 z-30 shadow-sm">
       <!-- Izquierda: Volver a Inicio, Título y Estado de Nube -->
       <div class="flex items-center gap-2 min-w-0">
         <button id="btn-back-home" type="button" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 transition shrink-0" title="Guardar y volver a la página de inicio">
@@ -533,6 +582,12 @@
           </svg>
           <span>Auto-ordenar A4</span>
         </button>
+
+        <!-- Botón Bloquear y Mover Todo el Mapa a la Vez -->
+        <button id="btn-toggle-move-all" type="button" class="flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition shrink-0" title="Bloquear todos los bocadillos para mover todo el mapa a la vez">
+          <span id="move-all-icon">🔓</span>
+          <span id="move-all-label">Mover todo</span>
+        </button>
       </div>
 
       <!-- Derecha: Imprimir, Descargar/PWA y Panel Lateral -->
@@ -565,7 +620,7 @@
     </header>
 
     <!-- ==================== ESPACIO DE TRABAJO PRINCIPAL ==================== -->
-    <div id="workspace-main" class="relative flex flex-1 w-full overflow-hidden">
+    <div id="workspace-main" class="relative hidden flex-1 w-full overflow-hidden">
 
       <!-- Lienzo Interactivo con Hoja A4 -->
       <main id="canvas-viewport" class="canvas-desk relative flex-1 h-full overflow-hidden cursor-grab">
@@ -875,7 +930,7 @@
     </div>
 
     <!-- ==================== BARRA INFERIOR DE ESTADO ==================== -->
-    <footer id="status-bar" class="no-print h-7 bg-white border-t border-slate-200 px-3 sm:px-4 flex items-center justify-between text-[11px] text-slate-500 shrink-0 z-20">
+    <footer id="status-bar" class="no-print hidden h-7 bg-white border-t border-slate-200 px-3 sm:px-4 flex items-center justify-between text-[11px] text-slate-500 shrink-0 z-20">
       <div class="flex items-center gap-2 truncate">
         <span id="autofit-indicator-dot" class="w-2 h-2 rounded-full bg-emerald-500 shrink-0"></span>
         <span id="autofit-status-text" class="truncate">Auto-ajuste A4 activo · Rango letra: 11px – 17px (mín. 9px)</span>
@@ -1569,6 +1624,8 @@
       layout: 'radial',
       hasManualDrag: false,
       isDraggingNode: false,
+      isDraggingAnchor: false,
+      moveAllTogether: false,
       themeId: 'xmind-classic',
       tree: JSON.parse(JSON.stringify(TEMPLATES[0].tree)),
       selectedNodeId: 'root',
@@ -1598,6 +1655,12 @@
       homeAccountHint: document.getElementById('home-account-hint'),
       homeProjectsGrid: document.getElementById('home-projects-grid'),
       homeTemplatesGrid: document.getElementById('home-templates-grid'),
+      topToolbar: document.getElementById('top-toolbar'),
+      workspaceMain: document.getElementById('workspace-main'),
+      statusBar: document.getElementById('status-bar'),
+      btnToggleMoveAll: document.getElementById('btn-toggle-move-all'),
+      moveAllIcon: document.getElementById('move-all-icon'),
+      moveAllLabel: document.getElementById('move-all-label'),
       mapTitleInput: document.getElementById('map-title-input'),
       syncDot: document.getElementById('sync-dot'),
       syncText: document.getElementById('sync-text'),
@@ -2633,12 +2696,17 @@
     function attachPerimeterHandleDrag(handleEl, boxNode, onAngleUpdated, onResetAuto) {
       let lastTap = 0;
 
+      handleEl.addEventListener('click', e => {
+        e.stopPropagation();
+      });
+
       handleEl.addEventListener('pointerdown', e => {
+        if (e.pointerType === 'mouse' && e.button !== 0) return;
         e.stopPropagation();
         e.preventDefault();
 
         const now = Date.now();
-        if (now - lastTap < 320 && typeof onResetAuto === 'function') {
+        if (now - lastTap < 330 && typeof onResetAuto === 'function') {
           lastTap = 0;
           pushHistory();
           onResetAuto();
@@ -2651,30 +2719,58 @@
         lastTap = now;
 
         pushHistory();
+        state.isDraggingAnchor = true;
+        handleEl.classList.add('dragging-handle');
+
         try {
           handleEl.setPointerCapture(e.pointerId);
         } catch (_) {}
 
-        const onMove = ev => {
+        const updateFromClientPos = (clientX, clientY) => {
           const sheetRect = dom.sheet.getBoundingClientRect();
-          const paperX = (ev.clientX - sheetRect.left) / state.zoom;
-          const paperY = (ev.clientY - sheetRect.top) / state.zoom;
+          const paperX = (clientX - sheetRect.left) / state.zoom;
+          const paperY = (clientY - sheetRect.top) / state.zoom;
           const angle = Math.atan2(paperY - boxNode.y, paperX - boxNode.x);
           onAngleUpdated(angle);
+
+          const pt = getAnchorPointOnBox(boxNode, { angle }, null, false);
+          handleEl.style.left = `${pt.x - 10}px`;
+          handleEl.style.top = `${pt.y - 10}px`;
           renderConnections();
-          renderInteractiveAnchors();
         };
 
-        const onUp = () => {
+        const onMove = ev => {
+          if (!state.isDraggingAnchor) return;
+          ev.stopPropagation();
+          ev.preventDefault();
+          updateFromClientPos(ev.clientX, ev.clientY);
+        };
+
+        const onUp = ev => {
+          if (!state.isDraggingAnchor) return;
+          state.isDraggingAnchor = false;
+          handleEl.classList.remove('dragging-handle');
+          try {
+            if (ev && ev.pointerId !== undefined) {
+              handleEl.releasePointerCapture(ev.pointerId);
+            }
+          } catch (_) {}
           handleEl.removeEventListener('pointermove', onMove);
           handleEl.removeEventListener('pointerup', onUp);
           handleEl.removeEventListener('pointercancel', onUp);
+          window.removeEventListener('pointermove', onMove);
+          window.removeEventListener('pointerup', onUp);
+          window.removeEventListener('pointercancel', onUp);
+          renderInteractiveAnchors();
           scheduleAutoSave();
         };
 
-        handleEl.addEventListener('pointermove', onMove);
+        handleEl.addEventListener('pointermove', onMove, { passive: false });
         handleEl.addEventListener('pointerup', onUp);
         handleEl.addEventListener('pointercancel', onUp);
+        window.addEventListener('pointermove', onMove, { passive: false });
+        window.addEventListener('pointerup', onUp);
+        window.addEventListener('pointercancel', onUp);
       });
     }
 
@@ -2713,16 +2809,15 @@
         });
       }
 
-      // 2. Múltiples puntos de salida (● naranja) en el borde del bocadillo seleccionado:
-      //    Cada subtema que sale de este bocadillo tiene su propio tirador independiente en el perímetro.
+      // 2. Múltiples puntos de salida (● naranja) en el borde del bocadillo seleccionado
       if (!node.collapsed && Array.isArray(node.children)) {
         node.children.forEach(child => {
           const { startPt } = computeConnectionEndpoints(node, child);
           const outDot = document.createElement('div');
           outDot.className = 'anchor-handle-out no-print';
           outDot.title = `Punto de salida hacia "${child.text}" (arrastra alrededor del borde · doble clic para Auto)`;
-          outDot.style.left = `${startPt.x - 8}px`;
-          outDot.style.top = `${startPt.y - 8}px`;
+          outDot.style.left = `${startPt.x - 10}px`;
+          outDot.style.top = `${startPt.y - 10}px`;
 
           attachPerimeterHandleDrag(
             outDot,
@@ -2734,17 +2829,15 @@
         });
       }
 
-      // 3. Si el bocadillo seleccionado tiene un padre, mostrar:
-      //    - Tirador naranja (●) en el padre para mover desde qué punto de su borde sale esta línea
-      //    - Tirador azul (●) en el bocadillo seleccionado para mover por qué punto entra esta línea
+      // 3. Si el bocadillo seleccionado tiene un padre, mostrar puntos de salida (● naranja) y entrada (● azul)
       if (parent) {
         const { startPt, endPt } = computeConnectionEndpoints(parent, node);
 
         const parentOutDot = document.createElement('div');
         parentOutDot.className = 'anchor-handle-out no-print';
         parentOutDot.title = `Punto de salida en "${parent.text}" (arrastra alrededor del borde · doble clic para Auto)`;
-        parentOutDot.style.left = `${startPt.x - 8}px`;
-        parentOutDot.style.top = `${startPt.y - 8}px`;
+        parentOutDot.style.left = `${startPt.x - 10}px`;
+        parentOutDot.style.top = `${startPt.y - 10}px`;
         attachPerimeterHandleDrag(
           parentOutDot,
           parent,
@@ -2756,8 +2849,8 @@
         const childInDot = document.createElement('div');
         childInDot.className = 'anchor-handle-in no-print';
         childInDot.title = `Punto de entrada en "${node.text}" (arrastra alrededor del borde · doble clic para Auto)`;
-        childInDot.style.left = `${endPt.x - 7.5}px`;
-        childInDot.style.top = `${endPt.y - 7.5}px`;
+        childInDot.style.left = `${endPt.x - 10}px`;
+        childInDot.style.top = `${endPt.y - 10}px`;
         attachPerimeterHandleDrag(
           childInDot,
           node,
@@ -3144,12 +3237,16 @@
       let dragging = false;
       let startClientX = 0;
       let startClientY = 0;
-      let lastAppliedDx = 0;
-      let lastAppliedDy = 0;
+      let origPositions = null;
+      let origWholeBounds = null;
       let moved = false;
 
+      el.addEventListener('click', e => {
+        e.stopPropagation();
+      });
+
       el.addEventListener('pointerdown', e => {
-        if (e.target.closest('[data-collapse-id]') || state.editingNodeId === node.id) return;
+        if (e.target.closest('[data-collapse-id]') || state.editingNodeId === node.id || state.isDraggingAnchor) return;
         if (e.pointerType === 'mouse' && e.button !== 0) return;
         e.stopPropagation();
         e.preventDefault();
@@ -3181,12 +3278,15 @@
         moved = false;
         startClientX = e.clientX;
         startClientY = e.clientY;
-        lastAppliedDx = 0;
-        lastAppliedDy = 0;
+        origPositions = new Map();
+        traverseAllTreeNodes(n => {
+          origPositions.set(n.id, { x: n.x, y: n.y });
+        });
+        origWholeBounds = getSubtreeBounds(state.tree);
       });
 
       el.addEventListener('pointermove', e => {
-        if (!dragging || state.editingNodeId === node.id) return;
+        if (!dragging || state.editingNodeId === node.id || state.isDraggingAnchor) return;
         e.stopPropagation();
         e.preventDefault();
 
@@ -3204,31 +3304,26 @@
           el.classList.add('dragging');
         }
 
-        if (moved) {
+        if (moved && origPositions) {
           const dims = A4_DIMS[state.orientation];
-          let stepDx = rawDx - lastAppliedDx;
-          let stepDy = rawDy - lastAppliedDy;
+          let dx = rawDx;
+          let dy = rawDy;
 
-          const moveWithChildren = !e.altKey;
-          const bounds = moveWithChildren
-            ? getSubtreeBounds(node)
-            : {
-                minX: node.x - node.w / 2,
-                maxX: node.x + node.w / 2,
-                minY: node.y - node.h / 2,
-                maxY: node.y + node.h / 2
-              };
+          if (state.moveAllTogether) {
+            // Modo bloqueado: mueve TODO el mapa completo a la vez sin deriva
+            if (origWholeBounds.minX + dx < SAFE_MARGIN) dx = SAFE_MARGIN - origWholeBounds.minX;
+            if (origWholeBounds.maxX + dx > dims.width - SAFE_MARGIN) dx = (dims.width - SAFE_MARGIN) - origWholeBounds.maxX;
+            if (origWholeBounds.minY + dy < SAFE_MARGIN) dy = SAFE_MARGIN - origWholeBounds.minY;
+            if (origWholeBounds.maxY + dy > dims.height - SAFE_MARGIN) dy = (dims.height - SAFE_MARGIN) - origWholeBounds.maxY;
 
-          if (bounds.minX + stepDx < SAFE_MARGIN) stepDx = SAFE_MARGIN - bounds.minX;
-          if (bounds.maxX + stepDx > dims.width - SAFE_MARGIN) stepDx = (dims.width - SAFE_MARGIN) - bounds.maxX;
-          if (bounds.minY + stepDy < SAFE_MARGIN) stepDy = SAFE_MARGIN - bounds.minY;
-          if (bounds.maxY + stepDy > dims.height - SAFE_MARGIN) stepDy = (dims.height - SAFE_MARGIN) - bounds.maxY;
+            traverseAllTreeNodes(n => {
+              const orig = origPositions.get(n.id);
+              if (orig) {
+                n.x = Math.round(orig.x + dx);
+                n.y = Math.round(orig.y + dy);
+              }
+            });
 
-          lastAppliedDx += stepDx;
-          lastAppliedDy += stepDy;
-
-          if (moveWithChildren) {
-            moveNodeSubtreeBy(node, stepDx, stepDy);
             dom.nodesContainer.querySelectorAll('.mind-node').forEach(nodeDom => {
               const foundSub = findNodeAndParent(nodeDom.dataset.nodeId);
               if (foundSub) {
@@ -3237,8 +3332,20 @@
               }
             });
           } else {
-            node.x = Math.round(node.x + stepDx);
-            node.y = Math.round(node.y + stepDy);
+            // Modo individual: mueve libremente el bocadillo arrastrado (incluido el bloque principal)
+            const origSelf = origPositions.get(node.id) || { x: node.x, y: node.y };
+            const minX = origSelf.x - node.w / 2;
+            const maxX = origSelf.x + node.w / 2;
+            const minY = origSelf.y - node.h / 2;
+            const maxY = origSelf.y + node.h / 2;
+
+            if (minX + dx < SAFE_MARGIN) dx = SAFE_MARGIN - minX;
+            if (maxX + dx > dims.width - SAFE_MARGIN) dx = (dims.width - SAFE_MARGIN) - maxX;
+            if (minY + dy < SAFE_MARGIN) dy = SAFE_MARGIN - minY;
+            if (maxY + dy > dims.height - SAFE_MARGIN) dy = (dims.height - SAFE_MARGIN) - maxY;
+
+            node.x = Math.round(origSelf.x + dx);
+            node.y = Math.round(origSelf.y + dy);
             el.style.left = `${node.x}px`;
             el.style.top = `${node.y}px`;
           }
@@ -3371,7 +3478,7 @@
       });
 
       window.addEventListener('pointermove', e => {
-        if (!isPanning || state.isDraggingNode) return;
+        if (!isPanning || state.isDraggingNode || state.isDraggingAnchor) return;
         const dx = e.clientX - panStartX;
         const dy = e.clientY - panStartY;
         if (Math.hypot(dx, dy) > 4) bgMoved = true;
@@ -3386,6 +3493,7 @@
           vp.style.cursor = 'grab';
           if (
             !bgMoved &&
+            !state.isDraggingAnchor &&
             !e.target.closest('.mind-node') &&
             !e.target.closest('.root-side-handle') &&
             !e.target.closest('.anchor-handle-out') &&
@@ -3412,6 +3520,7 @@
       vp.addEventListener('touchstart', e => {
         if (
           state.isDraggingNode ||
+          state.isDraggingAnchor ||
           e.target.closest('.mind-node') ||
           e.target.closest('.root-side-handle') ||
           e.target.closest('.anchor-handle-out') ||
@@ -3441,7 +3550,7 @@
       }, { passive: true });
 
       vp.addEventListener('touchmove', e => {
-        if (state.isDraggingNode) return;
+        if (state.isDraggingNode || state.isDraggingAnchor) return;
         if (touchMode === 'pan' && e.touches.length === 1) {
           e.preventDefault();
           const dx = e.touches[0].clientX - tStartX;
@@ -3463,7 +3572,7 @@
       }, { passive: false });
 
       vp.addEventListener('touchend', () => {
-        if (touchMode === 'pan' && !touchMoved && !state.isDraggingNode) {
+        if (touchMode === 'pan' && !touchMoved && !state.isDraggingNode && !state.isDraggingAnchor) {
           deselectCurrentNode();
         }
         touchMode = null;
@@ -3820,9 +3929,10 @@
     }
 
     async function deleteUserMap(mapId) {
-      if (!state.user) return;
+      if (!state.user || !mapId) return;
+      const uidStr = state.user.uid;
       try {
-        const key = LOCAL_BACKUP_PREFIX + state.user.uid;
+        const key = LOCAL_BACKUP_PREFIX + uidStr;
         const raw = localStorage.getItem(key);
         if (raw) {
           const filtered = JSON.parse(raw).filter(m => m.mapId !== mapId);
@@ -3830,11 +3940,37 @@
         }
       } catch (_) {}
 
-      try { await deleteDoc(doc(db, 'mindmaps', mapId)); } catch (_) {}
-      try { await deleteDoc(doc(db, 'users', state.user.uid, 'mindmaps', mapId)); } catch (_) {}
+      try {
+        await deleteDoc(doc(db, 'mindmaps', mapId));
+        await deleteDoc(doc(db, 'users', uidStr, 'mindmaps', mapId));
+      } catch (_) {}
+
       showToast('Mapa eliminado', 'info');
       renderHomeProjects();
-      renderSavedMapsModal();
+      if (!dom.mapsModal.classList.contains('hidden')) {
+        renderSavedMapsModal();
+      }
+    }
+
+    function setHomeScreenVisibility(showHome) {
+      dom.homeScreen.classList.toggle('hidden', !showHome);
+      dom.topToolbar.classList.toggle('hidden', showHome);
+      dom.workspaceMain.classList.toggle('hidden', showHome);
+      dom.workspaceMain.classList.toggle('flex', !showHome);
+      dom.statusBar.classList.toggle('hidden', showHome);
+    }
+
+    function updateMoveAllButtonUI() {
+      if (!dom.btnToggleMoveAll) return;
+      if (state.moveAllTogether) {
+        dom.btnToggleMoveAll.className = 'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 border border-indigo-600 shadow-sm transition shrink-0';
+        dom.moveAllIcon.textContent = '🔒';
+        dom.moveAllLabel.textContent = 'Todo bloqueado';
+      } else {
+        dom.btnToggleMoveAll.className = 'flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition shrink-0';
+        dom.moveAllIcon.textContent = '🔓';
+        dom.moveAllLabel.textContent = 'Mover todo';
+      }
     }
 
     function openMapIntoEditor(payload, isBrandNewTemplate = false) {
@@ -3859,7 +3995,8 @@
       }
 
       dom.mapTitleInput.value = state.title;
-      dom.homeScreen.classList.add('hidden');
+      setHomeScreenVisibility(false);
+      updateMoveAllButtonUI();
       updateUndoRedoButtons();
       renderThemesList();
       renderAll();
@@ -4231,8 +4368,19 @@
       // Barra superior del editor
       document.getElementById('btn-back-home').addEventListener('click', async () => {
         await saveCurrentMapToCloud(true);
-        dom.homeScreen.classList.remove('hidden');
+        setHomeScreenVisibility(true);
         renderHomeProjects();
+      });
+
+      dom.btnToggleMoveAll.addEventListener('click', () => {
+        state.moveAllTogether = !state.moveAllTogether;
+        updateMoveAllButtonUI();
+        showToast(
+          state.moveAllTogether
+            ? '🔒 Mapa bloqueado: arrastra cualquier bocadillo para mover todo a la vez'
+            : '🔓 Desbloqueado: cada bocadillo se mueve por separado',
+          'info'
+        );
       });
 
       dom.mapTitleInput.addEventListener('input', () => {
@@ -4719,6 +4867,7 @@
 
       renderAll();
       centerSheetInViewport();
+      setHomeScreenVisibility(true);
     }
 
     window.addEventListener('DOMContentLoaded', init);
