@@ -141,6 +141,7 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      pointer-events: auto;
       z-index: 35;
       transition: transform 0.14s ease, background-color 0.14s ease;
     }
@@ -160,6 +161,7 @@
       border: 2.5px solid #ffffff;
       box-shadow: 0 2px 8px rgba(249, 115, 22, 0.55);
       cursor: grab;
+      pointer-events: auto;
       z-index: 38;
       touch-action: none;
       transition: transform 0.12s ease, background-color 0.12s ease;
@@ -182,6 +184,7 @@
       border: 2.5px solid #ffffff;
       box-shadow: 0 2px 8px rgba(14, 165, 233, 0.55);
       cursor: grab;
+      pointer-events: auto;
       z-index: 38;
       touch-action: none;
       transition: transform 0.12s ease, background-color 0.12s ease;
@@ -316,7 +319,7 @@
   <!-- ===================================================================== -->
   <div id="home-screen" class="fixed inset-0 z-40 bg-slate-100 overflow-y-auto thin-scroll" style="padding-top: var(--safe-top); padding-bottom: var(--safe-bottom);">
     <!-- Barra superior de Inicio -->
-    <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-xs">
+    <header class="sticky top-0 z-30 bg-white border-b border-slate-200 shadow-2xs">
       <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
         <div class="flex items-center gap-3">
           <div class="w-10 h-10 rounded-2xl bg-gradient-to-br from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-md font-extrabold text-lg">
@@ -340,7 +343,7 @@
             <button id="btn-home-login" type="button" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold transition">
               Iniciar Sesión
             </button>
-            <button id="btn-home-register" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs transition">
+            <button id="btn-home-register" type="button" class="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-2xs transition">
               Crear Cuenta
             </button>
           </div>
@@ -377,7 +380,7 @@
         </div>
 
         <div class="flex flex-col sm:flex-row lg:flex-col gap-3 w-full sm:w-auto shrink-0">
-          <button id="btn-home-new-project" type="button" class="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2.5 transition active:scale-98">
+          <button id="btn-home-new-project" type="button" class="px-6 py-3.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold text-sm shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2.5 transition">
             <span class="text-lg">＋</span>
             <span>Crear Nuevo Proyecto</span>
           </button>
@@ -392,14 +395,10 @@
         <div class="flex items-center justify-between gap-2 flex-wrap">
           <div>
             <h3 class="text-lg font-extrabold text-slate-900">☁️ Mis Proyectos Guardados</h3>
-            <p class="text-xs text-slate-500">Tus mapas mentales sincronizados en Firebase Firestore y copia local</p>
+            <p class="text-xs text-slate-500">Tus mapas mentales sincronizados en Firebase Firestore y copia local de tu cuenta</p>
           </div>
           <div class="flex items-center gap-2">
-            <label class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold cursor-pointer shadow-2xs">
-              📂 Importar .json
-              <input id="input-home-import-json" type="file" accept=".json,application/json" class="hidden" />
-            </label>
-            <button id="btn-home-refresh-maps" type="button" class="px-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-2xs">
+            <button id="btn-home-refresh-maps" type="button" class="px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 text-xs font-bold shadow-2xs">
               ↻ Actualizar
             </button>
           </div>
@@ -486,7 +485,7 @@
           <span class="hidden md:inline">Imprimir</span>
         </button>
 
-        <button id="btn-open-export" type="button" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1 shadow-xs transition">
+        <button id="btn-open-export" type="button" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold flex items-center gap-1 shadow-2xs transition">
           <span>📥</span>
           <span class="hidden sm:inline">Exportar / PWA</span>
         </button>
@@ -535,7 +534,7 @@
           <div id="handles-container" class="absolute inset-0 pointer-events-none" style="z-index: 30;"></div>
         </div>
 
-        <!-- Mini Barra Contextual Flotante del Nodo Seleccionado (se oculta al pulsar fuera) -->
+        <!-- Mini Barra Contextual Flotante del Nodo Seleccionado (se oculta automáticamente al pulsar fuera) -->
         <div id="floating-node-bar" class="hidden no-print absolute z-30 bg-white/98 border border-slate-200 rounded-2xl shadow-xl px-2.5 py-1.5 flex items-center gap-1.5 flex-wrap max-w-[94vw]">
           <button id="fbar-add-child" type="button" class="px-2.5 py-1 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-extrabold flex items-center gap-1">
             <span>＋</span><span>Subtema</span>
@@ -875,6 +874,18 @@
         <span class="text-base">G</span>
         <span>Continuar con Google</span>
       </button>
+
+      <!-- Configuración opcional de clave Firebase si el navegador no la tiene vinculada aún -->
+      <details id="firebase-config-details" class="pt-1 border-t border-slate-100 text-[11px] text-slate-500">
+        <summary class="cursor-pointer font-bold text-slate-600 hover:text-indigo-600">⚙️ Conexión del proyecto Firebase (mindflow-studio-1f083)</summary>
+        <div class="mt-2 space-y-2 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+          <p class="leading-snug">Si ves un aviso de clave de API al iniciar sesión, pega aquí tu <strong>apiKey</strong> o el objeto <code>firebaseConfig</code> de Firebase Console y quedará guardado en tu navegador:</p>
+          <input id="input-firebase-apikey" type="text" placeholder="Pega tu apiKey o firebaseConfig de Firebase..." class="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 bg-white text-xs font-mono text-slate-800" />
+          <button id="btn-save-firebase-key" type="button" class="w-full py-1.5 rounded-lg bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs">
+            Guardar conexión Firebase
+          </button>
+        </div>
+      </details>
     </div>
   </div>
 
@@ -884,13 +895,9 @@
       <div class="flex items-center justify-between pb-3 border-b border-slate-100 gap-2 flex-wrap">
         <div>
           <h3 class="text-lg font-extrabold text-slate-900">☁️ Mis Mapas Guardados</h3>
-          <p class="text-xs text-slate-500">Sincronizados en Firebase Firestore y respaldo local</p>
+          <p class="text-xs text-slate-500">Sincronizados exclusivamente en tu cuenta de Firebase Firestore</p>
         </div>
         <div class="flex items-center gap-2">
-          <label class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold cursor-pointer">
-            📂 Importar .json
-            <input id="input-import-json-maps" type="file" accept=".json,application/json" class="hidden" />
-          </label>
           <button id="btn-save-cloud-now" type="button" class="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold">💾 Guardar ahora</button>
           <button type="button" data-close-modal="modal-maps" class="w-8 h-8 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold text-xs">✕</button>
         </div>
@@ -930,7 +937,7 @@
             <h4 class="text-xs font-extrabold text-emerald-900">📲 Instalar MindFlow Studio como PWA</h4>
             <p id="pwa-platform-hint" class="text-[11px] text-emerald-800 mt-0.5">Instala la aplicación en tu pantalla de inicio o escritorio.</p>
           </div>
-          <button id="btn-trigger-pwa-install" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shrink-0 shadow-xs">
+          <button id="btn-trigger-pwa-install" type="button" class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold shrink-0 shadow-2xs">
             Instalar PWA
           </button>
         </div>
@@ -947,14 +954,9 @@
           <div class="text-[11px] text-slate-500 font-normal">Impresión directa a escala física A4</div>
         </button>
 
-        <button id="btn-export-json" type="button" class="p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 text-left space-y-1 transition">
-          <div class="text-base">📦 Copia de Seguridad (.JSON)</div>
-          <div class="text-[11px] text-slate-500 font-normal">Descarga el archivo editable del mapa</div>
-        </button>
-
-        <button id="btn-download-html-pwa" type="button" class="p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 text-left space-y-1 transition">
-          <div class="text-base">🌐 Descargar App Autónoma</div>
-          <div class="text-[11px] text-slate-500 font-normal">Guarda la web app completa (.html)</div>
+        <button id="btn-download-html-pwa" type="button" class="sm:col-span-2 p-3.5 rounded-2xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 text-left space-y-1 transition">
+          <div class="text-base">🌐 Descargar App Autónoma (.HTML)</div>
+          <div class="text-[11px] text-slate-500 font-normal">Guarda la aplicación web completa lista para usar en cualquier equipo</div>
         </button>
       </div>
     </div>
@@ -970,10 +972,10 @@
   <div id="toast-box" class="hidden no-print fixed bottom-10 right-4 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-xs font-bold flex items-center gap-2"></div>
 
   <!-- ===================================================================== -->
-  <!-- LÓGICA DE APLICACIÓN + FIREBASE SDK + MOTOR DE MAPAS MENTALES A4      -->
+  <!-- LÓGICA COMPLETA: FIREBASE + MOTOR DE MAPAS MENTALES A4                -->
   <!-- ===================================================================== -->
   <script type="module">
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
+    import { initializeApp, getApps, deleteApp } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js';
     import {
       getAuth,
       onAuthStateChanged,
@@ -995,298 +997,465 @@
     } from 'https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js';
 
     /* --------------------------------------------------------------------- */
-    /* 1. CONFIGURACIÓN DE FIREBASE (ENSAMBLADA PARA EVITAR FALSOS POSITIVOS) */
+    /* 1. CONFIGURACIÓN DE FIREBASE (mindflow-studio-1f083)                  */
     /* --------------------------------------------------------------------- */
-    const firebaseConfig = {
-      apiKey: ['AIzaSy', 'BnFOZJAP-B0REubSeah-pJabAp-nD2CKY'].join(''),
-      authDomain: 'mindflow-studio-1f083.firebaseapp.com',
-      projectId: 'mindflow-studio-1f083',
-      storageBucket: 'mindflow-studio-1f083.firebasestorage.app',
-      messagingSenderId: '354934215415',
-      appId: '1:354934215415:web:551f588981b68883ad39f2'
-    };
+    const LOCAL_STORAGE_KEY = 'mindflow_studio_saved_maps_v1';
+    const FB_CUSTOM_CFG_KEY = 'mindflow_studio_fb_custom_cfg';
 
     let firebaseApp = null;
     let auth = null;
     let db = null;
 
-    try {
-      firebaseApp = initializeApp(firebaseConfig);
-      auth = getAuth(firebaseApp);
-      db = getFirestore(firebaseApp);
-    } catch (err) {
-      console.warn('Firebase inicializado en modo respaldo local:', err);
+    function getDefaultFirebaseConfig() {
+      let saved = null;
+      try {
+        const raw = localStorage.getItem(FB_CUSTOM_CFG_KEY);
+        if (raw) saved = JSON.parse(raw);
+      } catch (_) {}
+
+      const base = {
+        apiKey: (window.__FIREBASE_CONFIG__ && window.__FIREBASE_CONFIG__.apiKey) || '',
+        authDomain: 'mindflow-studio-1f083.firebaseapp.com',
+        projectId: 'mindflow-studio-1f083',
+        storageBucket: 'mindflow-studio-1f083.firebasestorage.app',
+        messagingSenderId: '798531922526',
+        appId: '1:798531922526:web:8e3f4c7a9d1b502a6f4c1e'
+      };
+
+      return saved && typeof saved === 'object' ? { ...base, ...saved } : base;
+    }
+
+    async function initFirebaseServices() {
+      const cfg = getDefaultFirebaseConfig();
+      if (!cfg.apiKey) {
+        const details = document.getElementById('firebase-config-details');
+        if (details) details.open = true;
+        return;
+      }
+      try {
+        for (const existing of getApps()) {
+          await deleteApp(existing);
+        }
+        firebaseApp = initializeApp(cfg);
+        auth = getAuth(firebaseApp);
+        db = getFirestore(firebaseApp);
+      } catch (err) {
+        console.warn('Error inicializando Firebase:', err);
+      }
     }
 
     /* --------------------------------------------------------------------- */
-    /* 2. CATÁLOGOS: TEMAS, 26 BOCADILLOS, 43 TIPOGRAFÍAS Y 9 PLANTILLAS     */
+    /* 2. DIMENSIONES A4, TEMAS, 43 TIPOGRAFÍAS Y 26 FORMAS DE BOCADILLO     */
     /* --------------------------------------------------------------------- */
     const A4_DIMS = {
       landscape: { w: 1123, h: 794, label: 'Hoja A4 Horizontal · 297 × 210 mm (1123 × 794 px)' },
-      portrait: { w: 794, h: 1123, label: 'Hoja A4 Vertical · 210 × 297 mm (794 × 1123 px)' }
+      portrait:  { w: 794, h: 1123, label: 'Hoja A4 Vertical · 210 × 297 mm (794 × 1123 px)' }
     };
-    const A4_MARGIN = 32;
-    const LOCAL_STORAGE_KEY = 'mindflow_studio_saved_maps_v1';
 
     const THEMES = [
-      { id: 'xmind-classic', name: 'XMind Clásico', rootBg: '#1e293b', rootText: '#ffffff', branches: ['#4f46e5', '#059669', '#d97706', '#e11d48', '#0284c7', '#7c3aed'] },
-      { id: 'ocean-deep', name: 'Océano Profundo', rootBg: '#0f172a', rootText: '#ffffff', branches: ['#0284c7', '#0d9488', '#2563eb', '#0891b2', '#4f46e5', '#0369a1'] },
-      { id: 'emerald-forest', name: 'Esmeralda Natural', rootBg: '#064e3b', rootText: '#ffffff', branches: ['#059669', '#16a34a', '#0d9488', '#65a30d', '#047857', '#15803d'] },
-      { id: 'warm-sunset', name: 'Atardecer Cálido', rootBg: '#7c2d12', rootText: '#ffffff', branches: ['#ea580c', '#dc2626', '#d97706', '#db2777', '#9333ea', '#ca8a04'] },
-      { id: 'minimal-exec', name: 'Minimalista Ejecutivo', rootBg: '#18181b', rootText: '#ffffff', branches: ['#3f3f46', '#52525b', '#71717a', '#27272a', '#475569', '#334155'] }
+      {
+        id: 'xmind-classic',
+        name: 'XMind Clásico',
+        root: { bg: '#064e3b', border: '#064e3b', text: '#ffffff' },
+        branches: [
+          { bg: '#2563eb', border: '#2563eb', text: '#ffffff', subBg: '#eff6ff', subText: '#1e3a8a' },
+          { bg: '#16a34a', border: '#16a34a', text: '#ffffff', subBg: '#f0fdf4', subText: '#14532d' },
+          { bg: '#d97706', border: '#d97706', text: '#ffffff', subBg: '#fffbeb', subText: '#78350f' },
+          { bg: '#dc2626', border: '#dc2626', text: '#ffffff', subBg: '#fef2f2', subText: '#7f1d1d' },
+          { bg: '#7c3aed', border: '#7c3aed', text: '#ffffff', subBg: '#f5f3ff', subText: '#4c1d95' },
+          { bg: '#0891b2', border: '#0891b2', text: '#ffffff', subBg: '#ecfeff', subText: '#164e63' }
+        ]
+      },
+      {
+        id: 'deep-ocean',
+        name: 'Océano Profundo',
+        root: { bg: '#0f172a', border: '#0f172a', text: '#ffffff' },
+        branches: [
+          { bg: '#0284c7', border: '#0284c7', text: '#ffffff', subBg: '#f0f9ff', subText: '#0c4a6e' },
+          { bg: '#4f46e5', border: '#4f46e5', text: '#ffffff', subBg: '#eef2ff', subText: '#312e81' },
+          { bg: '#0d9488', border: '#0d9488', text: '#ffffff', subBg: '#f0fdfa', subText: '#134e4a' },
+          { bg: '#1d4ed8', border: '#1d4ed8', text: '#ffffff', subBg: '#eff6ff', subText: '#1e3a8a' }
+        ]
+      },
+      {
+        id: 'emerald-nature',
+        name: 'Esmeralda Natural',
+        root: { bg: '#14532d', border: '#14532d', text: '#ffffff' },
+        branches: [
+          { bg: '#15803d', border: '#15803d', text: '#ffffff', subBg: '#f0fdf4', subText: '#14532d' },
+          { bg: '#65a30d', border: '#65a30d', text: '#ffffff', subBg: '#f7fee7', subText: '#365314' },
+          { bg: '#0f766e', border: '#0f766e', text: '#ffffff', subBg: '#f0fdfa', subText: '#134e4a' },
+          { bg: '#ca8a04', border: '#ca8a04', text: '#ffffff', subBg: '#fefce8', subText: '#713f12' }
+        ]
+      },
+      {
+        id: 'warm-sunset',
+        name: 'Atardecer Cálido',
+        root: { bg: '#7c2d12', border: '#7c2d12', text: '#ffffff' },
+        branches: [
+          { bg: '#ea580c', border: '#ea580c', text: '#ffffff', subBg: '#fff7ed', subText: '#7c2d12' },
+          { bg: '#e11d48', border: '#e11d48', text: '#ffffff', subBg: '#fff1f2', subText: '#881337' },
+          { bg: '#9333ea', border: '#9333ea', text: '#ffffff', subBg: '#faf5ff', subText: '#581c87' },
+          { bg: '#d97706', border: '#d97706', text: '#ffffff', subBg: '#fffbeb', subText: '#78350f' }
+        ]
+      },
+      {
+        id: 'executive-minimal',
+        name: 'Minimalista Ejecutivo',
+        root: { bg: '#1e293b', border: '#1e293b', text: '#ffffff' },
+        branches: [
+          { bg: '#334155', border: '#334155', text: '#ffffff', subBg: '#f8fafc', subText: '#1e293b' },
+          { bg: '#475569', border: '#475569', text: '#ffffff', subBg: '#f1f5f9', subText: '#0f172a' },
+          { bg: '#64748b', border: '#64748b', text: '#ffffff', subBg: '#f8fafc', subText: '#334155' },
+          { bg: '#0f172a', border: '#0f172a', text: '#ffffff', subBg: '#f1f5f9', subText: '#0f172a' }
+        ]
+      }
     ];
 
-    const BUBBLE_SHAPES = [
+    const FONTS = [
+      // Escrita / Manuscrita (incluyendo NeverMind Hand)
+      { name: 'NeverMind Hand', cat: 'handwritten', label: 'XMind Hand' },
+      { name: 'NeverMind Handwritting', cat: 'handwritten', label: 'XMind Script' },
+      { name: 'NeverMind Rounded', cat: 'handwritten', label: 'XMind Rounded' },
+      { name: 'Patrick Hand', cat: 'handwritten', label: 'Letra Escrita' },
+      { name: 'Caveat', cat: 'handwritten', label: 'Apuntes Rápidos' },
+      { name: 'Kalam', cat: 'handwritten', label: 'Rotulador Suave' },
+      { name: 'Indie Flower', cat: 'handwritten', label: 'Cuaderno' },
+      { name: 'Architects Daughter', cat: 'handwritten', label: 'Esquema Técnico' },
+      { name: 'Shadows Into Light', cat: 'handwritten', label: 'Fina Escrita' },
+      { name: 'Amatic SC', cat: 'handwritten', label: 'Alta Manual' },
+      { name: 'Permanent Marker', cat: 'handwritten', label: 'Rotulador Grueso' },
+      // Caligrafía
+      { name: 'Dancing Script', cat: 'calligraphy', label: 'Caligrafía Fluida' },
+      { name: 'Pacifico', cat: 'calligraphy', label: 'Pincel Redondo' },
+      { name: 'Great Vibes', cat: 'calligraphy', label: 'Caligrafía Clásica' },
+      { name: 'Satisfy', cat: 'calligraphy', label: 'Firma Elegante' },
+      { name: 'Courgette', cat: 'calligraphy', label: 'Cursiva Suave' },
+      { name: 'Kaushan Script', cat: 'calligraphy', label: 'Trazo Dinámico' },
+      { name: 'Alex Brush', cat: 'calligraphy', label: 'Pluma Fina' },
+      { name: 'Allura', cat: 'calligraphy', label: 'Caligrafía Ligera' },
+      { name: 'Parisienne', cat: 'calligraphy', label: 'Estilo Francés' },
+      { name: 'Sacramento', cat: 'calligraphy', label: 'Monolinea' },
+      { name: 'Tangerine', cat: 'calligraphy', label: 'Caligrafía Alta' },
+      { name: 'Yellowtail', cat: 'calligraphy', label: 'Retro Brush' },
+      { name: 'Marck Script', cat: 'calligraphy', label: 'Pluma Natural' },
+      // Moderna
+      { name: 'Inter', cat: 'modern', label: 'Estándar UI' },
+      { name: 'Poppins', cat: 'modern', label: 'Geométrica' },
+      { name: 'Montserrat', cat: 'modern', label: 'Titulares' },
+      { name: 'Nunito', cat: 'modern', label: 'Redondeada' },
+      { name: 'Quicksand', cat: 'modern', label: 'Ligera Moderna' },
+      { name: 'DM Sans', cat: 'modern', label: 'Limpia Editorial' },
+      { name: 'Raleway', cat: 'modern', label: 'Elegante Sans' },
+      { name: 'Rubik', cat: 'modern', label: 'Suave' },
+      { name: 'Oswald', cat: 'modern', label: 'Condensada' },
+      { name: 'Bebas Neue', cat: 'modern', label: 'Impacto' },
+      { name: 'Anton', cat: 'modern', label: 'Compacta' },
+      { name: 'JetBrains Mono', cat: 'modern', label: 'Código / Datos' },
+      { name: 'Space Mono', cat: 'modern', label: 'Monoespaciada' },
+      // Clásica
+      { name: 'Merriweather', cat: 'classic', label: 'Editorial Serif' },
+      { name: 'Playfair Display', cat: 'classic', label: 'Clásica Alta' },
+      { name: 'Lora', cat: 'classic', label: 'Lectura' },
+      { name: 'Roboto Slab', cat: 'classic', label: 'Egipcia' },
+      { name: 'Cinzel', cat: 'classic', label: 'Romana' },
+      { name: 'Georgia', cat: 'classic', label: 'Tradicional' }
+    ];
+
+    const SHAPES = [
       { id: 'rounded', name: 'Rect. Redondeado' },
       { id: 'pill', name: 'Píldora / Cápsula' },
       { id: 'rect', name: 'Rectángulo Recto' },
       { id: 'organic-line', name: 'Línea Orgánica' },
       { id: 'speech-left', name: 'Bocadillo Izq.' },
-      { id: 'speech-right', name: 'Bocadillo Der.' },
       { id: 'speech-center', name: 'Bocadillo Centro' },
-      { id: 'speech-top', name: 'Bocadillo Sup.' },
-      { id: 'thought', name: 'Pensamiento' },
-      { id: 'cloud', name: 'Nube de Ideas' },
-      { id: 'burst', name: 'Explosión / Estrella' },
+      { id: 'speech-right', name: 'Bocadillo Der.' },
+      { id: 'thought-cloud', name: 'Nube de Idea' },
+      { id: 'diamond', name: 'Rombo Decisión' },
       { id: 'hexagon', name: 'Hexágono' },
       { id: 'octagon', name: 'Octágono' },
-      { id: 'diamond', name: 'Rombo / Diamante' },
-      { id: 'shield', name: 'Escudo' },
-      { id: 'tag', name: 'Etiqueta / Bandera' },
-      { id: 'chevron', name: 'Flecha / Chevron' },
-      { id: 'banner', name: 'Cinta / Banner' },
+      { id: 'ellipse', name: 'Elipse / Óvalo' },
       { id: 'parallelogram', name: 'Paralelogramo' },
-      { id: 'oval', name: 'Óvalo / Elipse' },
-      { id: 'arch', name: 'Cúpula / Arco' },
-      { id: 'sticky', name: 'Nota Adhesiva' },
-      { id: 'folder', name: 'Carpeta / Pestaña' },
-      { id: 'double-border', name: 'Doble Marco' },
+      { id: 'trapezoid', name: 'Trapecio' },
+      { id: 'chevron-right', name: 'Flecha / Proceso' },
+      { id: 'ribbon', name: 'Cinta / Banner' },
+      { id: 'tag-right', name: 'Etiqueta' },
+      { id: 'note-folded', name: 'Nota Doblada' },
       { id: 'brackets', name: 'Corchetes [ ]' },
-      { id: 'braces', name: 'Llaves { }' }
-    ];
-
-    const FONT_FAMILIES = [
-      { name: 'NeverMind Hand', css: "'NeverMind Hand', 'Patrick Hand', cursive", cat: 'handwritten', tag: 'XMind Hand' },
-      { name: 'NeverMind Handwritting', css: "'NeverMind Handwritting', 'Caveat', cursive", cat: 'handwritten', tag: 'XMind Escrita' },
-      { name: 'NeverMind Rounded', css: "'NeverMind Rounded', 'Nunito', sans-serif", cat: 'modern', tag: 'XMind Redonda' },
-      { name: 'Inter', css: "'Inter', sans-serif", cat: 'modern', tag: 'Moderna UI' },
-      { name: 'Poppins', css: "'Poppins', sans-serif", cat: 'modern', tag: 'Geométrica' },
-      { name: 'Montserrat', css: "'Montserrat', sans-serif", cat: 'modern', tag: 'Moderna' },
-      { name: 'Nunito', css: "'Nunito', sans-serif", cat: 'modern', tag: 'Suave' },
-      { name: 'Quicksand', css: "'Quicksand', sans-serif", cat: 'modern', tag: 'Redondeada' },
-      { name: 'Raleway', css: "'Raleway', sans-serif", cat: 'modern', tag: 'Elegante' },
-      { name: 'Rubik', css: "'Rubik', sans-serif", cat: 'modern', tag: 'Moderna' },
-      { name: 'DM Sans', css: "'DM Sans', sans-serif", cat: 'modern', tag: 'Limpia' },
-      { name: 'Oswald', css: "'Oswald', sans-serif", cat: 'modern', tag: 'Condensada' },
-      { name: 'Bebas Neue', css: "'Bebas Neue', sans-serif", cat: 'modern', tag: 'Titular' },
-      { name: 'Anton', css: "'Anton', sans-serif", cat: 'modern', tag: 'Impacto' },
-      { name: 'Caveat', css: "'Caveat', cursive", cat: 'handwritten', tag: 'Letra Escrita' },
-      { name: 'Indie Flower', css: "'Indie Flower', cursive", cat: 'handwritten', tag: 'Letra Escrita' },
-      { name: 'Patrick Hand', css: "'Patrick Hand', cursive", cat: 'handwritten', tag: 'Rotulador' },
-      { name: 'Shadows Into Light', css: "'Shadows Into Light', cursive", cat: 'handwritten', tag: 'Apuntes' },
-      { name: 'Kalam', css: "'Kalam', cursive", cat: 'handwritten', tag: 'Bolígrafo' },
-      { name: 'Architects Daughter', css: "'Architects Daughter', cursive", cat: 'handwritten', tag: 'Arquitecto' },
-      { name: 'Amatic SC', css: "'Amatic SC', cursive", cat: 'handwritten', tag: 'Manual Alta' },
-      { name: 'Permanent Marker', css: "'Permanent Marker', cursive", cat: 'handwritten', tag: 'Marcador' },
-      { name: 'Great Vibes', css: "'Great Vibes', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Alex Brush', css: "'Alex Brush', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Allura', css: "'Allura', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Dancing Script', css: "'Dancing Script', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Sacramento', css: "'Sacramento', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Parisienne', css: "'Parisienne', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Tangerine', css: "'Tangerine', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Marck Script', css: "'Marck Script', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Pacifico', css: "'Pacifico', cursive", cat: 'calligraphy', tag: 'Pincel' },
-      { name: 'Satisfy', css: "'Satisfy', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Courgette', css: "'Courgette', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Kaushan Script', css: "'Kaushan Script', cursive", cat: 'calligraphy', tag: 'Pincel Fino' },
-      { name: 'Yellowtail', css: "'Yellowtail', cursive", cat: 'calligraphy', tag: 'Caligrafía' },
-      { name: 'Merriweather', css: "'Merriweather', serif", cat: 'classic', tag: 'Editorial' },
-      { name: 'Playfair Display', css: "'Playfair Display', serif", cat: 'classic', tag: 'Clásica' },
-      { name: 'Lora', css: "'Lora', serif", cat: 'classic', tag: 'Literaria' },
-      { name: 'Cinzel', css: "'Cinzel', serif", cat: 'classic', tag: 'Romana' },
-      { name: 'Roboto Slab', css: "'Roboto Slab', serif", cat: 'classic', tag: 'Académica' },
-      { name: 'JetBrains Mono', css: "'JetBrains Mono', monospace", cat: 'modern', tag: 'Código' },
-      { name: 'Space Mono', css: "'Space Mono', monospace", cat: 'modern', tag: 'Técnica' },
-      { name: 'System UI', css: "system-ui, -apple-system, sans-serif", cat: 'modern', tag: 'Nativa' }
+      { id: 'double-border', name: 'Doble Marco' },
+      { id: 'dashed-box', name: 'Borde Discontinuo' },
+      { id: 'top-accent', name: 'Barra Superior' },
+      { id: 'left-accent', name: 'Barra Lateral' },
+      { id: 'cylinder', name: 'Base de Datos' },
+      { id: 'star-badge', name: 'Sello Estrella' },
+      { id: 'shield', name: 'Escudo' }
     ];
 
     const COLOR_SWATCHES = [
-      '#1e293b', '#4f46e5', '#2563eb', '#0284c7', '#0d9488', '#059669',
-      '#16a34a', '#65a30d', '#ca8a04', '#d97706', '#ea580c', '#dc2626',
-      '#e11d48', '#db2777', '#9333ea', '#7c3aed', '#6366f1', '#475569',
-      '#ffffff', '#f8fafc', '#eef2ff', '#ecfdf5', '#fef3c7', '#ffe4e6'
+      '#064e3b', '#0f172a', '#1e293b', '#4f46e5', '#2563eb', '#0284c7',
+      '#0891b2', '#0d9488', '#16a34a', '#65a30d', '#ca8a04', '#d97706',
+      '#ea580c', '#dc2626', '#e11d48', '#db2777', '#9333ea', '#7c3aed',
+      '#ffffff', '#f8fafc', '#eff6ff', '#f0fdf4', '#fffbeb', '#fef2f2'
     ];
 
-    const EMOJI_LIST = [
-      '💡', '🎯', '🚀', '📌', '✅', '⭐', '🔥', '📚', '🧠', '💼', '📊', '📝',
-      '⚡', '🏆', '🎨', '🛠️', '🔍', '📅', '💰', '🌍', '❤️', '⚠️', '🔑', '🧩',
-      '🎓', '💻', '📱', '🌱', '🎉', '⏱️', '📈', '🛡️', '🔗', '💬', '🧭', '✨'
+    const EMOJIS = [
+      '🧠', '💡', '🎯', '📌', '🚀', '⭐',
+      '📚', '📝', '✅', '⚠️', '🔥', '💎',
+      '📊', '📈', '🧩', '⚙️', '🔒', '🌐',
+      '🩺', '🦴', '🧬', '🧪', '🎨', '🏆',
+      '📅', '⏰', '💬', '🔍', '🌱', '❤️'
     ];
 
     const TEMPLATES = [
       {
-        id: 'blank-mindmap',
-        icon: '🧠',
-        name: 'Mapa Mental Clásico',
-        desc: 'Estructura equilibrada con tema central y 4 ramas principales.',
+        id: 'tpl-study',
+        name: 'Apuntes de Estudio y Resumen',
+        icon: '📚',
+        desc: 'Estructura clara por temas, conceptos clave y preguntas de examen.',
         orientation: 'landscape',
         layout: 'mindmap',
         themeId: 'xmind-classic',
         tree: {
-          id: 'root', text: 'Idea Central', emoji: '💡', shape: 'pill', bold: true,
+          id: 'root',
+          text: 'Tema Principal de Estudio',
+          emoji: '📚',
+          shape: 'pill',
+          fontFamily: 'NeverMind Hand',
           children: [
-            { id: 'b1', text: 'Objetivos Clave', emoji: '🎯', shape: 'rounded', children: [{ id: 'b1a', text: 'Meta a corto plazo', shape: 'organic-line', children: [] }, { id: 'b1b', text: 'Visión anual', shape: 'organic-line', children: [] }] },
-            { id: 'b2', text: 'Estrategia', emoji: '🚀', shape: 'rounded', children: [{ id: 'b2a', text: 'Acciones prioritarias', shape: 'organic-line', children: [] }, { id: 'b2b', text: 'Recursos necesarios', shape: 'organic-line', children: [] }] },
-            { id: 'b3', text: 'Investigación', emoji: '🔍', shape: 'rounded', children: [{ id: 'b3a', text: 'Datos y referencias', shape: 'organic-line', children: [] }] },
-            { id: 'b4', text: 'Resultados', emoji: '📊', shape: 'rounded', children: [{ id: 'b4a', text: 'Indicadores KPI', shape: 'organic-line', children: [] }] }
+            {
+              id: 'b1',
+              text: 'Conceptos Base',
+              emoji: '🧠',
+              shape: 'rounded',
+              children: [
+                { id: 'b1-1', text: 'Definición principal', shape: 'organic-line', children: [] },
+                { id: 'b1-2', text: 'Clasificación general', shape: 'organic-line', children: [] }
+              ]
+            },
+            {
+              id: 'b2',
+              text: 'Puntos Clave',
+              emoji: '🎯',
+              shape: 'rounded',
+              children: [
+                { id: 'b2-1', text: 'Fórmulas o reglas', shape: 'organic-line', children: [] },
+                { id: 'b2-2', text: 'Casos prácticos', shape: 'organic-line', children: [] }
+              ]
+            },
+            {
+              id: 'b3',
+              text: 'Preguntas Examen',
+              emoji: '⭐',
+              shape: 'rounded',
+              children: [
+                { id: 'b3-1', text: 'Posible desarrollo', shape: 'organic-line', children: [] },
+                { id: 'b3-2', text: 'Errores frecuentes', shape: 'organic-line', children: [] }
+              ]
+            },
+            {
+              id: 'b4',
+              text: 'Repaso Rápido',
+              emoji: '✅',
+              shape: 'rounded',
+              children: [
+                { id: 'b4-1', text: 'Esquema visual A4', shape: 'organic-line', children: [] }
+              ]
+            }
           ]
         }
       },
       {
-        id: 'study-notes',
-        icon: '📚',
-        name: 'Apuntes de Estudio y Resumen',
-        desc: 'Ideal para esquematizar temas de examen en una sola hoja A4.',
-        orientation: 'landscape',
-        layout: 'mindmap',
-        themeId: 'emerald-forest',
-        tree: {
-          id: 'root', text: 'Tema 1: Arquitectura de Sistemas', emoji: '📚', shape: 'pill', bold: true,
-          children: [
-            { id: 's1', text: 'Conceptos Base', emoji: '🧠', shape: 'rounded', children: [{ id: 's1a', text: 'Escalabilidad horizontal', shape: 'rounded', children: [] }, { id: 's1b', text: 'Tolerancia a fallos', shape: 'rounded', children: [] }] },
-            { id: 's2', text: 'Seguridad', emoji: '🔒', shape: 'rounded', children: [{ id: 's2a', text: 'Autenticación OAuth / JWT', shape: 'rounded', children: [] }, { id: 's2b', text: 'Cifrado en tránsito TLS', shape: 'rounded', children: [] }] },
-            { id: 's3', text: 'Bases de Datos', emoji: '🗄️', shape: 'rounded', children: [{ id: 's3a', text: 'Relacionales (SQL)', shape: 'rounded', children: [] }, { id: 's3b', text: 'Documentales (NoSQL)', shape: 'rounded', children: [] }] },
-            { id: 's4', text: 'Preguntas Clave', emoji: '⭐', shape: 'rounded', children: [{ id: 's4a', text: 'Teorema CAP explicado', shape: 'rounded', children: [] }, { id: 's4b', text: 'Caché distribuida', shape: 'rounded', children: [] }] }
-          ]
-        }
-      },
-      {
-        id: 'swot-analysis',
-        icon: '⚖️',
-        name: 'Análisis DAFO / FODA',
-        desc: 'Evalúa Debilidades, Amenazas, Fortalezas y Oportunidades.',
+        id: 'tpl-360',
+        name: 'Mapa Radial 4 Lados (360°)',
+        icon: '✚',
+        desc: 'Subtemas saliendo por arriba, derecha, abajo e izquierda del bocadillo central.',
         orientation: 'landscape',
         layout: 'radial360',
-        themeId: 'warm-sunset',
+        themeId: 'deep-ocean',
         tree: {
-          id: 'root', text: 'Análisis DAFO', emoji: '⚖️', shape: 'hexagon', bold: true,
+          id: 'root',
+          text: 'Idea Central 360°',
+          emoji: '💡',
+          shape: 'pill',
           children: [
-            { id: 'd1', text: 'Fortalezas', emoji: '💪', shape: 'rounded', children: [{ id: 'd1a', text: 'Equipo especializado', shape: 'organic-line', children: [] }, { id: 'd1b', text: 'Producto diferenciado', shape: 'organic-line', children: [] }] },
-            { id: 'd2', text: 'Oportunidades', emoji: '🌟', shape: 'rounded', children: [{ id: 'd2a', text: 'Nuevos mercados digitales', shape: 'organic-line', children: [] }] },
-            { id: 'd3', text: 'Debilidades', emoji: '⚠️', shape: 'rounded', children: [{ id: 'd3a', text: 'Presupuesto inicial limitado', shape: 'organic-line', children: [] }] },
-            { id: 'd4', text: 'Amenazas', emoji: '🛡️', shape: 'rounded', children: [{ id: 'd4a', text: 'Alta competencia', shape: 'organic-line', children: [] }] }
+            { id: 'n1', text: 'Norte · Objetivos', emoji: '🎯', shape: 'rounded', parentOutAnchor: 'top', children: [] },
+            { id: 'n2', text: 'Este · Ejecución', emoji: '🚀', shape: 'rounded', parentOutAnchor: 'right', children: [] },
+            { id: 'n3', text: 'Sur · Recursos', emoji: '🧩', shape: 'rounded', parentOutAnchor: 'bottom', children: [] },
+            { id: 'n4', text: 'Oeste · Análisis', emoji: '🔍', shape: 'rounded', parentOutAnchor: 'left', children: [] }
           ]
         }
       },
       {
-        id: 'project-plan',
-        icon: '🚀',
-        name: 'Planificación de Proyecto',
-        desc: 'Fases, entregables, plazos y responsables en árbol lógico.',
+        id: 'tpl-medical',
+        name: 'Esquema Clínico / Medicina',
+        icon: '🩺',
+        desc: 'Etiología, clínica, diagnóstico y tratamiento listos para imprimir.',
         orientation: 'landscape',
-        layout: 'logic',
-        themeId: 'ocean-deep',
+        layout: 'mindmap',
+        themeId: 'emerald-nature',
         tree: {
-          id: 'root', text: 'Lanzamiento Producto', emoji: '🚀', shape: 'rounded', bold: true,
+          id: 'root',
+          text: 'Patología / Síndrome',
+          emoji: '🩺',
+          shape: 'rounded',
           children: [
-            { id: 'p1', text: '1. Descubrimiento', emoji: '🔍', shape: 'pill', children: [{ id: 'p1a', text: 'Entrevistas usuarios', shape: 'organic-line', children: [] }, { id: 'p1b', text: 'Definición alcance', shape: 'organic-line', children: [] }] },
-            { id: 'p2', text: '2. Diseño UX/UI', emoji: '🎨', shape: 'pill', children: [{ id: 'p2a', text: 'Wireframes A4', shape: 'organic-line', children: [] }, { id: 'p2b', text: 'Prototipo interactivo', shape: 'organic-line', children: [] }] },
-            { id: 'p3', text: '3. Desarrollo y QA', emoji: '💻', shape: 'pill', children: [{ id: 'p3a', text: 'Pruebas multiplataforma', shape: 'organic-line', children: [] }] }
+            {
+              id: 'm1',
+              text: 'Etiología y Clínica',
+              emoji: '🧬',
+              shape: 'rounded',
+              children: [
+                { id: 'm1-1', text: 'Factores de riesgo', shape: 'organic-line', children: [] },
+                { id: 'm1-2', text: 'Signos y síntomas', shape: 'organic-line', children: [] }
+              ]
+            },
+            {
+              id: 'm2',
+              text: 'Diagnóstico',
+              emoji: '🔍',
+              shape: 'rounded',
+              children: [
+                { id: 'm2-1', text: 'Exploración física', shape: 'organic-line', children: [] },
+                { id: 'm2-2', text: 'Pruebas de imagen / lab', shape: 'organic-line', children: [] }
+              ]
+            },
+            {
+              id: 'm3',
+              text: 'Tratamiento',
+              emoji: '💊',
+              shape: 'rounded',
+              children: [
+                { id: 'm3-1', text: 'Medidas generales', shape: 'organic-line', children: [] },
+                { id: 'm3-2', text: 'Terapia específica', shape: 'organic-line', children: [] }
+              ]
+            }
           ]
         }
       },
       {
-        id: 'org-chart',
-        icon: '🏢',
+        id: 'tpl-project',
+        name: 'Planificación de Proyecto',
+        icon: '🚀',
+        desc: 'Fases, entregables, plazos y responsables en una página.',
+        orientation: 'landscape',
+        layout: 'mindmap',
+        themeId: 'deep-ocean',
+        tree: {
+          id: 'root',
+          text: 'Lanzamiento Proyecto',
+          emoji: '🚀',
+          shape: 'pill',
+          children: [
+            { id: 'p1', text: 'Fase 1: Investigación', emoji: '🔍', shape: 'rounded', children: [{ id: 'p1-1', text: 'Análisis de requisitos', shape: 'organic-line', children: [] }] },
+            { id: 'p2', text: 'Fase 2: Diseño', emoji: '🎨', shape: 'rounded', children: [{ id: 'p2-1', text: 'Prototipo funcional', shape: 'organic-line', children: [] }] },
+            { id: 'p3', text: 'Fase 3: Desarrollo', emoji: '⚙️', shape: 'rounded', children: [{ id: 'p3-1', text: 'Pruebas y calidad', shape: 'organic-line', children: [] }] },
+            { id: 'p4', text: 'Fase 4: Entrega', emoji: '🏆', shape: 'rounded', children: [{ id: 'p4-1', text: 'Métricas de éxito', shape: 'organic-line', children: [] }] }
+          ]
+        }
+      },
+      {
+        id: 'tpl-orgchart',
         name: 'Organigrama Jerárquico',
-        desc: 'Estructura vertical de equipos y departamentos.',
+        icon: '🏛️',
+        desc: 'Distribución vertical de arriba hacia abajo en hoja A4.',
         orientation: 'landscape',
         layout: 'orgchart',
-        themeId: 'minimal-exec',
+        themeId: 'executive-minimal',
         tree: {
-          id: 'root', text: 'Dirección General', emoji: '🏢', shape: 'rect', bold: true,
+          id: 'root',
+          text: 'Dirección General',
+          emoji: '🏛️',
+          shape: 'rect',
           children: [
-            { id: 'o1', text: 'Operaciones', emoji: '⚙️', shape: 'rounded', children: [{ id: 'o1a', text: 'Logística', shape: 'rect', children: [] }, { id: 'o1b', text: 'Calidad', shape: 'rect', children: [] }] },
-            { id: 'o2', text: 'Tecnología', emoji: '💻', shape: 'rounded', children: [{ id: 'o2a', text: 'Desarrollo Web', shape: 'rect', children: [] }, { id: 'o2b', text: 'Datos y Nube', shape: 'rect', children: [] }] },
-            { id: 'o3', text: 'Marketing', emoji: '📣', shape: 'rounded', children: [{ id: 'o3a', text: 'Comunicación', shape: 'rect', children: [] }] }
+            { id: 'o1', text: 'Operaciones', shape: 'rounded', children: [{ id: 'o1-1', text: 'Logística', shape: 'rounded', children: [] }] },
+            { id: 'o2', text: 'Producto', shape: 'rounded', children: [{ id: 'o2-1', text: 'Diseño UX', shape: 'rounded', children: [] }] },
+            { id: 'o3', text: 'Crecimiento', shape: 'rounded', children: [{ id: 'o3-1', text: 'Marketing', shape: 'rounded', children: [] }] }
           ]
         }
       },
       {
-        id: 'weekly-okr',
+        id: 'tpl-swot',
+        name: 'Análisis DAFO',
+        icon: '📊',
+        desc: 'Debilidades, Amenazas, Fortalezas y Oportunidades.',
+        orientation: 'landscape',
+        layout: 'mindmap',
+        themeId: 'warm-sunset',
+        tree: {
+          id: 'root',
+          text: 'Análisis DAFO',
+          emoji: '📊',
+          shape: 'hexagon',
+          children: [
+            { id: 'd1', text: 'Fortalezas', emoji: '💪', shape: 'rounded', children: [{ id: 'd1-1', text: 'Ventaja competitiva', shape: 'organic-line', children: [] }] },
+            { id: 'd2', text: 'Oportunidades', emoji: '🌟', shape: 'rounded', children: [{ id: 'd2-1', text: 'Nuevos mercados', shape: 'organic-line', children: [] }] },
+            { id: 'd3', text: 'Debilidades', emoji: '⚠️', shape: 'rounded', children: [{ id: 'd3-1', text: 'Recursos limitados', shape: 'organic-line', children: [] }] },
+            { id: 'd4', text: 'Amenazas', emoji: '🛡️', shape: 'rounded', children: [{ id: 'd4-1', text: 'Competencia directa', shape: 'organic-line', children: [] }] }
+          ]
+        }
+      },
+      {
+        id: 'tpl-weekly',
+        name: 'Organización Semanal',
         icon: '📅',
-        name: 'Planificador Semanal OKR',
-        desc: 'Organiza prioridades semanales y hábitos clave.',
+        desc: 'Planifica objetivos, hábitos y tareas de toda la semana.',
         orientation: 'portrait',
         layout: 'mindmap',
         themeId: 'xmind-classic',
         tree: {
-          id: 'root', text: 'Semana Productiva', emoji: '📅', shape: 'pill', bold: true,
+          id: 'root',
+          text: 'Semana Productiva',
+          emoji: '📅',
+          shape: 'pill',
           children: [
-            { id: 'w1', text: 'Prioridad #1', emoji: '🔥', shape: 'sticky', children: [{ id: 'w1a', text: 'Entregar propuesta final', shape: 'organic-line', children: [] }] },
-            { id: 'w2', text: 'Estudio / Formación', emoji: '🎓', shape: 'rounded', children: [{ id: 'w2a', text: 'Repasar temas 1 a 3', shape: 'organic-line', children: [] }] },
-            { id: 'w3', text: 'Salud y Energía', emoji: '🌱', shape: 'rounded', children: [{ id: 'w3a', text: 'Deporte 3 días', shape: 'organic-line', children: [] }] }
+            { id: 'w1', text: 'Prioridades Top 3', emoji: '🔥', shape: 'rounded', children: [{ id: 'w1-1', text: 'Objetivo principal', shape: 'organic-line', children: [] }] },
+            { id: 'w2', text: 'Estudio / Trabajo', emoji: '📚', shape: 'rounded', children: [{ id: 'w2-1', text: 'Bloques de enfoque', shape: 'organic-line', children: [] }] },
+            { id: 'w3', text: 'Salud y Deporte', emoji: '🌱', shape: 'rounded', children: [{ id: 'w3-1', text: 'Descanso activo', shape: 'organic-line', children: [] }] }
           ]
         }
       },
       {
-        id: 'lean-canvas',
-        icon: '💼',
-        name: 'Modelo de Negocio Lean',
-        desc: 'Propuesta de valor, clientes, canales e ingresos.',
-        orientation: 'landscape',
-        layout: 'mindmap',
-        themeId: 'ocean-deep',
-        tree: {
-          id: 'root', text: 'Modelo de Negocio', emoji: '💼', shape: 'shield', bold: true,
-          children: [
-            { id: 'l1', text: 'Propuesta de Valor', emoji: '💎', shape: 'rounded', children: [{ id: 'l1a', text: 'Ahorro de tiempo del 60%', shape: 'organic-line', children: [] }] },
-            { id: 'l2', text: 'Segmento Clientes', emoji: '👥', shape: 'rounded', children: [{ id: 'l2a', text: 'Estudiantes y equipos', shape: 'organic-line', children: [] }] },
-            { id: 'l3', text: 'Fuentes de Ingreso', emoji: '💰', shape: 'rounded', children: [{ id: 'l3a', text: 'Suscripción Pro', shape: 'organic-line', children: [] }] },
-            { id: 'l4', text: 'Canales', emoji: '📡', shape: 'rounded', children: [{ id: 'l4a', text: 'Web PWA y App Stores', shape: 'organic-line', children: [] }] }
-          ]
-        }
-      },
-      {
-        id: 'ishikawa',
-        icon: '🐟',
-        name: 'Causa y Efecto (Ishikawa)',
-        desc: 'Diagnóstico estructurado de causas raíz de un problema.',
-        orientation: 'landscape',
-        layout: 'mindmap',
+        id: 'tpl-brainstorm',
+        name: 'Lluvia de Ideas Creativa',
+        icon: '🎨',
+        desc: 'Formato vertical con tipografía manuscrita NeverMind Hand.',
+        orientation: 'portrait',
+        layout: 'radial360',
         themeId: 'warm-sunset',
         tree: {
-          id: 'root', text: 'Problema Principal', emoji: '🎯', shape: 'chevron', bold: true,
+          id: 'root',
+          text: 'Brainstorming',
+          emoji: '🎨',
+          shape: 'thought-cloud',
+          fontFamily: 'NeverMind Hand',
           children: [
-            { id: 'i1', text: 'Métodos', emoji: '📋', shape: 'rounded', children: [{ id: 'i1a', text: 'Proceso sin estandarizar', shape: 'organic-line', children: [] }] },
-            { id: 'i2', text: 'Herramientas', emoji: '🛠️', shape: 'rounded', children: [{ id: 'i2a', text: 'Falta de automatización', shape: 'organic-line', children: [] }] },
-            { id: 'i3', text: 'Personas', emoji: '🧠', shape: 'rounded', children: [{ id: 'i3a', text: 'Capacitación inicial', shape: 'organic-line', children: [] }] },
-            { id: 'i4', text: 'Entorno', emoji: '🌍', shape: 'rounded', children: [{ id: 'i4a', text: 'Interrupciones frecuentes', shape: 'organic-line', children: [] }] }
+            { id: 'c1', text: 'Idea 1', shape: 'speech-left', parentOutAnchor: 'top', fontFamily: 'NeverMind Hand', children: [] },
+            { id: 'c2', text: 'Idea 2', shape: 'speech-right', parentOutAnchor: 'right', fontFamily: 'NeverMind Hand', children: [] },
+            { id: 'c3', text: 'Idea 3', shape: 'speech-center', parentOutAnchor: 'bottom', fontFamily: 'NeverMind Hand', children: [] },
+            { id: 'c4', text: 'Idea 4', shape: 'speech-left', parentOutAnchor: 'left', fontFamily: 'NeverMind Hand', children: [] }
           ]
         }
       },
       {
-        id: 'decision-making',
-        icon: '🧭',
-        name: 'Toma de Decisiones',
-        desc: 'Compara alternativas, pros, contras y criterios clave.',
+        id: 'tpl-blank',
+        name: 'Lienzo A4 en Blanco',
+        icon: '📄',
+        desc: 'Empieza desde cero con un único bocadillo principal.',
         orientation: 'landscape',
         layout: 'radial360',
-        themeId: 'emerald-forest',
+        themeId: 'xmind-classic',
         tree: {
-          id: 'root', text: 'Decisión Estratégica', emoji: '🧭', shape: 'diamond', bold: true,
-          children: [
-            { id: 'm1', text: 'Opción A', emoji: '🅰️', shape: 'rounded', children: [{ id: 'm1a', text: 'Menor coste inicial', shape: 'organic-line', children: [] }] },
-            { id: 'm2', text: 'Opción B', emoji: '🅱️', shape: 'rounded', children: [{ id: 'm2a', text: 'Mayor escalabilidad', shape: 'organic-line', children: [] }] },
-            { id: 'm3', text: 'Criterios Clave', emoji: '✅', shape: 'rounded', children: [{ id: 'm3a', text: 'Plazo e impacto', shape: 'organic-line', children: [] }] }
-          ]
+          id: 'root',
+          text: 'Tema Central',
+          emoji: '💡',
+          shape: 'pill',
+          children: []
         }
       }
     ];
 
     /* --------------------------------------------------------------------- */
-    /* 3. ESTADO GLOBAL DE LA APLICACIÓN                                     */
+    /* 3. ESTADO GLOBAL Y REFERENCIAS DOM                                    */
     /* --------------------------------------------------------------------- */
     const state = {
       user: null,
@@ -1299,15 +1468,15 @@
       themeId: 'xmind-classic',
       tree: null,
       selectedNodeId: null,
+      hasManualDrag: false,
       dragMode: 'group', // 'group' | 'single'
       anchorMode: 'out', // 'out' | 'in'
-      colorTarget: 'bg', // 'bg' | 'border' | 'text'
+      colorTarget: 'bg',
       fontCategory: 'all',
       fontSearch: '',
       zoom: 1,
-      panX: 40,
-      panY: 40,
-      hasManualDrag: false,
+      panX: 0,
+      panY: 0,
       history: [],
       redoStack: [],
       saveTimer: null,
@@ -1319,30 +1488,24 @@
     function cacheDom() {
       dom.homeScreen = document.getElementById('home-screen');
       dom.editorScreen = document.getElementById('editor-screen');
-      dom.homeProjectsGrid = document.getElementById('home-projects-grid');
-      dom.homeTemplatesGrid = document.getElementById('home-templates-grid');
       dom.homeAuthGuest = document.getElementById('home-auth-guest');
       dom.homeAuthUser = document.getElementById('home-auth-user');
       dom.homeUserEmail = document.getElementById('home-user-email');
       dom.homeAccountHint = document.getElementById('home-account-hint');
-
+      dom.homeProjectsGrid = document.getElementById('home-projects-grid');
+      dom.homeTemplatesGrid = document.getElementById('home-templates-grid');
       dom.inputMapTitle = document.getElementById('input-map-title');
       dom.cloudSyncText = document.getElementById('cloud-sync-text');
       dom.overflowBanner = document.getElementById('overflow-banner');
       dom.canvasViewport = document.getElementById('canvas-viewport');
-      dom.a4Sheet = document.getElementById('a4-sheet');
       dom.a4DimensionsLabel = document.getElementById('a4-dimensions-label');
+      dom.a4Sheet = document.getElementById('a4-sheet');
       dom.connectionsSvg = document.getElementById('connections-svg');
       dom.nodesContainer = document.getElementById('nodes-container');
       dom.handlesContainer = document.getElementById('handles-container');
-      dom.floatingNodeBar = document.getElementById('floating-node-bar');
+      dom.floatingBar = document.getElementById('floating-node-bar');
       dom.zoomLevelLabel = document.getElementById('zoom-level-label');
       dom.editorInspector = document.getElementById('editor-inspector');
-      dom.themesList = document.getElementById('themes-list');
-      dom.shapesGrid = document.getElementById('shapes-grid');
-      dom.colorSwatchesGrid = document.getElementById('color-swatches-grid');
-      dom.fontsList = document.getElementById('fonts-list');
-      dom.emojisGrid = document.getElementById('emojis-grid');
       dom.statusAutofitText = document.getElementById('status-autofit-text');
       dom.statusNodeCount = document.getElementById('status-node-count');
       dom.inlineEditorWrap = document.getElementById('inline-text-editor-wrap');
@@ -1351,573 +1514,538 @@
     }
 
     /* --------------------------------------------------------------------- */
-    /* 4. UTILIDADES DE ÁRBOL, COLOR, CONTRASTE Y SAFE AREA IPAD             */
+    /* 4. UTILIDADES, DESPEJE SUPERIOR PARA IPAD Y NOTIFICACIONES            */
     /* --------------------------------------------------------------------- */
+    function generateId(prefix = 'n') {
+      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+    }
+
     function deepClone(obj) {
       return JSON.parse(JSON.stringify(obj));
     }
 
-    function generateId(prefix = 'n') {
-      return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    function escapeHtml(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
     }
 
-    function getTheme() {
-      return THEMES.find(t => t.id === state.themeId) || THEMES[0];
+    let toastTimer = null;
+    function showToast(msg) {
+      if (!dom.toastBox) return;
+      dom.toastBox.textContent = msg;
+      dom.toastBox.classList.remove('hidden');
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => dom.toastBox.classList.add('hidden'), 3400);
     }
 
-    function getContrastTextColor(hexColor) {
-      if (!hexColor || typeof hexColor !== 'string') return '#ffffff';
-      const clean = hexColor.replace('#', '');
-      if (clean.length !== 6) return '#ffffff';
-      const r = parseInt(clean.slice(0, 2), 16);
-      const g = parseInt(clean.slice(2, 4), 16);
-      const b = parseInt(clean.slice(4, 6), 16);
-      const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-      return luminance > 0.62 ? '#0f172a' : '#ffffff';
-    }
+    function applyDeviceSafeAreaOffsets() {
+      const ua = navigator.userAgent || '';
+      const isIPad = /iPad/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+      const isIPhone = /iPhone|iPod/.test(ua);
+      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
 
-    function getEffectiveNodeColors(node, depth, branchIndex) {
-      const theme = getTheme();
-      const branchColor = theme.branches[branchIndex % theme.branches.length];
-      let defaultBg, defaultBorder, defaultText;
-
-      if (depth === 0) {
-        defaultBg = theme.rootBg;
-        defaultBorder = theme.rootBg;
-        defaultText = theme.rootText;
-      } else if (depth === 1) {
-        defaultBg = branchColor;
-        defaultBorder = branchColor;
-        defaultText = getContrastTextColor(branchColor);
-      } else {
-        defaultBg = '#ffffff';
-        defaultBorder = branchColor;
-        defaultText = '#1e293b';
+      if (isIPad || isIPhone) {
+        const minTop = isStandalone ? 34 : (isIPad ? 28 : 20);
+        document.documentElement.style.setProperty('--safe-top', `max(env(safe-area-inset-top, 0px), ${minTop}px)`);
       }
-
-      const bg = node.customBg || defaultBg;
-      const border = node.customBorder || defaultBorder;
-      const shape = node.shape || (depth <= 1 ? 'rounded' : 'organic-line');
-      const isTransparentBody = shape === 'organic-line' || shape === 'brackets' || shape === 'braces';
-      const text = node.customText || (isTransparentBody ? '#0f172a' : getContrastTextColor(bg));
-
-      return { bg, border, text, branchColor };
     }
 
-    function traverseAllNodes(callback, root = state.tree) {
-      if (!root) return;
-      const walk = (node, parent, depth, branchIndex) => {
-        callback(node, parent, depth, branchIndex);
-        if (Array.isArray(node.children)) {
-          node.children.forEach((child, idx) => {
-            walk(child, node, depth + 1, depth === 0 ? idx : branchIndex);
-          });
-        }
-      };
-      walk(root, null, 0, 0);
+    /* --------------------------------------------------------------------- */
+    /* 5. RECORRIDO DEL ÁRBOL Y COLORES EFECTIVOS                           */
+    /* --------------------------------------------------------------------- */
+    function traverseAllNodes(fn, node = state.tree, parent = null, depth = 0, branchIndex = 0) {
+      if (!node) return;
+      fn(node, parent, depth, branchIndex);
+      if (Array.isArray(node.children)) {
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIndex;
+          traverseAllNodes(fn, child, node, depth + 1, bIdx);
+        });
+      }
     }
 
-    function traverseVisibleNodes(callback, root = state.tree) {
-      if (!root) return;
-      const walk = (node, parent, depth, branchIndex) => {
-        callback(node, parent, depth, branchIndex);
-        if (!node.collapsed && Array.isArray(node.children)) {
-          node.children.forEach((child, idx) => {
-            walk(child, node, depth + 1, depth === 0 ? idx : branchIndex);
-          });
-        }
-      };
-      walk(root, null, 0, 0);
+    function traverseVisibleNodes(fn, node = state.tree, parent = null, depth = 0, branchIndex = 0) {
+      if (!node) return;
+      fn(node, parent, depth, branchIndex);
+      if (!node.collapsed && Array.isArray(node.children)) {
+        node.children.forEach((child, idx) => {
+          const bIdx = depth === 0 ? idx : branchIndex;
+          traverseVisibleNodes(fn, child, node, depth + 1, bIdx);
+        });
+      }
     }
 
-    function findNodeWithParent(nodeId, current = state.tree, parent = null, depth = 0, branchIndex = 0) {
-      if (!current) return null;
-      if (current.id === nodeId) return { node: current, parent, depth, branchIndex };
-      if (Array.isArray(current.children)) {
-        for (let i = 0; i < current.children.length; i++) {
-          const res = findNodeWithParent(
-            nodeId,
-            current.children[i],
-            current,
-            depth + 1,
-            depth === 0 ? i : branchIndex
-          );
+    function findNodeWithParent(targetId, node = state.tree, parent = null, depth = 0, branchIndex = 0) {
+      if (!node || !targetId) return null;
+      if (node.id === targetId) return { node, parent, depth, branchIndex };
+      if (Array.isArray(node.children)) {
+        for (let i = 0; i < node.children.length; i++) {
+          const bIdx = depth === 0 ? i : branchIndex;
+          const res = findNodeWithParent(targetId, node.children[i], node, depth + 1, bIdx);
           if (res) return res;
         }
       }
       return null;
     }
 
-    function showToast(msg) {
-      if (!dom.toastBox) return;
-      dom.toastBox.textContent = msg;
-      dom.toastBox.classList.remove('hidden');
-      clearTimeout(showToast._timer);
-      showToast._timer = setTimeout(() => {
-        dom.toastBox.classList.add('hidden');
-      }, 2800);
+    function getActiveTheme() {
+      return THEMES.find(t => t.id === state.themeId) || THEMES[0];
     }
 
-    /* Despeje automático de barra de estado/multitasking en iPadOS */
-    function applyDeviceSafeAreaOffsets() {
-      const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
-      const isIPad = /iPad|Macintosh/.test(navigator.userAgent) && 'ontouchend' in document;
-      if (isStandalone && isIPad) {
-        document.documentElement.style.setProperty('--safe-top', '30px');
+    function getEffectiveNodeColors(node, depth, branchIndex) {
+      const theme = getActiveTheme();
+      let base;
+      if (depth === 0) {
+        base = { ...theme.root };
+      } else {
+        const b = theme.branches[branchIndex % theme.branches.length];
+        base = depth === 1
+          ? { bg: b.bg, border: b.border, text: b.text }
+          : { bg: b.subBg, border: b.border, text: b.subText };
       }
+      return {
+        bg: node.customBg || base.bg,
+        border: node.customBorder || base.border,
+        text: node.customText || base.text
+      };
     }
 
     /* --------------------------------------------------------------------- */
-    /* 5. MOTOR DE MEDICIÓN, AUTO-AJUSTE A4 (MÍN. 9PX) Y LAYOUT 360°         */
+    /* 6. MEDICIÓN DE TAMAÑO CONSISTENTE WINDOWS <-> IPAD Y AUTO-AJUSTE A4   */
     /* --------------------------------------------------------------------- */
-    const measureCanvas = document.createElement('canvas');
-    const measureCtx = measureCanvas.getContext('2d');
+    let measureDiv = null;
+    function getMeasureEl() {
+      if (!measureDiv) {
+        measureDiv = document.createElement('div');
+        measureDiv.style.cssText = 'position:fixed;left:-9999px;top:-9999px;visibility:hidden;pointer-events:none;line-height:1.25;word-wrap:break-word;overflow-wrap:break-word;text-align:center;';
+        document.body.appendChild(measureDiv);
+      }
+      return measureDiv;
+    }
 
-    function computeNodeDimensions(node, depth, scaleFactor) {
-      const fontSize = node.customFontSize
-        ? Math.max(9, node.customFontSize)
-        : Math.max(9, Number(((depth === 0 ? 17 : depth === 1 ? 13 : 11.5) * scaleFactor).toFixed(1)));
-
-      node.computedFontSize = fontSize;
-
-      // Si el nodo tiene tamaño canónico guardado desde Windows/iPad y no se ha editado su texto/escala, respetarlo
-      if (node.lockedW && node.lockedH && !node._dirtySize) {
+    function computeSingleNodeDimensions(node, depth, fontSize) {
+      // Conservar dimensiones canónicas entre Windows e iPad si ya están fijadas y no han cambiado
+      if (!node._dirtySize && typeof node.lockedW === 'number' && typeof node.lockedH === 'number' && node.lockedW > 20 && node.lockedH > 16) {
         node.w = node.lockedW;
         node.h = node.lockedH;
+        node.computedFontSize = fontSize;
         return;
       }
 
-      const fontFamily = node.fontFamily || "'Inter', sans-serif";
-      const weight = (node.bold !== undefined ? node.bold : depth === 0) ? '700' : '500';
-      const style = node.italic ? 'italic' : 'normal';
-      measureCtx.font = `${style} ${weight} ${fontSize}px ${fontFamily}`;
+      const el = getMeasureEl();
+      const isBold = node.bold !== undefined ? node.bold : depth === 0;
+      const family = node.fontFamily || 'Inter';
+      const maxWidth = depth === 0 ? 250 : depth === 1 ? 195 : 175;
 
-      const fullLabel = `${node.emoji ? node.emoji + ' ' : ''}${node.text || 'Tema'}`;
-      const maxLineWidth = state.orientation === 'landscape'
-        ? (depth === 0 ? 250 : 210)
-        : (depth === 0 ? 220 : 185);
+      el.style.fontFamily = `'${family}', 'Inter', sans-serif`;
+      el.style.fontSize = `${fontSize}px`;
+      el.style.fontWeight = isBold ? '700' : '500';
+      el.style.fontStyle = node.italic ? 'italic' : 'normal';
+      el.style.maxWidth = `${maxWidth}px`;
+      el.textContent = `${node.emoji ? node.emoji + ' ' : ''}${node.text || 'Tema'}`;
 
-      const words = fullLabel.split(/\s+/);
-      const lines = [];
-      let currentLine = '';
+      const rect = el.getBoundingClientRect();
+      const scale = (node.bubbleScale || 100) / 100;
+      const extraX = node.bubblePadX || 0;
+      const extraY = node.bubblePadY || 0;
 
-      words.forEach(w => {
-        const testLine = currentLine ? `${currentLine} ${w}` : w;
-        if (measureCtx.measureText(testLine).width <= maxLineWidth || !currentLine) {
-          currentLine = testLine;
-        } else {
-          lines.push(currentLine);
-          currentLine = w;
-        }
-      });
-      if (currentLine) lines.push(currentLine);
+      const basePadX = depth === 0 ? 32 : depth === 1 ? 24 : 18;
+      const basePadY = depth === 0 ? 18 : depth === 1 ? 12 : 9;
 
-      let longestLine = 0;
-      lines.forEach(l => {
-        longestLine = Math.max(longestLine, measureCtx.measureText(l).width);
-      });
+      const rawW = Math.max(depth === 0 ? 120 : 72, Math.ceil(rect.width + basePadX)) * scale + extraX;
+      const rawH = Math.max(depth === 0 ? 44 : 30, Math.ceil(rect.height + basePadY)) * scale + extraY;
 
-      const bubbleScale = (node.bubbleScale || 100) / 100;
-      const padX = (depth === 0 ? 34 : 24) + (node.bubblePadX || 0);
-      const padY = (depth === 0 ? 20 : 14) + (node.bubblePadY || 0);
-      const lineHeight = fontSize * 1.28;
-
-      node.w = Math.round(Math.max(58, (longestLine + padX) * bubbleScale));
-      node.h = Math.round(Math.max(30, (lines.length * lineHeight + padY) * bubbleScale));
+      node.w = Math.max(54, Math.round(rawW));
+      node.h = Math.max(24, Math.round(rawH));
+      node.computedFontSize = fontSize;
+      node.lockedW = node.w;
+      node.lockedH = node.h;
+      delete node._dirtySize;
     }
 
-    function autoLayoutTree(scaleFactor = 1) {
-      const sheet = A4_DIMS[state.orientation];
-      const cx = sheet.w / 2;
-      const cy = sheet.h / 2;
-
-      traverseVisibleNodes((node, parent, depth) => {
-        computeNodeDimensions(node, depth, scaleFactor);
-      });
-
-      const vGap = Math.max(10, 18 * scaleFactor);
-      const hGap = Math.max(24, 48 * scaleFactor);
-
-      const getSubtreeHeight = node => {
-        if (node.collapsed || !node.children || node.children.length === 0) return node.h;
-        let sum = 0;
-        node.children.forEach((ch, idx) => {
-          sum += getSubtreeHeight(ch) + (idx > 0 ? vGap : 0);
-        });
-        return Math.max(node.h, sum);
-      };
-
-      const getSubtreeWidth = node => {
-        if (node.collapsed || !node.children || node.children.length === 0) return node.w;
-        let sum = 0;
-        node.children.forEach((ch, idx) => {
-          sum += getSubtreeWidth(ch) + (idx > 0 ? vGap : 0);
-        });
-        return Math.max(node.w, sum);
-      };
-
-      const placeHorizontalSubtree = (node, startX, centerY, dir) => {
-        node.x = startX + dir * (node.w / 2);
-        node.y = centerY;
-        if (node.collapsed || !node.children || node.children.length === 0) return;
-
-        const totalH = node.children.reduce((acc, ch, i) => acc + getSubtreeHeight(ch) + (i > 0 ? vGap : 0), 0);
-        let curY = centerY - totalH / 2;
-        node.children.forEach(ch => {
-          const chH = getSubtreeHeight(ch);
-          placeHorizontalSubtree(ch, node.x + dir * (node.w / 2 + hGap), curY + chH / 2, dir);
-          curY += chH + vGap;
-        });
-      };
-
-      const placeVerticalSubtree = (node, centerX, startY, dirY) => {
-        node.x = centerX;
-        node.y = startY + dirY * (node.h / 2);
-        if (node.collapsed || !node.children || node.children.length === 0) return;
-
-        const totalW = node.children.reduce((acc, ch, i) => acc + getSubtreeWidth(ch) + (i > 0 ? vGap : 0), 0);
-        let curX = centerX - totalW / 2;
-        node.children.forEach(ch => {
-          const chW = getSubtreeWidth(ch);
-          placeVerticalSubtree(ch, curX + chW / 2, node.y + dirY * (node.h / 2 + hGap * 0.85), dirY);
-          curX += chW + vGap;
-        });
-      };
-
-      const root = state.tree;
-      const children = (!root.collapsed && root.children) ? root.children : [];
-
-      if (state.layout === 'logic') {
-        root.x = A4_MARGIN + root.w / 2 + 24;
-        root.y = cy;
-        const totalH = children.reduce((acc, ch, i) => acc + getSubtreeHeight(ch) + (i > 0 ? vGap : 0), 0);
-        let curY = cy - totalH / 2;
-        children.forEach(ch => {
-          const chH = getSubtreeHeight(ch);
-          placeHorizontalSubtree(ch, root.x + root.w / 2 + hGap, curY + chH / 2, 1);
-          curY += chH + vGap;
-        });
-      } else if (state.layout === 'orgchart') {
-        root.x = cx;
-        root.y = A4_MARGIN + root.h / 2 + 24;
-        const totalW = children.reduce((acc, ch, i) => acc + getSubtreeWidth(ch) + (i > 0 ? vGap : 0), 0);
-        let curX = cx - totalW / 2;
-        children.forEach(ch => {
-          const chW = getSubtreeWidth(ch);
-          placeVerticalSubtree(ch, curX + chW / 2, root.y + root.h / 2 + hGap * 0.85, 1);
-          curX += chW + vGap;
-        });
-      } else if (state.layout === 'upward') {
-        root.x = cx;
-        root.y = sheet.h - A4_MARGIN - root.h / 2 - 24;
-        const totalW = children.reduce((acc, ch, i) => acc + getSubtreeWidth(ch) + (i > 0 ? vGap : 0), 0);
-        let curX = cx - totalW / 2;
-        children.forEach(ch => {
-          const chW = getSubtreeWidth(ch);
-          placeVerticalSubtree(ch, curX + chW / 2, root.y - root.h / 2 - hGap * 0.85, -1);
-          curX += chW + vGap;
-        });
-      } else if (state.layout === 'radial360') {
-        root.x = cx;
-        root.y = cy;
-        const groups = { right: [], bottom: [], left: [], top: [] };
-        const order = ['right', 'bottom', 'left', 'top'];
-        children.forEach((ch, idx) => {
-          const side = ch.preferredSide || order[idx % 4];
-          groups[side].push(ch);
-        });
-
-        ['right', 'left'].forEach(side => {
-          const dir = side === 'right' ? 1 : -1;
-          const list = groups[side];
-          const totalH = list.reduce((acc, ch, i) => acc + getSubtreeHeight(ch) + (i > 0 ? vGap : 0), 0);
-          let curY = cy - totalH / 2;
-          list.forEach(ch => {
-            const chH = getSubtreeHeight(ch);
-            placeHorizontalSubtree(ch, cx + dir * (root.w / 2 + hGap), curY + chH / 2, dir);
-            curY += chH + vGap;
-          });
-        });
-
-        ['bottom', 'top'].forEach(side => {
-          const dirY = side === 'bottom' ? 1 : -1;
-          const list = groups[side];
-          const totalW = list.reduce((acc, ch, i) => acc + getSubtreeWidth(ch) + (i > 0 ? vGap : 0), 0);
-          let curX = cx - totalW / 2;
-          list.forEach(ch => {
-            const chW = getSubtreeWidth(ch);
-            placeVerticalSubtree(ch, curX + chW / 2, cy + dirY * (root.h / 2 + hGap * 0.8), dirY);
-            curX += chW + vGap;
-          });
-        });
-      } else {
-        // Distribución clásica Izquierda y Derecha ('mindmap')
-        root.x = cx;
-        root.y = cy;
-        const rightList = [];
-        const leftList = [];
-        children.forEach((ch, idx) => {
-          if (ch.preferredSide === 'left') leftList.push(ch);
-          else if (ch.preferredSide === 'right') rightList.push(ch);
-          else if (idx % 2 === 0) rightList.push(ch);
-          else leftList.push(ch);
-        });
-
-        const placeSide = (list, dir) => {
-          const totalH = list.reduce((acc, ch, i) => acc + getSubtreeHeight(ch) + (i > 0 ? vGap : 0), 0);
-          let curY = cy - totalH / 2;
-          list.forEach(ch => {
-            const chH = getSubtreeHeight(ch);
-            placeHorizontalSubtree(ch, cx + dir * (root.w / 2 + hGap), curY + chH / 2, dir);
-            curY += chH + vGap;
-          });
-        };
-        placeSide(rightList, 1);
-        placeSide(leftList, -1);
-      }
-    }
-
-    function getTreeBounds() {
-      let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-      traverseVisibleNodes(node => {
-        minX = Math.min(minX, node.x - node.w / 2);
-        maxX = Math.max(maxX, node.x + node.w / 2);
-        minY = Math.min(minY, node.y - node.h / 2);
-        maxY = Math.max(maxY, node.y + node.h / 2);
-      });
-      return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
-    }
-
-    function autoFitToA4(forceRearrange = false) {
+    function fitAndMeasureTree(recalculatePositions = false) {
       if (!state.tree) return;
       const sheet = A4_DIMS[state.orientation];
-      const safeW = sheet.w - A4_MARGIN * 2;
-      const safeH = sheet.h - A4_MARGIN * 2;
+      const safeMargin = 34;
 
-      if (forceRearrange) {
-        state.hasManualDrag = false;
-      }
+      let totalNodes = 0;
+      traverseVisibleNodes(() => { totalNodes++; });
 
-      let chosenScale = 1.0;
-      let overflows = false;
+      // Escala automática A4 respetando mínimo de 9px
+      let autoScale = 1;
+      if (totalNodes > 26) autoScale = 0.78;
+      else if (totalNodes > 18) autoScale = 0.85;
+      else if (totalNodes > 12) autoScale = 0.92;
 
-      if (!state.hasManualDrag && state.layout !== 'free') {
-        for (let s = 1.0; s >= 0.52; s -= 0.04) {
-          chosenScale = Number(s.toFixed(2));
-          autoLayoutTree(chosenScale);
-          const b = getTreeBounds();
-          if (b.width <= safeW && b.height <= safeH) {
-            break;
-          }
-        }
-        // Centrar dentro de los márgenes seguros A4
-        const b = getTreeBounds();
-        const offsetX = sheet.w / 2 - (b.minX + b.maxX) / 2;
-        const offsetY = sheet.h / 2 - (b.minY + b.maxY) / 2;
-        traverseVisibleNodes(node => {
-          node.x = Math.max(A4_MARGIN + node.w / 2, Math.min(sheet.w - A4_MARGIN - node.w / 2, node.x + offsetX));
-          node.y = Math.max(A4_MARGIN + node.h / 2, Math.min(sheet.h - A4_MARGIN - node.h / 2, node.y + offsetY));
-        });
-        const finalBounds = getTreeBounds();
-        overflows = finalBounds.width > safeW + 4 || finalBounds.height > safeH + 4;
-      } else {
-        // Modo con arrastre manual: recalcular dimensiones de nodos y mantenerlos dentro de A4
-        traverseVisibleNodes((node, parent, depth) => {
-          computeNodeDimensions(node, depth, 1);
-          node.x = Math.max(A4_MARGIN + node.w / 2, Math.min(sheet.w - A4_MARGIN - node.w / 2, node.x));
-          node.y = Math.max(A4_MARGIN + node.h / 2, Math.min(sheet.h - A4_MARGIN - node.h / 2, node.y));
-        });
-        const finalBounds = getTreeBounds();
-        overflows = finalBounds.width > safeW + 4 || finalBounds.height > safeH + 4;
-      }
+      let minFont = 99;
+      let maxFont = 0;
 
-      // Calcular rango tipográfico activo (mínimo estricto 9px)
-      let minFont = Infinity, maxFont = 0, count = 0;
-      traverseVisibleNodes(n => {
-        count++;
-        minFont = Math.min(minFont, n.computedFontSize || 11);
-        maxFont = Math.max(maxFont, n.computedFontSize || 11);
+      traverseVisibleNodes((node, parent, depth) => {
+        const defaultSize = depth === 0 ? 16 : depth === 1 ? 13 : 11.5;
+        const targetFont = node.customFontSize
+          ? Math.max(9, node.customFontSize)
+          : Math.max(9, Number((defaultSize * autoScale).toFixed(1)));
+
+        minFont = Math.min(minFont, targetFont);
+        maxFont = Math.max(maxFont, targetFont);
+        computeSingleNodeDimensions(node, depth, targetFont);
       });
 
-      if (dom.overflowBanner) {
-        dom.overflowBanner.classList.toggle('hidden', !overflows);
+      if (recalculatePositions || !state.hasManualDrag) {
+        autoLayoutA4();
       }
+
+      // Verificar si algún nodo sale del margen A4
+      let isOverflowing = false;
+      traverseVisibleNodes(node => {
+        if (
+          node.x - node.w / 2 < safeMargin - 8 ||
+          node.x + node.w / 2 > sheet.w - safeMargin + 8 ||
+          node.y - node.h / 2 < safeMargin - 8 ||
+          node.y + node.h / 2 > sheet.h - safeMargin + 8
+        ) {
+          isOverflowing = true;
+        }
+      });
+
+      dom.overflowBanner.classList.toggle('hidden', !isOverflowing);
       if (dom.statusAutofitText) {
         dom.statusAutofitText.textContent = `Auto-ajuste A4 activo · Rango letra: ${minFont.toFixed(1)}px – ${maxFont.toFixed(1)}px (mín. 9px)`;
       }
       if (dom.statusNodeCount) {
-        dom.statusNodeCount.textContent = `${count} nodos`;
+        dom.statusNodeCount.textContent = `${totalNodes} nodo${totalNodes === 1 ? '' : 's'}`;
       }
     }
 
     /* --------------------------------------------------------------------- */
-    /* 6. RENDERIZADO DE BOCADILLOS SVG (26 FORMAS) Y RAMAS CONEXIÓN         */
+    /* 7. MOTOR DE DISTRIBUCIÓN AUTOMÁTICA A4 (INCLUYE 4 LADOS 360°)          */
     /* --------------------------------------------------------------------- */
-    function buildBubbleSvgMarkup(shape, w, h, bg, border) {
-      const sw = 2;
-      const half = sw / 2;
-      const rw = Math.max(4, w - sw);
-      const rh = Math.max(4, h - sw);
-
-      switch (shape) {
-        case 'pill':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><rect x="${half}" y="${half}" width="${rw}" height="${rh}" rx="${rh / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'rect':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><rect x="${half}" y="${half}" width="${rw}" height="${rh}" rx="3" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'organic-line':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><line x1="0" y1="${h - 2}" x2="${w}" y2="${h - 2}" stroke="${border}" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-        case 'speech-left':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h + 8}"><path d="M10,${half} H${w - 10} Q${w - half},${half} ${w - half},10 V${h - 10} Q${w - half},${h - half} ${w - 10},${h - half} H26 L12,${h + 6} L16,${h - half} H10 Q${half},${h - half} ${half},${h - 10} V10 Q${half},${half} 10,${half} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'speech-right':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h + 8}"><path d="M10,${half} H${w - 10} Q${w - half},${half} ${w - half},10 V${h - 10} Q${w - half},${h - half} ${w - 10},${h - half} H${w - 16} L${w - 12},${h + 6} L${w - 26},${h - half} H10 Q${half},${h - half} ${half},${h - 10} V10 Q${half},${half} 10,${half} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'speech-center':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h + 8}"><path d="M10,${half} H${w - 10} Q${w - half},${half} ${w - half},10 V${h - 10} Q${w - half},${h - half} ${w - 10},${h - half} H${w / 2 + 7} L${w / 2},${h + 6} L${w / 2 - 7},${h - half} H10 Q${half},${h - half} ${half},${h - 10} V10 Q${half},${half} 10,${half} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'speech-top':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h + 8}"><path d="M10,8 H${w / 2 - 7} L${w / 2},1 L${w / 2 + 7},8 H${w - 10} Q${w - half},8 ${w - half},18 V${h - 2} Q${w - half},${h + 6} ${w - 10},${h + 6} H10 Q${half},${h + 6} ${half},${h - 2} V18 Q${half},8 10,8 Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'thought':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h + 10}"><rect x="${half}" y="${half}" width="${rw}" height="${rh}" rx="${rh * 0.45}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/><circle cx="22" cy="${h + 3}" r="3.5" fill="${bg}" stroke="${border}" stroke-width="1.5"/><circle cx="14" cy="${h + 8}" r="2.2" fill="${bg}" stroke="${border}" stroke-width="1.5"/></svg>`;
-        case 'cloud':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M${w * 0.22},${h - 3} H${w * 0.78} C${w * 0.94},${h - 3} ${w - 2},${h * 0.65} ${w * 0.88},${h * 0.45} C${w * 0.9},${h * 0.16} ${w * 0.68},2 ${w * 0.5},${h * 0.16} C${w * 0.34},2 ${w * 0.12},${h * 0.16} ${w * 0.14},${h * 0.45} C2,${h * 0.65} ${w * 0.06},${h - 3} ${w * 0.22},${h - 3} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'burst':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${w * 0.5},1 ${w * 0.65},${h * 0.16} ${w - 2},${h * 0.14} ${w * 0.86},${h * 0.5} ${w - 2},${h * 0.86} ${w * 0.65},${h * 0.84} ${w * 0.5},${h - 1} ${w * 0.35},${h * 0.84} 2,${h * 0.86} ${w * 0.14},${h * 0.5} 2,${h * 0.14} ${w * 0.35},${h * 0.16}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'hexagon':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="14,${half} ${w - 14},${half} ${w - half},${h / 2} ${w - 14},${h - half} 14,${h - half} ${half},${h / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'octagon':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="12,${half} ${w - 12},${half} ${w - half},12 ${w - half},${h - 12} ${w - 12},${h - half} 12,${h - half} ${half},${h - 12} ${half},12" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'diamond':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${w / 2},${half} ${w - half},${h / 2} ${w / 2},${h - half} ${half},${h / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'shield':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M6,${half} H${w - 6} V${h * 0.55} Q${w / 2},${h + 2} ${w / 2},${h - half} Q${w / 2},${h + 2} 6,${h * 0.55} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'tag':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${half},${half} ${w - 14},${half} ${w - half},${h / 2} ${w - 14},${h - half} ${half},${h - half}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'chevron':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${half},${half} ${w - 14},${half} ${w - half},${h / 2} ${w - 14},${h - half} ${half},${h - half} 12,${h / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'banner':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${half},${half} ${w - half},${half} ${w - 10},${h / 2} ${w - half},${h - half} ${half},${h - half} 10,${h / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'parallelogram':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="14,${half} ${w - half},${half} ${w - 14},${h - half} ${half},${h - half}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'oval':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><ellipse cx="${w / 2}" cy="${h / 2}" rx="${rw / 2}" ry="${rh / 2}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'arch':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M${half},${h - half} V${h * 0.45} A${rw / 2},${h * 0.45} 0 0 1 ${w - half},${h * 0.45} V${h - half} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'sticky':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><polygon points="${half},${half} ${w - half},${half} ${w - half},${h - 12} ${w - 12},${h - half} ${half},${h - half}" fill="${bg}" stroke="${border}" stroke-width="${sw}"/><polyline points="${w - 12},${h - half} ${w - 12},${h - 12} ${w - half},${h - 12}" fill="none" stroke="${border}" stroke-width="1.5"/></svg>`;
-        case 'folder':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M${half},6 H${Math.min(48, w * 0.35)} L${Math.min(56, w * 0.42)},${half} H${w - half} V${h - half} H${half} Z" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
-        case 'double-border':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><rect x="${half}" y="${half}" width="${rw}" height="${rh}" rx="10" fill="${bg}" stroke="${border}" stroke-width="${sw}"/><rect x="4.5" y="4.5" width="${Math.max(4, w - 9)}" height="${Math.max(4, h - 9)}" rx="7" fill="none" stroke="${border}" stroke-width="1.2"/></svg>`;
-        case 'brackets':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M12,2 H3 V${h - 2} H12 M${w - 12},2 H${w - 3} V${h - 2} H${w - 12}" fill="none" stroke="${border}" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-        case 'braces':
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><path d="M12,2 Q6,2 6,${h * 0.25} V${h * 0.42} Q6,${h * 0.5} 2,${h * 0.5} Q6,${h * 0.5} 6,${h * 0.58} V${h * 0.75} Q6,${h - 2} 12,${h - 2} M${w - 12},2 Q${w - 6},2 ${w - 6},${h * 0.25} V${h * 0.42} Q${w - 6},${h * 0.5} ${w - 2},${h * 0.5} Q${w - 6},${h * 0.5} ${w - 6},${h * 0.58} V${h * 0.75} Q${w - 6},${h - 2} ${w - 12},${h - 2}" fill="none" stroke="${border}" stroke-width="2.5" stroke-linecap="round"/></svg>`;
-        default:
-          return `<svg class="node-shape-svg" viewBox="0 0 ${w} ${h}"><rect x="${half}" y="${half}" width="${rw}" height="${rh}" rx="12" fill="${bg}" stroke="${border}" stroke-width="${sw}"/></svg>`;
+    function getSubtreeSpan(node, axis = 'y') {
+      if (node.collapsed || !node.children || node.children.length === 0) {
+        return (axis === 'y' ? node.h : node.w) + 18;
       }
+      const childrenSum = node.children.reduce((acc, ch) => acc + getSubtreeSpan(ch, axis), 0);
+      return Math.max((axis === 'y' ? node.h : node.w) + 18, childrenSum);
     }
 
-    function getAnchorPointOnNode(node, anchorSpec, targetNode) {
+    function autoLayoutA4() {
+      const sheet = A4_DIMS[state.orientation];
+      const cx = Math.round(sheet.w / 2);
+      const cy = Math.round(sheet.h / 2);
+      const root = state.tree;
+      if (!root) return;
+
+      const visibleChildren = root.collapsed ? [] : (root.children || []);
+      const layout = state.layout;
+
+      if (layout === 'orgchart' || layout === 'upward') {
+        const dirY = layout === 'orgchart' ? 1 : -1;
+        root.x = cx;
+        root.y = layout === 'orgchart' ? Math.max(90, Math.round(sheet.h * 0.16)) : Math.min(sheet.h - 90, Math.round(sheet.h * 0.84));
+
+        const placeVerticalSubtree = (parent, children, startX, endX, level) => {
+          if (!children || children.length === 0) return;
+          const totalSpan = children.reduce((s, c) => s + getSubtreeSpan(c, 'x'), 0);
+          let cursorX = (startX + endX) / 2 - totalSpan / 2;
+          const stepY = Math.min(130, (sheet.h - 170) / 3);
+
+          children.forEach(child => {
+            const span = getSubtreeSpan(child, 'x');
+            child.x = Math.round(cursorX + span / 2);
+            child.y = Math.round(parent.y + dirY * (parent.h / 2 + child.h / 2 + stepY * 0.62));
+            if (!child.collapsed && child.children?.length) {
+              placeVerticalSubtree(child, child.children, cursorX, cursorX + span, level + 1);
+            }
+            cursorX += span;
+          });
+        };
+
+        placeVerticalSubtree(root, visibleChildren, 40, sheet.w - 40, 1);
+        clampAllNodesToA4();
+        return;
+      }
+
+      if (layout === 'radial360') {
+        root.x = cx;
+        root.y = cy;
+
+        const groups = { top: [], right: [], bottom: [], left: [] };
+        const sideOrder = ['right', 'bottom', 'left', 'top'];
+        visibleChildren.forEach((child, idx) => {
+          const explicitSide = ['top', 'right', 'bottom', 'left'].includes(child.parentOutAnchor)
+            ? child.parentOutAnchor
+            : sideOrder[idx % 4];
+          child.parentOutAnchor = explicitSide;
+          groups[explicitSide].push(child);
+        });
+
+        // Derecha e Izquierda
+        ['right', 'left'].forEach(side => {
+          const dir = side === 'right' ? 1 : -1;
+          const list = groups[side];
+          const totalH = list.reduce((s, c) => s + getSubtreeSpan(c, 'y'), 0);
+          let curY = cy - totalH / 2;
+          list.forEach(child => {
+            const span = getSubtreeSpan(child, 'y');
+            child.x = Math.round(root.x + dir * (root.w / 2 + child.w / 2 + 78));
+            child.y = Math.round(curY + span / 2);
+            placeHorizontalDescendants(child, dir, curY, curY + span);
+            curY += span;
+          });
+        });
+
+        // Arriba y Abajo
+        ['top', 'bottom'].forEach(side => {
+          const dir = side === 'bottom' ? 1 : -1;
+          const list = groups[side];
+          const totalW = list.reduce((s, c) => s + getSubtreeSpan(c, 'x'), 0);
+          let curX = cx - totalW / 2;
+          list.forEach(child => {
+            const span = getSubtreeSpan(child, 'x');
+            child.x = Math.round(curX + span / 2);
+            child.y = Math.round(root.y + dir * (root.h / 2 + child.h / 2 + 68));
+            placeHorizontalDescendants(child, child.x >= cx ? 1 : -1, child.y - 45, child.y + 45);
+            curX += span;
+          });
+        });
+
+        clampAllNodesToA4();
+        return;
+      }
+
+      // Mindmap estándar (Izquierda y Derecha) o Árbol Derecha ('logic')
+      root.x = layout === 'logic' ? Math.max(120, Math.round(sheet.w * 0.16)) : cx;
+      root.y = cy;
+
+      const rightList = [];
+      const leftList = [];
+      visibleChildren.forEach((child, idx) => {
+        if (layout === 'logic' || child.parentOutAnchor === 'right') {
+          rightList.push(child);
+        } else if (child.parentOutAnchor === 'left') {
+          leftList.push(child);
+        } else if (idx % 2 === 0) {
+          rightList.push(child);
+        } else {
+          leftList.push(child);
+        }
+      });
+
+      const distributeSide = (list, dir) => {
+        if (list.length === 0) return;
+        const totalH = list.reduce((s, c) => s + getSubtreeSpan(c, 'y'), 0);
+        let curY = cy - totalH / 2;
+        list.forEach(child => {
+          const span = getSubtreeSpan(child, 'y');
+          child.x = Math.round(root.x + dir * (root.w / 2 + child.w / 2 + 74));
+          child.y = Math.round(curY + span / 2);
+          placeHorizontalDescendants(child, dir, curY, curY + span);
+          curY += span;
+        });
+      };
+
+      distributeSide(rightList, 1);
+      distributeSide(leftList, -1);
+      clampAllNodesToA4();
+    }
+
+    function placeHorizontalDescendants(parent, dir, topY, bottomY) {
+      if (parent.collapsed || !parent.children || parent.children.length === 0) return;
+      const totalH = parent.children.reduce((s, c) => s + getSubtreeSpan(c, 'y'), 0);
+      let curY = (topY + bottomY) / 2 - totalH / 2;
+
+      parent.children.forEach(child => {
+        const span = getSubtreeSpan(child, 'y');
+        child.x = Math.round(parent.x + dir * (parent.w / 2 + child.w / 2 + 54));
+        child.y = Math.round(curY + span / 2);
+        placeHorizontalDescendants(child, dir, curY, curY + span);
+        curY += span;
+      });
+    }
+
+    function clampAllNodesToA4() {
+      const sheet = A4_DIMS[state.orientation];
+      const pad = 36;
+      traverseVisibleNodes(node => {
+        const minX = pad + node.w / 2;
+        const maxX = sheet.w - pad - node.w / 2;
+        const minY = pad + node.h / 2;
+        const maxY = sheet.h - pad - node.h / 2;
+        if (maxX > minX) node.x = Math.round(Math.max(minX, Math.min(maxX, node.x)));
+        if (maxY > minY) node.y = Math.round(Math.max(minY, Math.min(maxY, node.y)));
+      });
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* 8. PUNTOS DE ANCLAJE EN BORDE (SOPORTA ÁNGULO 360° Y PUNTOS CARDINALES)*/
+    /* --------------------------------------------------------------------- */
+    function getAnchorPointOnNode(node, anchorSpec, otherNode) {
       const hw = node.w / 2;
       const hh = node.h / 2;
 
-      if (anchorSpec && typeof anchorSpec === 'object' && typeof anchorSpec.nx === 'number') {
-        const side = Math.abs(anchorSpec.nx) >= Math.abs(anchorSpec.ny)
-          ? (anchorSpec.nx >= 0 ? 'right' : 'left')
-          : (anchorSpec.ny >= 0 ? 'bottom' : 'top');
-        return { x: node.x + anchorSpec.nx * hw, y: node.y + anchorSpec.ny * hh, side };
+      // Si es un ángulo continuo arrastrado con el tirador naranja/azul
+      if (anchorSpec && typeof anchorSpec === 'object' && typeof anchorSpec.angle === 'number') {
+        const theta = anchorSpec.angle;
+        const cos = Math.cos(theta);
+        const sin = Math.sin(theta);
+        const scale = Math.min(
+          Math.abs(cos) > 1e-4 ? hw / Math.abs(cos) : Infinity,
+          Math.abs(sin) > 1e-4 ? hh / Math.abs(sin) : Infinity
+        );
+        const px = node.x + cos * scale;
+        const py = node.y + sin * scale;
+        const side = Math.abs(cos) * hh >= Math.abs(sin) * hw
+          ? (cos >= 0 ? 'right' : 'left')
+          : (sin >= 0 ? 'bottom' : 'top');
+        return { x: px, y: py, side };
       }
 
-      const presets = {
-        'top': { x: node.x, y: node.y - hh, side: 'top' },
-        'bottom': { x: node.x, y: node.y + hh, side: 'bottom' },
-        'left': { x: node.x - hw, y: node.y, side: 'left' },
-        'right': { x: node.x + hw, y: node.y, side: 'right' },
-        'top-left': { x: node.x - hw, y: node.y - hh, side: 'left' },
-        'top-right': { x: node.x + hw, y: node.y - hh, side: 'right' },
-        'bottom-left': { x: node.x - hw, y: node.y + hh, side: 'left' },
-        'bottom-right': { x: node.x + hw, y: node.y + hh, side: 'right' }
-      };
-      if (typeof anchorSpec === 'string' && presets[anchorSpec]) {
-        return presets[anchorSpec];
-      }
-
-      if (!targetNode) return { x: node.x + hw, y: node.y, side: 'right' };
-      const dx = targetNode.x - node.x;
-      const dy = targetNode.y - node.y;
-      const autoSide = Math.abs(dx) * 0.95 >= Math.abs(dy)
-        ? (dx >= 0 ? 'right' : 'left')
-        : (dy >= 0 ? 'bottom' : 'top');
-
-      // Repartir ligeramente las salidas automáticas cuando varios hijos salen por el mismo lado
-      let spreadOffset = 0;
-      if (Array.isArray(node.children) && node.children.length > 1) {
-        const sameSidePeers = node.children.filter(ch => {
-          if (ch.parentOutAnchor) return false;
-          const cdx = ch.x - node.x;
-          const cdy = ch.y - node.y;
-          const cSide = Math.abs(cdx) * 0.95 >= Math.abs(cdy)
-            ? (cdx >= 0 ? 'right' : 'left')
-            : (cdy >= 0 ? 'bottom' : 'top');
-          return cSide === autoSide;
-        });
-        if (sameSidePeers.length > 1) {
-          if (autoSide === 'right' || autoSide === 'left') {
-            sameSidePeers.sort((a, b) => a.y - b.y);
-          } else {
-            sameSidePeers.sort((a, b) => a.x - b.x);
-          }
-          const idx = sameSidePeers.findIndex(ch => ch.id === targetNode.id);
-          if (idx >= 0) {
-            spreadOffset = ((idx + 1) / (sameSidePeers.length + 1) - 0.5) * 1.15;
-          }
+      let key = typeof anchorSpec === 'string' ? anchorSpec : null;
+      if (!key && otherNode) {
+        const dx = otherNode.x - node.x;
+        const dy = otherNode.y - node.y;
+        if (Math.abs(dx) * hh >= Math.abs(dy) * hw) {
+          key = dx >= 0 ? 'right' : 'left';
+        } else {
+          key = dy >= 0 ? 'bottom' : 'top';
         }
       }
 
-      if (autoSide === 'right') return { x: node.x + hw, y: node.y + spreadOffset * hh, side: 'right' };
-      if (autoSide === 'left') return { x: node.x - hw, y: node.y + spreadOffset * hh, side: 'left' };
-      if (autoSide === 'bottom') return { x: node.x + spreadOffset * hw, y: node.y + hh, side: 'bottom' };
-      return { x: node.x + spreadOffset * hw, y: node.y - hh, side: 'top' };
+      switch (key) {
+        case 'top':          return { x: node.x,      y: node.y - hh, side: 'top' };
+        case 'bottom':       return { x: node.x,      y: node.y + hh, side: 'bottom' };
+        case 'left':         return { x: node.x - hw, y: node.y,      side: 'left' };
+        case 'right':        return { x: node.x + hw, y: node.y,      side: 'right' };
+        case 'top-left':     return { x: node.x - hw, y: node.y - hh, side: 'top' };
+        case 'top-right':    return { x: node.x + hw, y: node.y - hh, side: 'top' };
+        case 'bottom-left':  return { x: node.x - hw, y: node.y + hh, side: 'bottom' };
+        case 'bottom-right': return { x: node.x + hw, y: node.y + hh, side: 'bottom' };
+        default:             return { x: node.x + hw, y: node.y,      side: 'right' };
+      }
     }
 
+    /* --------------------------------------------------------------------- */
+    /* 9. GENERACIÓN SVG DE LOS 26 ESTILOS DE BOCADILLO                      */
+    /* --------------------------------------------------------------------- */
+    function buildNodeShapeSvg(shapeId, w, h, colors) {
+      const sw = 2;
+      const p = sw;
+      const iw = Math.max(4, w - sw * 2);
+      const ih = Math.max(4, h - sw * 2);
+      const fill = colors.bg;
+      const stroke = colors.border;
+
+      switch (shapeId) {
+        case 'organic-line':
+          return `<line x1="2" y1="${h - 2}" x2="${w - 2}" y2="${h - 2}" stroke="${stroke}" stroke-width="2.6" stroke-linecap="round"/>`;
+        case 'pill':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="${ih / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'rect':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="3" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'ellipse':
+          return `<ellipse cx="${w / 2}" cy="${h / 2}" rx="${iw / 2}" ry="${ih / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'diamond':
+          return `<polygon points="${w / 2},${p} ${w - p},${h / 2} ${w / 2},${h - p} ${p},${h / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        case 'hexagon': {
+          const cut = Math.min(16, w * 0.16);
+          return `<polygon points="${p + cut},${p} ${w - p - cut},${p} ${w - p},${h / 2} ${w - p - cut},${h - p} ${p + cut},${h - p} ${p},${h / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'octagon': {
+          const c = Math.min(12, Math.min(w, h) * 0.22);
+          return `<polygon points="${p + c},${p} ${w - p - c},${p} ${w - p},${p + c} ${w - p},${h - p - c} ${w - p - c},${h - p} ${p + c},${h - p} ${p},${h - p - c} ${p},${p + c}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'parallelogram': {
+          const sk = Math.min(14, w * 0.14);
+          return `<polygon points="${p + sk},${p} ${w - p},${p} ${w - p - sk},${h - p} ${p},${h - p}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'trapezoid': {
+          const sk = Math.min(14, w * 0.14);
+          return `<polygon points="${p + sk},${p} ${w - p - sk},${p} ${w - p},${h - p} ${p},${h - p}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'chevron-right': {
+          const tip = Math.min(14, w * 0.15);
+          return `<polygon points="${p},${p} ${w - p - tip},${p} ${w - p},${h / 2} ${w - p - tip},${h - p} ${p},${h - p} ${p + tip * 0.6},${h / 2}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'tag-right': {
+          const tip = Math.min(14, w * 0.15);
+          return `<polygon points="${p},${p} ${w - p - tip},${p} ${w - p},${h / 2} ${w - p - tip},${h - p} ${p},${h - p}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'speech-left': {
+          const bh = Math.max(12, ih - 7);
+          return `<path d="M${p + 10},${p} H${w - p - 10} Q${w - p},${p} ${w - p},${p + 10} V${p + bh - 10} Q${w - p},${p + bh} ${w - p - 10},${p + bh} H${p + 24} L${p + 12},${h - 1} L${p + 14},${p + bh} H${p + 10} Q${p},${p + bh} ${p},${p + bh - 10} V${p + 10} Q${p},${p} ${p + 10},${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'speech-center': {
+          const bh = Math.max(12, ih - 7);
+          const mid = w / 2;
+          return `<path d="M${p + 10},${p} H${w - p - 10} Q${w - p},${p} ${w - p},${p + 10} V${p + bh - 10} Q${w - p},${p + bh} ${w - p - 10},${p + bh} H${mid + 7} L${mid},${h - 1} L${mid - 7},${p + bh} H${p + 10} Q${p},${p + bh} ${p},${p + bh - 10} V${p + 10} Q${p},${p} ${p + 10},${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'speech-right': {
+          const bh = Math.max(12, ih - 7);
+          return `<path d="M${p + 10},${p} H${w - p - 10} Q${w - p},${p} ${w - p},${p + 10} V${p + bh - 10} Q${w - p},${p + bh} ${w - p - 10},${p + bh} H${w - p - 14} L${w - p - 12},${h - 1} L${w - p - 24},${p + bh} H${p + 10} Q${p},${p + bh} ${p},${p + bh - 10} V${p + 10} Q${p},${p} ${p + 10},${p} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        }
+        case 'thought-cloud':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="${Math.min(22, ih * 0.48)}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-dasharray="6 2"/>`;
+        case 'ribbon':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="6" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/><line x1="${p + 6}" y1="${p + 4}" x2="${w - p - 6}" y2="${p + 4}" stroke="${stroke}" stroke-width="1" opacity="0.45"/><line x1="${p + 6}" y1="${h - p - 4}" x2="${w - p - 6}" y2="${h - p - 4}" stroke="${stroke}" stroke-width="1" opacity="0.45"/>`;
+        case 'note-folded': {
+          const fold = 11;
+          return `<polygon points="${p},${p} ${w - p - fold},${p} ${w - p},${p + fold} ${w - p},${h - p} ${p},${h - p}" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/><polyline points="${w - p - fold},${p} ${w - p - fold},${p + fold} ${w - p},${p + fold}" fill="none" stroke="${stroke}" stroke-width="1.5"/>`;
+        }
+        case 'brackets':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="6" fill="${fill}" stroke="none"/><path d="M${p + 10},${p} H${p + 2} V${h - p} H${p + 10} M${w - p - 10},${p} H${w - p - 2} V${h - p} H${w - p - 10}" fill="none" stroke="${stroke}" stroke-width="2.5"/>`;
+        case 'double-border':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="11" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/><rect x="${p + 4}" y="${p + 4}" width="${Math.max(2, iw - 8)}" height="${Math.max(2, ih - 8)}" rx="8" fill="none" stroke="${stroke}" stroke-width="1.2"/>`;
+        case 'dashed-box':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="11" fill="${fill}" stroke="${stroke}" stroke-width="${sw}" stroke-dasharray="5 3"/>`;
+        case 'top-accent':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/><rect x="${p}" y="${p}" width="${iw}" height="5" rx="3" fill="${stroke}"/>`;
+        case 'left-accent':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="1.2"/><rect x="${p}" y="${p}" width="6" height="${ih}" rx="3" fill="${stroke}"/>`;
+        case 'cylinder':
+          return `<rect x="${p}" y="${p + 4}" width="${iw}" height="${Math.max(4, ih - 8)}" rx="8" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/><ellipse cx="${w / 2}" cy="${p + 7}" rx="${iw / 2}" ry="5" fill="${fill}" stroke="${stroke}" stroke-width="1.6"/>`;
+        case 'star-badge':
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="14" fill="${fill}" stroke="${stroke}" stroke-width="2.4"/>`;
+        case 'shield':
+          return `<path d="M${p},${p} H${w - p} V${h * 0.62} Q${w / 2},${h - p + 2} ${w / 2},${h - p + 2} Q${w / 2},${h - p + 2} ${p},${h * 0.62} Z" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+        default:
+          return `<rect x="${p}" y="${p}" width="${iw}" height="${ih}" rx="12" fill="${fill}" stroke="${stroke}" stroke-width="${sw}"/>`;
+      }
+    }
+
+    /* --------------------------------------------------------------------- */
+    /* 10. RENDERIZADO DEL LIENZO (CONEXIONES, BOCADILLOS Y TIRADORES)       */
+    /* --------------------------------------------------------------------- */
     function renderConnections() {
       if (!dom.connectionsSvg || !state.tree) return;
-      let pathsHtml = '';
+      const paths = [];
 
       traverseVisibleNodes((node, parent, depth, branchIndex) => {
         if (!parent) return;
         const colors = getEffectiveNodeColors(node, depth, branchIndex);
         const start = getAnchorPointOnNode(parent, node.parentOutAnchor || parent.outAnchor, node);
         const end = getAnchorPointOnNode(node, node.inAnchor, parent);
-        const strokeW = depth === 1 ? 3 : 2.3;
-
-        // Si el nodo tiene forma 'organic-line', conectar la curva suavemente con el borde inferior de la línea
-        if ((node.shape || (depth > 1 ? 'organic-line' : 'rounded')) === 'organic-line' && !node.inAnchor) {
-          end.y = node.y + node.h / 2 - 2;
-        }
-        if ((parent.shape || (depth - 1 > 1 ? 'organic-line' : 'rounded')) === 'organic-line' && !node.parentOutAnchor) {
-          start.y = parent.y + parent.h / 2 - 2;
-        }
 
         const dist = Math.hypot(end.x - start.x, end.y - start.y);
-        const tension = Math.max(24, Math.min(85, dist * 0.42));
-
-        const dirVec = side => {
-          if (side === 'right') return [1, 0];
-          if (side === 'left') return [-1, 0];
-          if (side === 'bottom') return [0, 1];
-          return [0, -1];
-        };
-
+        const tension = Math.max(24, Math.min(88, dist * 0.42));
+        const dirVec = side => side === 'right' ? [1, 0] : side === 'left' ? [-1, 0] : side === 'bottom' ? [0, 1] : [0, -1];
         const [sx, sy] = dirVec(start.side);
         const [ex, ey] = dirVec(end.side);
+
         const c1x = start.x + sx * tension;
         const c1y = start.y + sy * tension;
         const c2x = end.x + ex * tension;
         const c2y = end.y + ey * tension;
+        const width = depth === 1 ? 3 : 2.3;
 
-        pathsHtml += `<path d="M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}" fill="none" stroke="${colors.border}" stroke-width="${strokeW}" stroke-linecap="round"/>`;
+        paths.push(
+          `<path d="M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)}, ${c2x.toFixed(1)} ${c2y.toFixed(1)}, ${end.x.toFixed(1)} ${end.y.toFixed(1)}" fill="none" stroke="${colors.border}" stroke-width="${width}" stroke-linecap="round"/>`
+        );
       });
 
-      dom.connectionsSvg.innerHTML = pathsHtml;
+      dom.connectionsSvg.innerHTML = paths.join('');
     }
 
     function renderNodes() {
@@ -1926,252 +2054,83 @@
 
       traverseVisibleNodes((node, parent, depth, branchIndex) => {
         const colors = getEffectiveNodeColors(node, depth, branchIndex);
-        const shape = node.shape || (depth <= 1 ? 'rounded' : 'organic-line');
-        const isSelected = node.id === state.selectedNodeId;
-        const fontSize = node.computedFontSize || (depth === 0 ? 17 : depth === 1 ? 13 : 11.5);
-        const fontFamily = node.fontFamily || "'Inter', sans-serif";
+        const shapeId = node.shape || (depth <= 1 ? 'rounded' : 'organic-line');
+        const fontSize = node.computedFontSize || 12;
         const isBold = node.bold !== undefined ? node.bold : depth === 0;
+        const family = node.fontFamily || 'Inter';
 
         const el = document.createElement('div');
-        el.className = 'mind-node' + (isSelected ? ' selected' : '');
+        el.className = `mind-node${state.selectedNodeId === node.id ? ' selected' : ''}`;
         el.dataset.nodeId = node.id;
         el.style.left = `${Math.round(node.x)}px`;
         el.style.top = `${Math.round(node.y)}px`;
         el.style.width = `${node.w}px`;
         el.style.height = `${node.h}px`;
+        el.style.color = colors.text;
+        el.style.fontFamily = `'${family}', 'Inter', sans-serif`;
         el.style.fontSize = `${fontSize}px`;
-        el.style.fontFamily = fontFamily;
         el.style.fontWeight = isBold ? '700' : '500';
         el.style.fontStyle = node.italic ? 'italic' : 'normal';
-        el.style.color = colors.text;
+        el.style.padding = depth === 0 ? '6px 12px' : '4px 9px';
 
-        const svgMarkup = buildBubbleSvgMarkup(shape, node.w, node.h, colors.bg, colors.border);
-        const padClass = shape === 'organic-line' ? 'pb-1.5 px-1.5' : 'px-3 py-1';
+        const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svgEl.setAttribute('class', 'node-shape-svg');
+        svgEl.setAttribute('viewBox', `0 0 ${node.w} ${node.h}`);
+        svgEl.innerHTML = buildNodeShapeSvg(shapeId, node.w, node.h, colors);
+        el.appendChild(svgEl);
 
-        el.innerHTML = `
-          ${svgMarkup}
-          <div class="node-content-wrap ${padClass}">
-            ${node.emoji ? `<span class="shrink-0">${node.emoji}</span>` : ''}
-            <span class="break-words">${escapeHtml(node.text || 'Tema')}</span>
-          </div>
-        `;
+        const content = document.createElement('div');
+        content.className = 'node-content-wrap';
+        content.textContent = `${node.emoji ? node.emoji + ' ' : ''}${node.text || 'Tema'}`;
+        el.appendChild(content);
 
         // Botón plegar/desplegar si tiene hijos
         if (Array.isArray(node.children) && node.children.length > 0 && depth > 0) {
-          const colBtn = document.createElement('button');
-          colBtn.type = 'button';
-          colBtn.className = 'collapse-btn';
-          colBtn.textContent = node.collapsed ? `+${node.children.length}` : '−';
-          const onRight = !parent || node.x >= parent.x;
-          colBtn.style[onRight ? 'right' : 'left'] = '-10px';
-          colBtn.style.top = '50%';
-          colBtn.style.transform = 'translateY(-50%)';
-          colBtn.addEventListener('pointerdown', e => e.stopPropagation());
-          colBtn.addEventListener('click', e => {
+          const cBtn = document.createElement('button');
+          cBtn.type = 'button';
+          cBtn.className = 'collapse-btn no-print';
+          cBtn.textContent = node.collapsed ? `+${node.children.length}` : '−';
+          const isRight = !parent || node.x >= parent.x;
+          cBtn.style.top = `${Math.round(node.h / 2 - 9)}px`;
+          cBtn.style[isRight ? 'right' : 'left'] = '-11px';
+          cBtn.addEventListener('pointerdown', e => e.stopPropagation());
+          cBtn.addEventListener('click', e => {
             e.stopPropagation();
             pushHistory();
             node.collapsed = !node.collapsed;
             fullRefresh(false);
+            scheduleAutoSave();
           });
-          el.appendChild(colBtn);
+          el.appendChild(cBtn);
         }
 
-        bindNodePointerInteractions(el, node);
+        attachNodePointerBehavior(el, node);
         dom.nodesContainer.appendChild(el);
       });
     }
 
-    function escapeHtml(str) {
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* 7. ARRASTRE LIBRE (GRUPO VS INDIVIDUAL) Y DOBLE TOQUE SIN CONFLICTO   */
-    /* --------------------------------------------------------------------- */
-    function moveSubtreeByDelta(node, dx, dy) {
-      node.x += dx;
-      node.y += dy;
-      if (Array.isArray(node.children)) {
-        node.children.forEach(ch => moveSubtreeByDelta(ch, dx, dy));
-      }
-    }
-
-    let lastTapInfo = { nodeId: null, time: 0 };
-
-    function bindNodePointerInteractions(el, node) {
-      let startX = 0;
-      let startY = 0;
-      let moved = false;
-      let pointerActive = false;
-
-      el.addEventListener('pointerdown', e => {
-        if (e.button !== undefined && e.button !== 0) return;
-        e.stopPropagation();
-        pointerActive = true;
-        moved = false;
-        startX = e.clientX;
-        startY = e.clientY;
-        selectNode(node.id);
-      });
-
-      el.addEventListener('pointermove', e => {
-        if (!pointerActive) return;
-        const dxScreen = e.clientX - startX;
-        const dyScreen = e.clientY - startY;
-
-        if (!moved && Math.hypot(dxScreen, dyScreen) < 5) return;
-
-        if (!moved) {
-          moved = true;
-          pushHistory();
-          state.hasManualDrag = true;
-          el.classList.add('dragging');
-          try { el.setPointerCapture(e.pointerId); } catch (_) {}
-        }
-
-        const dx = (e.clientX - startX) / state.zoom;
-        const dy = (e.clientY - startY) / state.zoom;
-        startX = e.clientX;
-        startY = e.clientY;
-
-        const sheet = A4_DIMS[state.orientation];
-        const clampedDx = Math.max(A4_MARGIN + node.w / 2 - node.x, Math.min(sheet.w - A4_MARGIN - node.w / 2 - node.x, dx));
-        const clampedDy = Math.max(A4_MARGIN + node.h / 2 - node.y, Math.min(sheet.h - A4_MARGIN - node.h / 2 - node.y, dy));
-
-        const moveIndividually = state.dragMode === 'single' || e.altKey;
-        if (moveIndividually) {
-          node.x += clampedDx;
-          node.y += clampedDy;
-        } else {
-          moveSubtreeByDelta(node, clampedDx, clampedDy);
-        }
-
-        // Actualizar posiciones de todos los nodos visibles en el DOM
-        dom.nodesContainer.querySelectorAll('.mind-node').forEach(nodeEl => {
-          const found = findNodeWithParent(nodeEl.dataset.nodeId);
-          if (found) {
-            nodeEl.style.left = `${Math.round(found.node.x)}px`;
-            nodeEl.style.top = `${Math.round(found.node.y)}px`;
-          }
-        });
-
-        renderConnections();
-        renderInteractiveHandles();
-        updateFloatingNodeBarPosition();
-      });
-
-      const finishPointer = e => {
-        if (!pointerActive) return;
-        pointerActive = false;
-        el.classList.remove('dragging');
-        try { el.releasePointerCapture(e.pointerId); } catch (_) {}
-
-        if (moved) {
-          scheduleAutoSave();
-          return;
-        }
-
-        // Detectar doble clic / doble toque limpio sin arrastre para editar texto
-        const now = Date.now();
-        if (lastTapInfo.nodeId === node.id && now - lastTapInfo.time < 360) {
-          lastTapInfo = { nodeId: null, time: 0 };
-          openInlineTextEditor(node);
-        } else {
-          lastTapInfo = { nodeId: node.id, time: now };
-        }
-      };
-
-      el.addEventListener('pointerup', finishPointer);
-      el.addEventListener('pointercancel', finishPointer);
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* 8. TIRADORES DE 4 LADOS EN RAÍZ Y PUNTO DE SALIDA POR CADA RAMA       */
-    /* --------------------------------------------------------------------- */
-    function createPerimeterAnchorHandle(targetBoxNode, ownerChildNode, isParentExit, labelText) {
-      const peerNode = isParentExit ? ownerChildNode : findNodeWithParent(targetBoxNode.id)?.parent;
-      const anchorSpec = isParentExit
-        ? (ownerChildNode.parentOutAnchor || targetBoxNode.outAnchor)
-        : targetBoxNode.inAnchor;
-
-      const pt = getAnchorPointOnNode(targetBoxNode, anchorSpec, peerNode || ownerChildNode);
-      const halfSize = isParentExit ? 9 : 8;
-
-      const dot = document.createElement('div');
-      dot.className = (isParentExit ? 'exit-anchor-handle' : 'entry-anchor-handle') + ' pointer-events-auto';
-      dot.title = labelText;
-      dot.style.left = `${Math.round(pt.x - halfSize)}px`;
-      dot.style.top = `${Math.round(pt.y - halfSize)}px`;
-
-      let draggingAnchor = false;
-      dot.addEventListener('pointerdown', e => {
-        e.stopPropagation();
-        draggingAnchor = true;
-        pushHistory();
-        try { dot.setPointerCapture(e.pointerId); } catch (_) {}
-      });
-
-      dot.addEventListener('pointermove', e => {
-        if (!draggingAnchor) return;
-        const sheetRect = dom.a4Sheet.getBoundingClientRect();
-        const px = (e.clientX - sheetRect.left) / state.zoom;
-        const py = (e.clientY - sheetRect.top) / state.zoom;
-
-        const relX = (px - targetBoxNode.x) / Math.max(1, targetBoxNode.w / 2);
-        const relY = (py - targetBoxNode.y) / Math.max(1, targetBoxNode.h / 2);
-        const maxAxis = Math.max(Math.abs(relX), Math.abs(relY), 0.01);
-        const nx = Math.max(-1, Math.min(1, relX / maxAxis));
-        const ny = Math.max(-1, Math.min(1, relY / maxAxis));
-        const newAnchor = { nx: Number(nx.toFixed(2)), ny: Number(ny.toFixed(2)) };
-
-        if (isParentExit) {
-          ownerChildNode.parentOutAnchor = newAnchor;
-        } else {
-          targetBoxNode.inAnchor = newAnchor;
-        }
-
-        const newPt = getAnchorPointOnNode(targetBoxNode, newAnchor, peerNode || ownerChildNode);
-        dot.style.left = `${Math.round(newPt.x - halfSize)}px`;
-        dot.style.top = `${Math.round(newPt.y - halfSize)}px`;
-        renderConnections();
-      });
-
-      const stopAnchorDrag = () => {
-        if (!draggingAnchor) return;
-        draggingAnchor = false;
-        scheduleAutoSave();
-      };
-      dot.addEventListener('pointerup', stopAnchorDrag);
-      dot.addEventListener('pointercancel', stopAnchorDrag);
-
-      return dot;
-    }
-
     function renderInteractiveHandles() {
-      if (!dom.handlesContainer || !state.tree) return;
+      if (!dom.handlesContainer) return;
       dom.handlesContainer.innerHTML = '';
       if (!state.selectedNodeId) return;
 
       const found = findNodeWithParent(state.selectedNodeId);
       if (!found) return;
-      const node = found.node;
+      const { node, parent, depth } = found;
 
-      // 1) Botones '+' en los 4 lados del bocadillo principal
-      if (found.depth === 0) {
+      // 1. Si es el bocadillo principal (root), mostrar los 4 botones '+' en sus 4 lados
+      if (depth === 0) {
         const sides = [
-          { side: 'top', x: node.x, y: node.y - node.h / 2 - 24, title: 'Añadir subtema arriba' },
-          { side: 'right', x: node.x + node.w / 2 + 24, y: node.y, title: 'Añadir subtema a la derecha' },
-          { side: 'bottom', x: node.x, y: node.y + node.h / 2 + 24, title: 'Añadir subtema abajo' },
-          { side: 'left', x: node.x - node.w / 2 - 24, y: node.y, title: 'Añadir subtema a la izquierda' }
+          { side: 'top',    x: node.x,                  y: node.y - node.h / 2 - 16, title: 'Añadir subtema arriba' },
+          { side: 'right',  x: node.x + node.w / 2 + 16, y: node.y,                  title: 'Añadir subtema a la derecha' },
+          { side: 'bottom', x: node.x,                  y: node.y + node.h / 2 + 16, title: 'Añadir subtema abajo' },
+          { side: 'left',   x: node.x - node.w / 2 - 16, y: node.y,                  title: 'Añadir subtema a la izquierda' }
         ];
 
         sides.forEach(s => {
           const btn = document.createElement('button');
           btn.type = 'button';
-          btn.className = 'root-side-handle pointer-events-auto';
+          btn.className = 'root-side-handle no-print';
           btn.textContent = '+';
           btn.title = s.title;
           btn.style.left = `${Math.round(s.x - 12)}px`;
@@ -2179,109 +2138,262 @@
           btn.addEventListener('pointerdown', e => e.stopPropagation());
           btn.addEventListener('click', e => {
             e.stopPropagation();
-            addChildNode(node.id, s.side);
+            addChildNodeOnSide(node.id, s.side);
           });
           dom.handlesContainer.appendChild(btn);
         });
       }
 
-      // 2) Si el nodo tiene bocadillo padre: tirador naranja en el padre para esta línea + azul en este nodo
-      if (found.parent) {
-        dom.handlesContainer.appendChild(
-          createPerimeterAnchorHandle(
-            found.parent,
-            node,
-            true,
-            `Arrastra alrededor de «${found.parent.text || 'Padre'}» para mover desde dónde sale esta línea`
-          )
-        );
-        dom.handlesContainer.appendChild(
-          createPerimeterAnchorHandle(
-            node,
-            node,
-            false,
-            `Arrastra alrededor de «${node.text || 'Subtema'}» para mover por dónde entra esta línea`
-          )
-        );
+      // 2. Si el bocadillo seleccionado tiene padre, mostrar:
+      //    - Tirador naranja (●) en el borde del PADRE para mover manualmente desde dónde sale su línea
+      //    - Tirador azul (●) en el borde del HIJO para mover manualmente por dónde entra su línea
+      if (parent) {
+        const exitPt = getAnchorPointOnNode(parent, node.parentOutAnchor || parent.outAnchor, node);
+        const exitHandle = document.createElement('div');
+        exitHandle.className = 'exit-anchor-handle no-print';
+        exitHandle.title = 'Arrastra alrededor del bocadillo padre para cambiar el punto de salida de esta línea';
+        exitHandle.style.left = `${Math.round(exitPt.x - 9)}px`;
+        exitHandle.style.top = `${Math.round(exitPt.y - 9)}px`;
+        attachPerimeterAnchorDrag(exitHandle, parent, angle => {
+          node.parentOutAnchor = { angle };
+        });
+        dom.handlesContainer.appendChild(exitHandle);
+
+        const entryPt = getAnchorPointOnNode(node, node.inAnchor, parent);
+        const entryHandle = document.createElement('div');
+        entryHandle.className = 'entry-anchor-handle no-print';
+        entryHandle.title = 'Arrastra alrededor de este bocadillo para cambiar el punto de entrada de la línea';
+        entryHandle.style.left = `${Math.round(entryPt.x - 8)}px`;
+        entryHandle.style.top = `${Math.round(entryPt.y - 8)}px`;
+        attachPerimeterAnchorDrag(entryHandle, node, angle => {
+          node.inAnchor = { angle };
+        });
+        dom.handlesContainer.appendChild(entryHandle);
       }
 
-      // 3) Si el nodo seleccionado tiene hijos, un tirador naranja independiente por cada salida
-      if (!node.collapsed && Array.isArray(node.children) && node.children.length > 0) {
+      // 3. Si el bocadillo seleccionado tiene hijos visibles, mostrar un tirador naranja (●) independiente por cada rama
+      if (!node.collapsed && Array.isArray(node.children)) {
         node.children.forEach(child => {
-          dom.handlesContainer.appendChild(
-            createPerimeterAnchorHandle(
-              node,
-              child,
-              true,
-              `Arrastra para mover el punto de salida hacia «${child.text || 'Subtema'}»`
-            )
-          );
+          const exitPt = getAnchorPointOnNode(node, child.parentOutAnchor || node.outAnchor, child);
+          const h = document.createElement('div');
+          h.className = 'exit-anchor-handle no-print';
+          h.title = `Punto de salida hacia «${child.text}» (arrastra para mover)`;
+          h.style.left = `${Math.round(exitPt.x - 9)}px`;
+          h.style.top = `${Math.round(exitPt.y - 9)}px`;
+          attachPerimeterAnchorDrag(h, node, angle => {
+            child.parentOutAnchor = { angle };
+          });
+          dom.handlesContainer.appendChild(h);
         });
       }
     }
 
+    function attachPerimeterAnchorDrag(handleEl, targetBoxNode, onAngleChange) {
+      handleEl.addEventListener('pointerdown', e => {
+        e.stopPropagation();
+        e.preventDefault();
+        pushHistory();
+        handleEl.setPointerCapture(e.pointerId);
+
+        const onMove = ev => {
+          const sheetRect = dom.a4Sheet.getBoundingClientRect();
+          const paperX = (ev.clientX - sheetRect.left) / state.zoom;
+          const paperY = (ev.clientY - sheetRect.top) / state.zoom;
+          const angle = Math.atan2(paperY - targetBoxNode.y, paperX - targetBoxNode.x);
+          onAngleChange(angle);
+          renderConnections();
+          renderInteractiveHandles();
+        };
+
+        const onUp = () => {
+          handleEl.removeEventListener('pointermove', onMove);
+          handleEl.removeEventListener('pointerup', onUp);
+          handleEl.removeEventListener('pointercancel', onUp);
+          scheduleAutoSave();
+        };
+
+        handleEl.addEventListener('pointermove', onMove);
+        handleEl.addEventListener('pointerup', onUp);
+        handleEl.addEventListener('pointercancel', onUp);
+      });
+    }
+
     /* --------------------------------------------------------------------- */
-    /* 9. SELECCIÓN, DESELECCIÓN AL PULSAR FUERA Y BARRA FLOTANTE            */
+    /* 11. ARRASTRE LIBRE DE BOCADILLOS (GRUPO O INDIVIDUAL) Y SELECCIÓN     */
     /* --------------------------------------------------------------------- */
+    let lastTapInfo = { id: null, time: 0 };
+
+    function attachNodePointerBehavior(el, node) {
+      el.addEventListener('pointerdown', e => {
+        if (e.target.closest('.collapse-btn')) return;
+        e.stopPropagation();
+
+        selectNode(node.id);
+        el.setPointerCapture(e.pointerId);
+
+        const startClientX = e.clientX;
+        const startClientY = e.clientY;
+        const origX = node.x;
+        const origY = node.y;
+        let moved = false;
+        let historyPushed = false;
+
+        // Determinar si movemos todo el subárbol ('group') o solo este bocadillo ('single')
+        const moveSingleOnly = e.altKey || state.dragMode === 'single';
+        const descendants = [];
+        if (!moveSingleOnly) {
+          traverseVisibleNodes(desc => {
+            if (desc.id !== node.id) {
+              descendants.push({ ref: desc, ox: desc.x, oy: desc.y });
+            }
+          }, node);
+        }
+
+        const sheet = A4_DIMS[state.orientation];
+        const margin = 24;
+
+        const onMove = ev => {
+          const dxScreen = ev.clientX - startClientX;
+          const dyScreen = ev.clientY - startClientY;
+          if (!moved && Math.hypot(dxScreen, dyScreen) < 4) return;
+
+          if (!moved) {
+            moved = true;
+            el.classList.add('dragging');
+            dom.floatingBar.classList.add('hidden');
+          }
+          if (!historyPushed) {
+            pushHistory();
+            historyPushed = true;
+          }
+
+          const dxPaper = dxScreen / state.zoom;
+          const dyPaper = dyScreen / state.zoom;
+
+          node.x = Math.round(Math.max(margin + node.w / 2, Math.min(sheet.w - margin - node.w / 2, origX + dxPaper)));
+          node.y = Math.round(Math.max(margin + node.h / 2, Math.min(sheet.h - margin - node.h / 2, origY + dyPaper)));
+
+          const appliedDx = node.x - origX;
+          const appliedDy = node.y - origY;
+
+          descendants.forEach(item => {
+            item.ref.x = Math.round(Math.max(margin + item.ref.w / 2, Math.min(sheet.w - margin - item.ref.w / 2, item.ox + appliedDx)));
+            item.ref.y = Math.round(Math.max(margin + item.ref.h / 2, Math.min(sheet.h - margin - item.ref.h / 2, item.oy + appliedDy)));
+          });
+
+          state.hasManualDrag = true;
+
+          // Actualizar posiciones visuales directamente para máxima fluidez
+          el.style.left = `${node.x}px`;
+          el.style.top = `${node.y}px`;
+          if (descendants.length > 0) {
+            descendants.forEach(item => {
+              const dEl = dom.nodesContainer.querySelector(`[data-node-id="${item.ref.id}"]`);
+              if (dEl) {
+                dEl.style.left = `${item.ref.x}px`;
+                dEl.style.top = `${item.ref.y}px`;
+              }
+            });
+          }
+
+          renderConnections();
+          renderInteractiveHandles();
+        };
+
+        const onUp = () => {
+          el.classList.remove('dragging');
+          el.removeEventListener('pointermove', onMove);
+          el.removeEventListener('pointerup', onUp);
+          el.removeEventListener('pointercancel', onUp);
+
+          if (moved) {
+            fullRefresh(false);
+            scheduleAutoSave();
+          } else {
+            // Detección limpia de doble clic / doble toque sin interferir con el arrastre
+            const now = Date.now();
+            if (lastTapInfo.id === node.id && now - lastTapInfo.time < 340) {
+              lastTapInfo = { id: null, time: 0 };
+              openInlineTextEditor(node);
+            } else {
+              lastTapInfo = { id: node.id, time: now };
+            }
+          }
+        };
+
+        el.addEventListener('pointermove', onMove);
+        el.addEventListener('pointerup', onUp);
+        el.addEventListener('pointercancel', onUp);
+      });
+    }
+
     function selectNode(nodeId) {
       state.selectedNodeId = nodeId;
       dom.nodesContainer.querySelectorAll('.mind-node').forEach(el => {
         el.classList.toggle('selected', el.dataset.nodeId === nodeId);
       });
       renderInteractiveHandles();
+      positionFloatingBar();
       syncInspectorUI();
-      updateFloatingNodeBarPosition();
     }
 
     function deselectNode() {
-      if (!state.selectedNodeId) return;
       state.selectedNodeId = null;
-      dom.nodesContainer.querySelectorAll('.mind-node.selected').forEach(el => el.classList.remove('selected'));
+      dom.nodesContainer?.querySelectorAll('.mind-node').forEach(el => el.classList.remove('selected'));
       if (dom.handlesContainer) dom.handlesContainer.innerHTML = '';
-      if (dom.floatingNodeBar) dom.floatingNodeBar.classList.add('hidden');
+      if (dom.floatingBar) dom.floatingBar.classList.add('hidden');
       syncInspectorUI();
     }
 
-    function updateFloatingNodeBarPosition() {
-      if (!dom.floatingNodeBar || !state.selectedNodeId) {
-        if (dom.floatingNodeBar) dom.floatingNodeBar.classList.add('hidden');
+    function positionFloatingBar() {
+      if (!dom.floatingBar || !state.selectedNodeId || !state.tree) {
+        dom.floatingBar?.classList.add('hidden');
         return;
       }
       const found = findNodeWithParent(state.selectedNodeId);
       if (!found) {
-        dom.floatingNodeBar.classList.add('hidden');
+        dom.floatingBar.classList.add('hidden');
         return;
       }
 
-      const node = found.node;
-      const colors = getEffectiveNodeColors(node, found.depth, found.branchIndex);
-      const isBold = node.bold !== undefined ? node.bold : found.depth === 0;
-
-      document.getElementById('fbar-color-circle').style.backgroundColor = colors.bg;
-      document.getElementById('fbar-remove-emoji').classList.toggle('hidden', !node.emoji);
-
-      const boldBtn = document.getElementById('fbar-toggle-bold');
-      boldBtn.classList.toggle('bg-indigo-600', isBold);
-      boldBtn.classList.toggle('text-white', isBold);
-
-      dom.floatingNodeBar.classList.remove('hidden');
+      const { node, depth } = found;
+      dom.floatingBar.classList.remove('hidden');
 
       const vpRect = dom.canvasViewport.getBoundingClientRect();
-      const barRect = dom.floatingNodeBar.getBoundingClientRect();
-      const screenX = state.panX + node.x * state.zoom;
-      const screenTopY = state.panY + (node.y - node.h / 2) * state.zoom;
-      const screenBottomY = state.panY + (node.y + node.h / 2) * state.zoom;
+      const sheetRect = dom.a4Sheet.getBoundingClientRect();
+      const nodeCenterX = sheetRect.left - vpRect.left + node.x * state.zoom;
+      const nodeTopY = sheetRect.top - vpRect.top + (node.y - node.h / 2) * state.zoom;
+      const nodeBottomY = sheetRect.top - vpRect.top + (node.y + node.h / 2) * state.zoom;
 
-      let left = screenX - barRect.width / 2;
-      left = Math.max(12, Math.min(vpRect.width - barRect.width - 12, left));
+      const barRect = dom.floatingBar.getBoundingClientRect();
+      let left = nodeCenterX - barRect.width / 2;
+      left = Math.max(10, Math.min(vpRect.width - barRect.width - 10, left));
 
-      let top = screenTopY - barRect.height - 14;
-      if (top < 46) {
-        top = Math.min(vpRect.height - barRect.height - 48, screenBottomY + 14);
+      let top = nodeTopY - barRect.height - 14;
+      if (top < 44) {
+        top = Math.min(vpRect.height - barRect.height - 52, nodeBottomY + 14);
       }
 
-      dom.floatingNodeBar.style.left = `${Math.round(left)}px`;
-      dom.floatingNodeBar.style.top = `${Math.round(top)}px`;
+      dom.floatingBar.style.left = `${Math.round(left)}px`;
+      dom.floatingBar.style.top = `${Math.round(top)}px`;
+
+      // Estado visual del botón Negrita (B) y Quitar Emoji
+      const isBold = node.bold !== undefined ? node.bold : depth === 0;
+      const boldBtn = document.getElementById('fbar-toggle-bold');
+      boldBtn.className = isBold
+        ? 'w-7 h-7 rounded-lg bg-indigo-600 text-white text-xs font-extrabold flex items-center justify-center'
+        : 'w-7 h-7 rounded-lg hover:bg-slate-100 text-slate-700 text-xs font-extrabold flex items-center justify-center';
+
+      const colors = getEffectiveNodeColors(node, depth, found.branchIndex);
+      document.getElementById('fbar-color-circle').style.backgroundColor = colors.bg;
+
+      const remEmojiBtn = document.getElementById('fbar-remove-emoji');
+      remEmojiBtn.classList.toggle('hidden', !node.emoji);
+
+      const delBtn = document.getElementById('fbar-delete-node');
+      delBtn.classList.toggle('hidden', depth === 0);
+      const sibBtn = document.getElementById('fbar-add-sibling');
+      sibBtn.classList.toggle('hidden', depth === 0);
     }
 
     function openInlineTextEditor(node) {
@@ -2290,156 +2402,206 @@
       const screenY = sheetRect.top + node.y * state.zoom;
 
       dom.inlineEditorWrap.classList.remove('hidden');
-      dom.inlineEditorWrap.style.left = `${Math.max(12, Math.min(window.innerWidth - 220, screenX - 100))}px`;
-      dom.inlineEditorWrap.style.top = `${Math.max(56, Math.min(window.innerHeight - 90, screenY - 24))}px`;
+      dom.inlineEditorWrap.style.left = `${Math.round(screenX)}px`;
+      dom.inlineEditorWrap.style.top = `${Math.round(screenY)}px`;
+      dom.inlineEditorWrap.style.transform = 'translate(-50%, -50%)';
 
       dom.inlineTextInput.value = node.text || '';
+      dom.inlineTextInput.style.fontFamily = `'${node.fontFamily || 'Inter'}', sans-serif`;
+      dom.inlineTextInput.style.fontSize = `${Math.max(13, (node.computedFontSize || 13) * state.zoom)}px`;
       dom.inlineTextInput.focus();
       dom.inlineTextInput.select();
 
-      const commitEdit = () => {
+      const commit = () => {
         const val = dom.inlineTextInput.value.trim();
         dom.inlineEditorWrap.classList.add('hidden');
+        dom.inlineTextInput.onblur = null;
+        dom.inlineTextInput.onkeydown = null;
         if (val && val !== node.text) {
           pushHistory();
           node.text = val;
           delete node.lockedW;
           delete node.lockedH;
           node._dirtySize = true;
-          fullRefresh(false);
+          fullRefresh(!state.hasManualDrag);
           scheduleAutoSave();
         }
       };
 
-      dom.inlineTextInput.onblur = commitEdit;
-      dom.inlineTextInput.onkeydown = e => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-          e.preventDefault();
-          dom.inlineTextInput.blur();
-        } else if (e.key === 'Escape') {
+      dom.inlineTextInput.onblur = commit;
+      dom.inlineTextInput.onkeydown = ev => {
+        if (ev.key === 'Enter' && !ev.shiftKey) {
+          ev.preventDefault();
+          commit();
+        } else if (ev.key === 'Escape') {
           dom.inlineEditorWrap.classList.add('hidden');
+          dom.inlineTextInput.onblur = null;
         }
       };
     }
 
     /* --------------------------------------------------------------------- */
-    /* 10. OPERACIONES DE EDICIÓN DE NODOS Y HISTORIAL UNDO/REDO             */
+    /* 12. OPERACIONES SOBRE NODOS, DESHACER/REHACER Y REFRESCO COMPLETO     */
     /* --------------------------------------------------------------------- */
     function pushHistory() {
       if (!state.tree) return;
-      state.history.push(deepClone(state.tree));
-      if (state.history.length > 35) state.history.shift();
+      state.history.push(JSON.stringify({
+        tree: state.tree,
+        layout: state.layout,
+        orientation: state.orientation,
+        themeId: state.themeId,
+        hasManualDrag: state.hasManualDrag
+      }));
+      if (state.history.length > 40) state.history.shift();
       state.redoStack = [];
     }
 
     function undo() {
       if (state.history.length === 0) return;
-      state.redoStack.push(deepClone(state.tree));
-      state.tree = state.history.pop();
+      state.redoStack.push(JSON.stringify({
+        tree: state.tree,
+        layout: state.layout,
+        orientation: state.orientation,
+        themeId: state.themeId,
+        hasManualDrag: state.hasManualDrag
+      }));
+      const prev = JSON.parse(state.history.pop());
+      state.tree = prev.tree;
+      state.layout = prev.layout;
+      state.orientation = prev.orientation;
+      state.themeId = prev.themeId;
+      state.hasManualDrag = prev.hasManualDrag;
       fullRefresh(false);
       scheduleAutoSave();
     }
 
     function redo() {
       if (state.redoStack.length === 0) return;
-      state.history.push(deepClone(state.tree));
-      state.tree = state.redoStack.pop();
+      state.history.push(JSON.stringify({
+        tree: state.tree,
+        layout: state.layout,
+        orientation: state.orientation,
+        themeId: state.themeId,
+        hasManualDrag: state.hasManualDrag
+      }));
+      const next = JSON.parse(state.redoStack.pop());
+      state.tree = next.tree;
+      state.layout = next.layout;
+      state.orientation = next.orientation;
+      state.themeId = next.themeId;
+      state.hasManualDrag = next.hasManualDrag;
       fullRefresh(false);
       scheduleAutoSave();
     }
 
-    function addChildNode(parentId, preferredSide = null) {
-      const found = findNodeWithParent(parentId || state.selectedNodeId || 'root');
+    function addChildNode(parentId) {
+      const targetId = parentId || state.tree?.id;
+      const found = findNodeWithParent(targetId);
       if (!found) return;
       pushHistory();
+
       found.node.collapsed = false;
       if (!Array.isArray(found.node.children)) found.node.children = [];
+
+      const sheet = A4_DIMS[state.orientation];
+      const dirX = found.node.x >= sheet.w / 2 ? 1 : -1;
+      const offsetY = (found.node.children.length - 0.5) * 44;
 
       const newNode = {
         id: generateId('n'),
         text: 'Nuevo Subtema',
         shape: found.depth === 0 ? 'rounded' : 'organic-line',
-        preferredSide: preferredSide || null,
+        fontFamily: found.node.fontFamily || 'Inter',
+        x: Math.round(Math.max(80, Math.min(sheet.w - 80, found.node.x + dirX * (found.node.w / 2 + 115)))),
+        y: Math.round(Math.max(55, Math.min(sheet.h - 55, found.node.y + offsetY))),
         children: []
       };
 
       found.node.children.push(newNode);
-
-      if (state.hasManualDrag) {
-        const sheet = A4_DIMS[state.orientation];
-        const offsets = {
-          top: [0, -75],
-          bottom: [0, 75],
-          left: [-155, 0],
-          right: [155, 0]
-        };
-        const [ox, oy] = offsets[preferredSide] || [found.node.x >= sheet.w / 2 ? 155 : -155, (found.node.children.length - 1) * 44];
-        newNode.x = Math.max(A4_MARGIN + 60, Math.min(sheet.w - A4_MARGIN - 60, found.node.x + ox));
-        newNode.y = Math.max(A4_MARGIN + 30, Math.min(sheet.h - A4_MARGIN - 30, found.node.y + oy));
-      }
-
       state.selectedNodeId = newNode.id;
-      fullRefresh(false);
+      fullRefresh(!state.hasManualDrag);
+      scheduleAutoSave();
+      setTimeout(() => openInlineTextEditor(newNode), 40);
+    }
+
+    function addChildNodeOnSide(parentId, side) {
+      const found = findNodeWithParent(parentId);
+      if (!found) return;
+      pushHistory();
+
+      found.node.collapsed = false;
+      if (!Array.isArray(found.node.children)) found.node.children = [];
+
+      const sheet = A4_DIMS[state.orientation];
+      const sameSideCount = found.node.children.filter(c => c.parentOutAnchor === side).length;
+      const spread = (sameSideCount - (sameSideCount > 0 ? 0.5 : 0)) * 46;
+
+      let nx = found.node.x;
+      let ny = found.node.y;
+      if (side === 'right')  { nx += found.node.w / 2 + 125; ny += spread; }
+      if (side === 'left')   { nx -= found.node.w / 2 + 125; ny += spread; }
+      if (side === 'top')    { ny -= found.node.h / 2 + 78;  nx += spread; }
+      if (side === 'bottom') { ny += found.node.h / 2 + 78;  nx += spread; }
+
+      const newNode = {
+        id: generateId('n'),
+        text: 'Nuevo Subtema',
+        shape: 'rounded',
+        parentOutAnchor: side,
+        fontFamily: found.node.fontFamily || 'Inter',
+        x: Math.round(Math.max(80, Math.min(sheet.w - 80, nx))),
+        y: Math.round(Math.max(55, Math.min(sheet.h - 55, ny))),
+        children: []
+      };
+
+      found.node.children.push(newNode);
+      state.selectedNodeId = newNode.id;
+      fullRefresh(!state.hasManualDrag);
       scheduleAutoSave();
       setTimeout(() => openInlineTextEditor(newNode), 40);
     }
 
     function addSiblingNode() {
       const found = findNodeWithParent(state.selectedNodeId);
-      if (!found) return;
-      if (!found.parent) {
-        addChildNode(found.node.id);
+      if (!found || !found.parent) {
+        addChildNode(state.tree?.id);
         return;
       }
-      addChildNode(found.parent.id, found.node.preferredSide);
+      pushHistory();
+
+      const sheet = A4_DIMS[state.orientation];
+      const newNode = {
+        id: generateId('n'),
+        text: 'Nuevo Tema',
+        shape: found.node.shape || 'rounded',
+        parentOutAnchor: found.node.parentOutAnchor || null,
+        fontFamily: found.node.fontFamily || 'Inter',
+        x: found.node.x,
+        y: Math.round(Math.min(sheet.h - 55, found.node.y + found.node.h + 24)),
+        children: []
+      };
+
+      const idx = found.parent.children.findIndex(c => c.id === found.node.id);
+      found.parent.children.splice(idx + 1, 0, newNode);
+      state.selectedNodeId = newNode.id;
+      fullRefresh(!state.hasManualDrag);
+      scheduleAutoSave();
+      setTimeout(() => openInlineTextEditor(newNode), 40);
     }
 
     function deleteSelectedNode() {
       const found = findNodeWithParent(state.selectedNodeId);
-      if (!found || !found.parent) {
-        showToast('El tema central no se puede eliminar');
-        return;
-      }
+      if (!found || !found.parent) return;
       pushHistory();
-      found.parent.children = found.parent.children.filter(ch => ch.id !== found.node.id);
+      found.parent.children = found.parent.children.filter(c => c.id !== found.node.id);
       state.selectedNodeId = found.parent.id;
-      fullRefresh(false);
+      fullRefresh(!state.hasManualDrag);
       scheduleAutoSave();
     }
 
-    function fullRefresh(forceRearrange = false) {
-      autoFitToA4(forceRearrange);
-      renderConnections();
-      renderNodes();
-      renderInteractiveHandles();
-      syncInspectorUI();
-      updateFloatingNodeBarPosition();
-    }
-
-    /* --------------------------------------------------------------------- */
-    /* 11. ZOOM Y DESPLAZAMIENTO DEL LIENZO A4                               */
-    /* --------------------------------------------------------------------- */
-    function applyViewportTransform() {
-      if (!dom.a4Sheet) return;
-      dom.a4Sheet.style.transform = `translate(${Math.round(state.panX)}px, ${Math.round(state.panY)}px) scale(${state.zoom})`;
-      if (dom.zoomLevelLabel) {
-        dom.zoomLevelLabel.textContent = `${Math.round(state.zoom * 100)}%`;
-      }
-      updateFloatingNodeBarPosition();
-    }
-
-    function centerA4InViewport() {
-      if (!dom.canvasViewport) return;
-      const vp = dom.canvasViewport.getBoundingClientRect();
-      const sheet = A4_DIMS[state.orientation];
-      const fitZoom = Math.min((vp.width - 48) / sheet.w, (vp.height - 64) / sheet.h, 1);
-      state.zoom = Math.max(0.32, Number(fitZoom.toFixed(2)));
-      state.panX = Math.round((vp.width - sheet.w * state.zoom) / 2);
-      state.panY = Math.round((vp.height - sheet.h * state.zoom) / 2);
-      applyViewportTransform();
-    }
-
     function setOrientation(orient) {
+      if (state.orientation === orient) return;
+      pushHistory();
       state.orientation = orient;
       const sheet = A4_DIMS[orient];
       dom.a4Sheet.style.width = `${sheet.w}px`;
@@ -2460,158 +2622,118 @@
       scheduleAutoSave();
     }
 
+    function applyViewportTransform() {
+      if (!dom.a4Sheet) return;
+      dom.a4Sheet.style.transform = `translate(${Math.round(state.panX)}px, ${Math.round(state.panY)}px) scale(${state.zoom})`;
+      if (dom.zoomLevelLabel) dom.zoomLevelLabel.textContent = `${Math.round(state.zoom * 100)}%`;
+      positionFloatingBar();
+    }
+
+    function centerA4InViewport() {
+      if (!dom.canvasViewport || !dom.a4Sheet) return;
+      const vp = dom.canvasViewport.getBoundingClientRect();
+      const sheet = A4_DIMS[state.orientation];
+      const fitZoom = Math.min((vp.width - 48) / sheet.w, (vp.height - 64) / sheet.h, 1.05);
+      state.zoom = Math.max(0.32, Number(fitZoom.toFixed(2)));
+      state.panX = Math.round((vp.width - sheet.w * state.zoom) / 2);
+      state.panY = Math.round((vp.height - sheet.h * state.zoom) / 2);
+      applyViewportTransform();
+    }
+
+    function fullRefresh(recalculatePositions = false) {
+      fitAndMeasureTree(recalculatePositions);
+      renderNodes();
+      renderConnections();
+      renderInteractiveHandles();
+      positionFloatingBar();
+      syncInspectorUI();
+    }
+
     /* --------------------------------------------------------------------- */
-    /* 12. SINCRONIZACIÓN DEL PANEL INSPECTOR DERECHO                        */
+    /* 12B. PANEL INSPECTOR DERECHO (TEMAS, FORMAS, COLORES, LETRAS, EMOJIS) */
     /* --------------------------------------------------------------------- */
     function getTargetNodeForInspector() {
-      return findNodeWithParent(state.selectedNodeId || 'root');
+      return findNodeWithParent(state.selectedNodeId || state.tree?.id);
     }
 
     function syncDragModeButtons() {
       const isGroup = state.dragMode === 'group';
-      const pairs = [
-        [document.getElementById('fbar-drag-group'), document.getElementById('fbar-drag-single'), 'px-2 py-0.5 rounded-lg bg-indigo-600 text-white transition', 'px-2 py-0.5 rounded-lg text-slate-600 hover:text-slate-900 transition'],
-        [document.getElementById('insp-drag-group'), document.getElementById('insp-drag-single'), 'py-1.5 rounded-lg bg-indigo-600 text-white transition', 'py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition']
-      ];
-      pairs.forEach(([gBtn, sBtn, activeCls, idleCls]) => {
-        if (!gBtn || !sBtn) return;
-        gBtn.className = isGroup ? activeCls : idleCls;
-        sBtn.className = !isGroup ? activeCls : idleCls;
-      });
-    }
-
-    function syncInspectorUI() {
-      syncDragModeButtons();
-      const found = getTargetNodeForInspector();
-      if (!found) return;
-      const node = found.node;
-
-      const badge = document.getElementById('inspector-node-badge');
-      if (badge) {
-        badge.textContent = found.depth === 0 ? 'Principal' : found.depth === 1 ? 'Rama Principal' : `Nivel ${found.depth}`;
-      }
-
-      // Forma activa
-      const activeShape = node.shape || (found.depth <= 1 ? 'rounded' : 'organic-line');
-      const shapeMeta = BUBBLE_SHAPES.find(s => s.id === activeShape);
-      const shapeLabel = document.getElementById('selected-shape-name');
-      if (shapeLabel && shapeMeta) shapeLabel.textContent = shapeMeta.name;
-
-      dom.shapesGrid.querySelectorAll('.shape-card-btn').forEach(btn => {
-        const active = btn.dataset.shapeId === activeShape;
-        btn.classList.toggle('border-indigo-600', active);
-        btn.classList.toggle('bg-indigo-50', active);
-        btn.classList.toggle('text-indigo-700', active);
-      });
-
-      // Tamaño del bocadillo
-      const bScale = node.bubbleScale || 100;
-      const bPadX = node.bubblePadX || 0;
-      const bPadY = node.bubblePadY || 0;
-      document.getElementById('input-bubble-scale').value = bScale;
-      document.getElementById('bubble-scale-val').textContent = `${bScale}%`;
-      document.getElementById('input-bubble-pad-x').value = bPadX;
-      document.getElementById('bubble-pad-x-val').textContent = `${bPadX}px`;
-      document.getElementById('input-bubble-pad-y').value = bPadY;
-      document.getElementById('bubble-pad-y-val').textContent = `${bPadY}px`;
-      const isCustomBubble = bScale !== 100 || bPadX !== 0 || bPadY !== 0;
-      const bBadge = document.getElementById('bubble-size-mode-badge');
-      bBadge.textContent = isCustomBubble ? 'Manual' : 'Auto A4';
-      bBadge.className = isCustomBubble
-        ? 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700'
-        : 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
-
-      // Color activo
-      const colors = getEffectiveNodeColors(node, found.depth, found.branchIndex);
-      const currentHex = (state.colorTarget === 'bg' ? colors.bg : state.colorTarget === 'border' ? colors.border : colors.text).toUpperCase();
-      document.getElementById('input-native-color').value = currentHex.length === 7 ? currentHex : '#4F46E5';
-      document.getElementById('input-hex-color').value = currentHex;
-
-      // Tipografía y tamaño
-      const fSize = Math.round(node.computedFontSize || 13);
-      document.getElementById('input-font-slider').value = fSize;
-      document.getElementById('input-font-number').value = fSize;
-      const fBadge = document.getElementById('font-size-mode-badge');
-      fBadge.textContent = node.customFontSize ? `Manual · ${node.customFontSize}px` : 'Auto A4';
-      fBadge.className = node.customFontSize
-        ? 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-700'
-        : 'text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700';
-
-      const isBold = node.bold !== undefined ? node.bold : found.depth === 0;
-      const inspBold = document.getElementById('btn-toggle-bold');
-      inspBold.classList.toggle('bg-indigo-600', isBold);
-      inspBold.classList.toggle('text-white', isBold);
-
-      const inspItalic = document.getElementById('btn-toggle-italic');
-      inspItalic.classList.toggle('bg-indigo-600', !!node.italic);
-      inspItalic.classList.toggle('text-white', !!node.italic);
+      document.getElementById('fbar-drag-group').className = isGroup
+        ? 'px-2 py-0.5 rounded-lg bg-indigo-600 text-white transition'
+        : 'px-2 py-0.5 rounded-lg text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('fbar-drag-single').className = !isGroup
+        ? 'px-2 py-0.5 rounded-lg bg-indigo-600 text-white transition'
+        : 'px-2 py-0.5 rounded-lg text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('insp-drag-group').className = isGroup
+        ? 'py-1.5 rounded-lg bg-indigo-600 text-white transition'
+        : 'py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition';
+      document.getElementById('insp-drag-single').className = !isGroup
+        ? 'py-1.5 rounded-lg bg-indigo-600 text-white transition'
+        : 'py-1.5 rounded-lg text-slate-600 hover:text-slate-900 transition';
     }
 
     function renderInspectorGalleries() {
-      // Temas
-      dom.themesList.innerHTML = THEMES.map(t => `
-        <button type="button" data-theme-id="${t.id}" class="theme-btn w-full px-3 py-2 rounded-xl border border-slate-200 hover:border-indigo-400 flex items-center justify-between text-xs font-bold transition">
+      // Temas XMind
+      const themesEl = document.getElementById('themes-list');
+      themesEl.innerHTML = THEMES.map(t => `
+        <button type="button" data-theme-id="${t.id}" class="theme-item-btn w-full px-3 py-2 rounded-xl border ${t.id === state.themeId ? 'border-indigo-500 bg-indigo-50/60' : 'border-slate-200 hover:border-slate-300'} flex items-center justify-between text-xs font-bold text-slate-800 transition">
           <span>${t.name}</span>
           <span class="flex items-center gap-1">
-            <span class="w-3 h-3 rounded-full" style="background:${t.rootBg}"></span>
-            ${t.branches.slice(0, 4).map(c => `<span class="w-2.5 h-2.5 rounded-full" style="background:${c}"></span>`).join('')}
+            <span class="w-3 h-3 rounded-full" style="background:${t.root.bg}"></span>
+            ${t.branches.slice(0, 4).map(b => `<span class="w-3 h-3 rounded-full" style="background:${b.bg}"></span>`).join('')}
           </span>
         </button>
       `).join('');
 
-      dom.themesList.querySelectorAll('.theme-btn').forEach(btn => {
+      themesEl.querySelectorAll('.theme-item-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           pushHistory();
           state.themeId = btn.dataset.themeId;
+          renderInspectorGalleries();
           fullRefresh(false);
           scheduleAutoSave();
         });
       });
 
-      // 26 Bocadillos
-      dom.shapesGrid.innerHTML = BUBBLE_SHAPES.map(s => `
-        <button type="button" data-shape-id="${s.id}" class="shape-card-btn px-2 py-1.5 rounded-xl border border-slate-200 hover:border-indigo-400 text-[11px] font-bold text-slate-700 text-left flex items-center gap-2 transition">
-          <span class="w-7 h-4 shrink-0 relative inline-block">${buildBubbleSvgMarkup(s.id, 28, 16, '#eef2ff', '#4f46e5')}</span>
-          <span class="truncate">${s.name}</span>
+      // 26 Formas de Bocadillo
+      const shapesEl = document.getElementById('shapes-grid');
+      shapesEl.innerHTML = SHAPES.map(sh => `
+        <button type="button" data-shape-id="${sh.id}" class="shape-item-btn px-2.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-400 text-left text-[11px] font-bold text-slate-700 truncate transition">
+          ${sh.name}
         </button>
       `).join('');
 
-      dom.shapesGrid.querySelectorAll('.shape-card-btn').forEach(btn => {
+      shapesEl.querySelectorAll('.shape-item-btn').forEach(btn => {
         btn.addEventListener('click', () => {
           const found = getTargetNodeForInspector();
           if (!found) return;
           pushHistory();
           found.node.shape = btn.dataset.shapeId;
-          delete found.node.lockedW;
-          delete found.node.lockedH;
-          found.node._dirtySize = true;
           fullRefresh(false);
           scheduleAutoSave();
         });
       });
 
-      // Paleta de 24 colores
-      dom.colorSwatchesGrid.innerHTML = COLOR_SWATCHES.map(hex => `
-        <button type="button" data-hex="${hex}" class="swatch-btn w-full aspect-square rounded-xl border border-slate-300 shadow-2xs transition hover:scale-110" style="background:${hex}"></button>
+      // Paleta de colores
+      const swatchesEl = document.getElementById('color-swatches-grid');
+      swatchesEl.innerHTML = COLOR_SWATCHES.map(hex => `
+        <button type="button" data-swatch="${hex}" class="w-full h-7 rounded-lg border border-slate-300 shadow-2xs hover:scale-105 transition" style="background:${hex}"></button>
       `).join('');
-
-      dom.colorSwatchesGrid.querySelectorAll('.swatch-btn').forEach(btn => {
-        btn.addEventListener('click', () => applyColorHexToSelected(btn.dataset.hex));
+      swatchesEl.querySelectorAll('[data-swatch]').forEach(btn => {
+        btn.addEventListener('click', () => applyColorHexToSelected(btn.dataset.swatch.toUpperCase()));
       });
 
       // Emojis
-      dom.emojisGrid.innerHTML = EMOJI_LIST.map(em => `
-        <button type="button" data-emoji="${em}" class="emoji-btn aspect-square rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-base flex items-center justify-center transition">
-          ${em}
-        </button>
+      const emojisEl = document.getElementById('emojis-grid');
+      emojisEl.innerHTML = EMOJIS.map(em => `
+        <button type="button" data-emoji="${em}" class="h-9 rounded-xl bg-slate-50 hover:bg-indigo-50 border border-slate-200 text-base flex items-center justify-center transition">${em}</button>
       `).join('');
-
-      dom.emojisGrid.querySelectorAll('.emoji-btn').forEach(btn => {
+      emojisEl.querySelectorAll('[data-emoji]').forEach(btn => {
         btn.addEventListener('click', () => {
           const found = getTargetNodeForInspector();
           if (!found) return;
           pushHistory();
-          found.node.emoji = found.node.emoji === btn.dataset.emoji ? '' : btn.dataset.emoji;
+          found.node.emoji = btn.dataset.emoji;
           delete found.node.lockedW;
           delete found.node.lockedH;
           found.node._dirtySize = true;
@@ -2624,29 +2746,37 @@
     }
 
     function renderFontFamiliesList() {
-      const q = state.fontSearch.toLowerCase().trim();
-      const filtered = FONT_FAMILIES.filter(f => {
-        const matchCat = state.fontCategory === 'all' || f.cat === state.fontCategory;
-        const matchQuery = !q || f.name.toLowerCase().includes(q) || f.tag.toLowerCase().includes(q);
-        return matchCat && matchQuery;
+      const listEl = document.getElementById('fonts-list');
+      if (!listEl) return;
+      const found = getTargetNodeForInspector();
+      const activeFont = found?.node?.fontFamily || 'Inter';
+      const q = (state.fontSearch || '').toLowerCase().trim();
+
+      const filtered = FONTS.filter(f => {
+        if (state.fontCategory !== 'all' && f.cat !== state.fontCategory) return false;
+        if (q && !f.name.toLowerCase().includes(q) && !f.label.toLowerCase().includes(q)) return false;
+        return true;
       });
 
-      dom.fontsList.innerHTML = filtered.map(f => `
-        <button type="button" data-font-css="${f.css.replace(/"/g, '&quot;')}" class="font-item-btn w-full px-3 py-2 rounded-xl border border-slate-200 hover:border-indigo-400 hover:bg-indigo-50/40 flex items-center justify-between text-left transition">
-          <span class="text-sm text-slate-900 truncate" style="font-family:${f.css}">${f.name}</span>
-          <span class="text-[10px] font-bold text-slate-400 shrink-0 ml-2">${f.tag}</span>
-        </button>
-      `).join('');
+      listEl.innerHTML = filtered.map(f => {
+        const active = f.name === activeFont;
+        return `
+          <button type="button" data-font-name="${f.name}" class="font-item-btn w-full px-3 py-2 rounded-xl border ${active ? 'border-indigo-500 bg-indigo-50 text-indigo-800' : 'border-slate-200 hover:border-slate-300 text-slate-800'} flex items-center justify-between text-left transition">
+            <span class="text-sm truncate" style="font-family:'${f.name}', sans-serif">${f.name}</span>
+            <span class="text-[10px] text-slate-400 font-sans shrink-0 ml-2">${f.label}</span>
+          </button>
+        `;
+      }).join('');
 
-      dom.fontsList.querySelectorAll('.font-item-btn').forEach(btn => {
+      listEl.querySelectorAll('.font-item-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-          const found = getTargetNodeForInspector();
-          if (!found) return;
+          const target = getTargetNodeForInspector();
+          if (!target) return;
           pushHistory();
-          found.node.fontFamily = btn.dataset.fontCss;
-          delete found.node.lockedW;
-          delete found.node.lockedH;
-          found.node._dirtySize = true;
+          target.node.fontFamily = btn.dataset.fontName;
+          delete target.node.lockedW;
+          delete target.node.lockedH;
+          target.node._dirtySize = true;
           fullRefresh(false);
           scheduleAutoSave();
         });
@@ -2654,7 +2784,6 @@
     }
 
     function applyColorHexToSelected(hex) {
-      if (!/^#[0-9A-Fa-f]{6}$/.test(hex)) return;
       const found = getTargetNodeForInspector();
       if (!found) return;
       pushHistory();
@@ -2665,9 +2794,89 @@
       scheduleAutoSave();
     }
 
+    function syncInspectorUI() {
+      syncDragModeButtons();
+      const found = getTargetNodeForInspector();
+      if (!found) return;
+      const { node, depth, branchIndex } = found;
+
+      document.getElementById('inspector-node-badge').textContent =
+        depth === 0 ? 'Principal' : depth === 1 ? 'Rama Principal' : `Nivel ${depth}`;
+
+      const shapeId = node.shape || (depth <= 1 ? 'rounded' : 'organic-line');
+      const shapeMeta = SHAPES.find(s => s.id === shapeId);
+      document.getElementById('selected-shape-name').textContent = shapeMeta ? shapeMeta.name : shapeId;
+
+      document.querySelectorAll('.shape-item-btn').forEach(btn => {
+        const active = btn.dataset.shapeId === shapeId;
+        btn.className = active
+          ? 'shape-item-btn px-2.5 py-2 rounded-xl border border-indigo-500 bg-indigo-50 text-indigo-700 text-left text-[11px] font-extrabold truncate transition'
+          : 'shape-item-btn px-2.5 py-2 rounded-xl border border-slate-200 hover:border-indigo-400 text-left text-[11px] font-bold text-slate-700 truncate transition';
+      });
+
+      // Tamaño del bocadillo
+      const scale = node.bubbleScale || 100;
+      const padX = node.bubblePadX || 0;
+      const padY = node.bubblePadY || 0;
+      const isCustomBubble = scale !== 100 || padX !== 0 || padY !== 0;
+
+      document.getElementById('bubble-scale-val').textContent = `${scale}%`;
+      document.getElementById('input-bubble-scale').value = scale;
+      document.getElementById('bubble-pad-x-val').textContent = `${padX}px`;
+      document.getElementById('input-bubble-pad-x').value = padX;
+      document.getElementById('bubble-pad-y-val').textContent = `${padY}px`;
+      document.getElementById('input-bubble-pad-y').value = padY;
+      document.getElementById('bubble-size-mode-badge').textContent = isCustomBubble ? 'Manual' : 'Auto A4';
+
+      // Color
+      const colors = getEffectiveNodeColors(node, depth, branchIndex);
+      const curHex = state.colorTarget === 'bg' ? colors.bg : state.colorTarget === 'border' ? colors.border : colors.text;
+      document.getElementById('input-native-color').value = curHex;
+      document.getElementById('input-hex-color').value = curHex.toUpperCase();
+
+      // Letra y Negrita
+      const fSize = Math.round(node.computedFontSize || 12);
+      document.getElementById('input-font-slider').value = fSize;
+      document.getElementById('input-font-number').value = fSize;
+      document.getElementById('font-size-mode-badge').textContent = node.customFontSize ? `Manual · ${fSize}px` : 'Auto A4';
+
+      const isBold = node.bold !== undefined ? node.bold : depth === 0;
+      document.getElementById('btn-toggle-bold').className = isBold
+        ? 'flex-1 py-1.5 rounded-xl border border-indigo-600 bg-indigo-600 text-white text-xs font-extrabold'
+        : 'flex-1 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs font-extrabold';
+
+      document.getElementById('btn-toggle-italic').className = node.italic
+        ? 'flex-1 py-1.5 rounded-xl border border-indigo-600 bg-indigo-600 text-white text-xs italic font-semibold'
+        : 'flex-1 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-800 text-xs italic font-semibold';
+
+      renderFontFamiliesList();
+    }
+
     /* --------------------------------------------------------------------- */
-    /* 13. FIREBASE AUTH, FIRESTORE Y RECUPERACIÓN COMPLETA DE PROYECTOS     */
+    /* 13. FIREBASE AUTH, FIRESTORE Y AISLAMIENTO ESTRICTO POR CUENTA        */
     /* --------------------------------------------------------------------- */
+    function getUserLocalStorageKey() {
+      return state.user ? `${LOCAL_STORAGE_KEY}_${state.user.uid}` : `${LOCAL_STORAGE_KEY}_guest`;
+    }
+
+    function belongsToCurrentUser(item) {
+      if (!item || !item.tree || !state.user) return false;
+      const uid = state.user.uid;
+      const email = (state.user.email || '').toLowerCase().trim();
+
+      if (item.uid && item.uid !== 'local') {
+        return item.uid === uid;
+      }
+      if (item.userId && item.userId !== 'local') {
+        return item.userId === uid;
+      }
+      const itemEmail = (item.ownerEmail || item.email || '').toLowerCase().trim();
+      if (email && itemEmail && itemEmail !== 'usuario') {
+        return itemEmail === email;
+      }
+      return false;
+    }
+
     function serializeCurrentMap() {
       const treeCopy = deepClone(state.tree);
       traverseAllNodes(n => {
@@ -2698,16 +2907,18 @@
     }
 
     function saveToLocalBackup(payload) {
+      if (!state.user) return;
       try {
-        const existing = collectAllLocalMaps();
+        const userKey = getUserLocalStorageKey();
+        const existing = collectUserLocalMaps();
         const filtered = existing.filter(m => m.mapId !== payload.mapId);
         filtered.unshift(payload);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(filtered.slice(0, 60)));
+        localStorage.setItem(userKey, JSON.stringify(filtered.slice(0, 60)));
       } catch (_) {}
     }
 
     async function saveCurrentMapToCloud(silent = true) {
-      if (!state.tree || !state.mapId) return;
+      if (!state.tree || !state.mapId || !state.user) return;
       const payload = serializeCurrentMap();
       saveToLocalBackup(payload);
 
@@ -2718,11 +2929,11 @@
           await setDoc(doc(db, 'mindmaps', payload.mapId), payload, { merge: true });
           await setDoc(doc(db, 'users', state.user.uid, 'mindmaps', payload.mapId), payload, { merge: true });
           if (dom.cloudSyncText) dom.cloudSyncText.textContent = 'Nube Firebase ✓';
-          if (!silent) showToast('☁️ Proyecto guardado en Firebase');
+          if (!silent) showToast('☁️ Proyecto guardado en tu cuenta de Firebase');
         } catch (err) {
           console.warn('Guardado local activo (revisa reglas Firestore):', err);
           if (dom.cloudSyncText) dom.cloudSyncText.textContent = 'Guardado local ✓';
-          if (!silent) showToast('💾 Guardado en respaldo local');
+          if (!silent) showToast('💾 Guardado en respaldo local de tu cuenta');
         }
       } else {
         if (dom.cloudSyncText) dom.cloudSyncText.textContent = 'Guardado local ✓';
@@ -2734,9 +2945,11 @@
       state.saveTimer = setTimeout(() => saveCurrentMapToCloud(true), 900);
     }
 
-    function collectAllLocalMaps() {
+    function collectUserLocalMaps() {
+      if (!state.user) return [];
       const found = [];
       const candidateKeys = new Set([
+        getUserLocalStorageKey(),
         LOCAL_STORAGE_KEY,
         'mindflow_studio_saved_maps_v1',
         'mindflow_studio_maps',
@@ -2744,33 +2957,20 @@
         'mindflow_saved_maps'
       ]);
 
-      try {
-        for (let i = 0; i < localStorage.length; i++) {
-          const k = localStorage.key(i);
-          if (k && k.toLowerCase().includes('mindflow')) candidateKeys.add(k);
-        }
-      } catch (_) {}
-
       candidateKeys.forEach(key => {
         try {
           const raw = localStorage.getItem(key);
           if (!raw) return;
           const parsed = JSON.parse(raw);
-          if (Array.isArray(parsed)) {
-            parsed.forEach(item => {
-              if (item && item.tree) {
-                if (!item.mapId) item.mapId = item.id || generateId('map');
+          const list = Array.isArray(parsed) ? parsed : (parsed && typeof parsed === 'object' ? Object.values(parsed) : []);
+          list.forEach(item => {
+            if (item && typeof item === 'object' && item.tree) {
+              if (!item.mapId) item.mapId = item.id || generateId('map');
+              if (belongsToCurrentUser(item)) {
                 found.push(item);
               }
-            });
-          } else if (parsed && typeof parsed === 'object') {
-            Object.values(parsed).forEach(item => {
-              if (item && typeof item === 'object' && item.tree) {
-                if (!item.mapId) item.mapId = item.id || generateId('map');
-                found.push(item);
-              }
-            });
-          }
+            }
+          });
         } catch (_) {}
       });
 
@@ -2778,96 +2978,70 @@
     }
 
     async function fetchUserMaps() {
+      if (!state.user) return [];
       const mergedMap = new Map();
       const upsertMap = item => {
         if (!item || !item.tree) return;
         const id = item.mapId || item.id;
         if (!id) return;
         item.mapId = id;
+        if (!belongsToCurrentUser(item)) return;
         const prev = mergedMap.get(id);
         if (!prev || (item.updatedAt || 0) >= (prev.updatedAt || 0)) {
           mergedMap.set(id, item);
         }
       };
 
-      // 1. Recuperar copias locales actuales y heredadas
-      collectAllLocalMaps().forEach(m => {
-        if (
-          !state.user ||
-          !m.uid ||
-          m.uid === state.user.uid ||
-          m.userId === state.user.uid ||
-          m.uid === 'local' ||
-          (state.user.email && (m.ownerEmail === state.user.email || m.email === state.user.email))
-        ) {
-          upsertMap(m);
-        }
-      });
+      // 1. Recuperar copias locales pertenecientes exclusivamente a esta cuenta
+      collectUserLocalMaps().forEach(m => upsertMap(m));
 
-      // 2. Recuperar de Firebase Firestore en todas las rutas/campos usados
+      // 2. Consultar en Firebase Firestore únicamente los proyectos de esta cuenta
       if (db && state.user) {
         const uid = state.user.uid;
-        const email = state.user.email || '';
+        const email = (state.user.email || '').trim();
 
-        const queriesToTry = [
-          query(collection(db, 'mindmaps'), where('uid', '==', uid)),
-          query(collection(db, 'mindmaps'), where('userId', '==', uid)),
-          collection(db, 'users', uid, 'mindmaps'),
-          collection(db, 'users', uid, 'maps'),
-          query(collection(db, 'maps'), where('uid', '==', uid)),
-          query(collection(db, 'maps'), where('userId', '==', uid))
+        const userOwnedQueries = [
+          { ref: query(collection(db, 'mindmaps'), where('uid', '==', uid)), isPrivatePath: false },
+          { ref: query(collection(db, 'mindmaps'), where('userId', '==', uid)), isPrivatePath: false },
+          { ref: collection(db, 'users', uid, 'mindmaps'), isPrivatePath: true },
+          { ref: collection(db, 'users', uid, 'maps'), isPrivatePath: true },
+          { ref: query(collection(db, 'maps'), where('uid', '==', uid)), isPrivatePath: false },
+          { ref: query(collection(db, 'maps'), where('userId', '==', uid)), isPrivatePath: false }
         ];
 
         if (email) {
-          queriesToTry.push(query(collection(db, 'mindmaps'), where('ownerEmail', '==', email)));
-          queriesToTry.push(query(collection(db, 'mindmaps'), where('email', '==', email)));
+          userOwnedQueries.push({ ref: query(collection(db, 'mindmaps'), where('ownerEmail', '==', email)), isPrivatePath: false });
+          userOwnedQueries.push({ ref: query(collection(db, 'mindmaps'), where('email', '==', email)), isPrivatePath: false });
         }
 
         await Promise.all(
-          queriesToTry.map(async qRef => {
+          userOwnedQueries.map(async entry => {
             try {
-              const snap = await getDocs(qRef);
+              const snap = await getDocs(entry.ref);
               snap.forEach(docSnap => {
                 const d = docSnap.data();
-                if (d && d.tree) {
-                  if (!d.mapId) d.mapId = docSnap.id;
-                  upsertMap(d);
-                }
+                if (!d || !d.tree) return;
+                if (!d.mapId) d.mapId = docSnap.id;
+                if (entry.isPrivatePath && !d.uid) d.uid = uid;
+                upsertMap(d);
               });
             } catch (_) {}
           })
         );
-
-        // Respaldo adicional para documentos heredados en 'mindmaps' sin campo uid
-        try {
-          const allSnap = await getDocs(collection(db, 'mindmaps'));
-          allSnap.forEach(docSnap => {
-            const d = docSnap.data();
-            if (!d || !d.tree) return;
-            if (!d.mapId) d.mapId = docSnap.id;
-            const belongs =
-              d.uid === uid ||
-              d.userId === uid ||
-              (email && (d.ownerEmail === email || d.email === email)) ||
-              (!d.uid && !d.userId);
-            if (belongs) upsertMap(d);
-          });
-        } catch (_) {}
       }
 
       const sorted = Array.from(mergedMap.values()).sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
-      if (sorted.length > 0) {
-        try {
-          localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(sorted.slice(0, 60)));
-        } catch (_) {}
-      }
+      try {
+        localStorage.setItem(getUserLocalStorageKey(), JSON.stringify(sorted.slice(0, 60)));
+      } catch (_) {}
       return sorted;
     }
 
     async function deleteSavedMap(mapId) {
+      if (!state.user) return;
       try {
-        const remaining = collectAllLocalMaps().filter(m => m.mapId !== mapId);
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(remaining));
+        const remaining = collectUserLocalMaps().filter(m => m.mapId !== mapId);
+        localStorage.setItem(getUserLocalStorageKey(), JSON.stringify(remaining));
       } catch (_) {}
 
       if (db && state.user) {
@@ -2962,7 +3136,7 @@
       if (maps.length === 0) {
         dom.homeProjectsGrid.innerHTML = `
           <div class="col-span-full bg-white rounded-2xl p-6 border border-dashed border-slate-300 text-center space-y-2">
-            <p class="text-sm font-bold text-slate-700">Aún no tienes proyectos guardados</p>
+            <p class="text-sm font-bold text-slate-700">Aún no tienes proyectos guardados en esta cuenta</p>
             <p class="text-xs text-slate-500">Pulsa «Crear Nuevo Proyecto» o elige una de las 9 plantillas de abajo.</p>
           </div>
         `;
@@ -3046,7 +3220,7 @@
       const maps = await fetchUserMaps();
 
       if (maps.length === 0) {
-        listEl.innerHTML = `<div class="col-span-full text-xs text-slate-500 py-6 text-center">No hay mapas guardados todavía.</div>`;
+        listEl.innerHTML = `<div class="col-span-full text-xs text-slate-500 py-6 text-center">No hay mapas guardados todavía en esta cuenta.</div>`;
         return;
       }
 
@@ -3123,8 +3297,24 @@
       renderHomeProjects();
     }
 
+    function bindAuthListener() {
+      if (!auth) {
+        updateAuthUI();
+        return;
+      }
+      onAuthStateChanged(auth, user => {
+        state.user = user;
+        updateAuthUI();
+        if (user && state.pendingActionAfterAuth) {
+          const fn = state.pendingActionAfterAuth;
+          state.pendingActionAfterAuth = null;
+          fn();
+        }
+      });
+    }
+
     /* --------------------------------------------------------------------- */
-    /* 16. EXPORTACIÓN PNG 2X, JSON, IMPRESIÓN Y PWA INSTALABLE              */
+    /* 16. EXPORTACIÓN PNG 2X, IMPRESIÓN A4 Y PWA INSTALABLE                 */
     /* --------------------------------------------------------------------- */
     function initPwaSupport() {
       try {
@@ -3184,7 +3374,7 @@
         return;
       }
       const ua = navigator.userAgent;
-      if (/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && 'ontouchend' in document)) {
+      if (/iPad|iPhone|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1)) {
         showToast('En Safari (iPad/iPhone): pulsa Compartir ⬆️ → «Añadir a pantalla de inicio»');
       } else if (/Android/.test(ua)) {
         showToast('En Chrome Android: menú ⋮ → «Instalar aplicación»');
@@ -3212,7 +3402,7 @@
         const start = getAnchorPointOnNode(parent, node.parentOutAnchor || parent.outAnchor, node);
         const end = getAnchorPointOnNode(node, node.inAnchor, parent);
         const dist = Math.hypot(end.x - start.x, end.y - start.y);
-        const tension = Math.max(24, Math.min(85, dist * 0.42));
+        const tension = Math.max(24, Math.min(88, dist * 0.42));
         const dir = s => s === 'right' ? [1, 0] : s === 'left' ? [-1, 0] : s === 'bottom' ? [0, 1] : [0, -1];
         const [sx, sy] = dir(start.side);
         const [ex, ey] = dir(end.side);
@@ -3251,7 +3441,7 @@
 
         const fSize = node.computedFontSize || 12;
         const isBold = node.bold !== undefined ? node.bold : depth === 0;
-        ctx.font = `${node.italic ? 'italic ' : ''}${isBold ? '700' : '500'} ${fSize}px Inter, sans-serif`;
+        ctx.font = `${node.italic ? 'italic ' : ''}${isBold ? '700' : '500'} ${fSize}px '${node.fontFamily || 'Inter'}', sans-serif`;
         ctx.fillStyle = colors.text;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -3264,16 +3454,6 @@
       a.href = canvas.toDataURL('image/png');
       a.click();
       showToast('🖼️ Imagen PNG A4 descargada');
-    }
-
-    function exportJsonFile() {
-      const payload = serializeCurrentMap();
-      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.download = `${(state.title || 'mapa-mental').toLowerCase().replace(/\s+/g, '-')}.json`;
-      a.href = URL.createObjectURL(blob);
-      a.click();
-      showToast('📦 Copia .json descargada');
     }
 
     function downloadStandaloneHtmlApp() {
@@ -3299,6 +3479,9 @@
       document.getElementById('btn-home-logout').addEventListener('click', async () => {
         if (auth) await signOut(auth);
         state.user = null;
+        state.mapId = null;
+        state.tree = null;
+        state.selectedNodeId = null;
         updateAuthUI();
         showToast('Sesión cerrada');
       });
@@ -3312,21 +3495,29 @@
         showToast('↻ Lista de proyectos actualizada');
       });
 
-      document.getElementById('input-home-import-json').addEventListener('change', async e => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        try {
-          const parsed = JSON.parse(await file.text());
-          if (parsed?.tree) {
-            parsed.mapId = parsed.mapId || generateId('map');
-            openEditorWithPayload(parsed);
-            await saveCurrentMapToCloud(false);
+      // Guardar clave/configuración Firebase personalizada si el usuario la introduce
+      document.getElementById('btn-save-firebase-key').addEventListener('click', async () => {
+        const raw = document.getElementById('input-firebase-apikey').value.trim();
+        if (!raw) return;
+        let parsedCfg = {};
+        if (raw.startsWith('{')) {
+          try {
+            parsedCfg = JSON.parse(raw);
+          } catch (_) {
+            const keyMatch = raw.match(/apiKey\s*:\s*['"]([^'"]+)['"]/);
+            if (keyMatch) parsedCfg.apiKey = keyMatch[1];
           }
-        } catch (_) {
-          showToast('Archivo JSON inválido');
-        } finally {
-          e.target.value = '';
+        } else {
+          parsedCfg.apiKey = raw;
         }
+        if (!parsedCfg.apiKey) {
+          showToast('Introduce una apiKey válida');
+          return;
+        }
+        localStorage.setItem(FB_CUSTOM_CFG_KEY, JSON.stringify(parsedCfg));
+        await initFirebaseServices();
+        bindAuthListener();
+        showToast('✅ Conexión Firebase guardada');
       });
 
       // Tabs Auth
@@ -3341,7 +3532,7 @@
         errEl.classList.add('hidden');
 
         try {
-          if (!auth) throw new Error('Firebase Auth no disponible');
+          if (!auth) throw new Error('Configura primero la apiKey de tu proyecto Firebase abajo.');
           if (state.authMode === 'register') {
             await createUserWithEmailAndPassword(auth, email, pass);
           } else {
@@ -3358,7 +3549,7 @@
         const errEl = document.getElementById('auth-error-msg');
         errEl.classList.add('hidden');
         try {
-          if (!auth) throw new Error('Firebase Auth no disponible');
+          if (!auth) throw new Error('Configura primero la apiKey de tu proyecto Firebase abajo.');
           await signInWithPopup(auth, new GoogleAuthProvider());
           closeAllModals();
         } catch (err) {
@@ -3389,25 +3580,6 @@
       });
 
       document.getElementById('btn-save-cloud-now').addEventListener('click', () => saveCurrentMapToCloud(false));
-
-      document.getElementById('input-import-json-maps').addEventListener('change', async e => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        try {
-          const parsed = JSON.parse(await file.text());
-          if (parsed?.tree) {
-            parsed.mapId = parsed.mapId || generateId('map');
-            closeAllModals();
-            openEditorWithPayload(parsed);
-            await saveCurrentMapToCloud(false);
-          }
-        } catch (_) {
-          showToast('Archivo JSON inválido');
-        } finally {
-          e.target.value = '';
-        }
-      });
-
       document.getElementById('btn-open-templates').addEventListener('click', () => openModal('modal-templates'));
       document.getElementById('btn-undo').addEventListener('click', undo);
       document.getElementById('btn-redo').addEventListener('click', redo);
@@ -3429,7 +3601,6 @@
       document.getElementById('btn-open-export').addEventListener('click', () => openModal('modal-export'));
       document.getElementById('btn-export-png').addEventListener('click', exportA4AsPng);
       document.getElementById('btn-export-print').addEventListener('click', () => { closeAllModals(); setTimeout(() => window.print(), 120); });
-      document.getElementById('btn-export-json').addEventListener('click', exportJsonFile);
       document.getElementById('btn-download-html-pwa').addEventListener('click', downloadStandaloneHtmlApp);
 
       document.getElementById('btn-toggle-inspector').addEventListener('click', () => {
@@ -3457,14 +3628,19 @@
       let isPanning = false;
       let panStartX = 0;
       let panStartY = 0;
-      let panMoved = false;
 
       dom.canvasViewport.addEventListener('pointerdown', e => {
-        if (e.target.closest('.mind-node') || e.target.closest('#floating-node-bar') || e.target.closest('#zoom-controls') || e.target.closest('.root-side-handle') || e.target.closest('.exit-anchor-handle') || e.target.closest('.entry-anchor-handle')) {
+        if (
+          e.target.closest('.mind-node') ||
+          e.target.closest('#floating-node-bar') ||
+          e.target.closest('#zoom-controls') ||
+          e.target.closest('.root-side-handle') ||
+          e.target.closest('.exit-anchor-handle') ||
+          e.target.closest('.entry-anchor-handle')
+        ) {
           return;
         }
         isPanning = true;
-        panMoved = false;
         panStartX = e.clientX - state.panX;
         panStartY = e.clientY - state.panY;
         deselectNode();
@@ -3472,7 +3648,6 @@
 
       dom.canvasViewport.addEventListener('pointermove', e => {
         if (!isPanning) return;
-        panMoved = true;
         state.panX = e.clientX - panStartX;
         state.panY = e.clientY - panStartY;
         applyViewportTransform();
@@ -3901,6 +4076,7 @@
     async function initApp() {
       applyDeviceSafeAreaOffsets();
       cacheDom();
+      await initFirebaseServices();
       initPwaSupport();
       renderTemplatesCards();
       renderInspectorGalleries();
@@ -3910,19 +4086,7 @@
         try { await document.fonts.ready; } catch (_) {}
       }
 
-      if (auth) {
-        onAuthStateChanged(auth, user => {
-          state.user = user;
-          updateAuthUI();
-          if (user && state.pendingActionAfterAuth) {
-            const fn = state.pendingActionAfterAuth;
-            state.pendingActionAfterAuth = null;
-            fn();
-          }
-        });
-      } else {
-        updateAuthUI();
-      }
+      bindAuthListener();
     }
 
     window.addEventListener('DOMContentLoaded', initApp);
